@@ -19,6 +19,7 @@ SRC_DIR='/home/nomake/src'
 WWW_DIR='/home/nomake/www/dev'
 DOT_FILES_THAT_ARE_NOT_HIDDEN=['.htaccess']  # Dot files that we actually want
                                              # to copy.
+EXTENSIONS_TO_IGNORE=['.swp', '.pyc']
 if mode == 'prod':
     WWW_DIR='/home/nomake/www/prod'
 
@@ -66,7 +67,9 @@ def cpData(srcPath, dstPath):
     shutil.copy2(data['absPath'],dstPath) # Copy data, permissions, modtime.
 
     
-def isHiddenFile(filename):
+def isHiddenFile(filename, fnameBase, fnameExt):
+    for ext in EXTENSIONS_TO_IGNORE:
+        if fnameExt.lower() == ext: return True
     for n in DOT_FILES_THAT_ARE_NOT_HIDDEN:
         if filename.startswith(n): return False
     if filename[0] in '_.': return True
@@ -133,7 +136,7 @@ for dirpath, dirnames, filenames in os.walk(SRC_DIR):
                 'fnameExt':fnameExt,
                }
 
-        if isHiddenFile(filename): data['handler'] = hiddenFileHandler
+        if isHiddenFile(filename, fnameBase, fnameExt): data['handler'] = hiddenFileHandler
         elif fnameExt.lower() == '.tmpl': data['handler'] = tmplFileHandler
         else: data['handler'] = normalFileHandler
 
