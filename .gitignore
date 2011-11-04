@@ -1,0 +1,11 @@
+*.swp
+/.bash_history
+/.bash_logout
+/.emacs
+/.viminfo
+/.zshrc
+/logs
+/mako/
+/www/dev/
+/www/prod/
+
