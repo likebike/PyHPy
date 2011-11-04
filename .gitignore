@@ -2,10 +2,10 @@
 /.bash_history
 /.bash_logout
 /.emacs
+/.gitconfig
 /.viminfo
 /.zshrc
 /logs
 /mako/
 /www/dev/
 /www/prod/
-
