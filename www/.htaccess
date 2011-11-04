@@ -2,11 +2,11 @@ Options -Indexes
 
 RewriteEngine on
 
-RewriteCond %{HTTP_HOST} ^nomake.org$
-RewriteRule (.*) http://www.nomake.org/$1 [R,L]
-
-
 RewriteCond %{HTTP_HOST} ^www.nomake.org$
+RewriteRule (.*) http://nomake.org/$1 [R,L]
+
+
+RewriteCond %{HTTP_HOST} ^nomake.org$
 RewriteCond %{REQUEST_URI} !^/prod
 RewriteRule (.*) /prod/$1 [L]
 

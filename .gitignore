@@ -3,6 +3,7 @@
 /.bash_logout
 /.emacs
 /.gitconfig
+/.ssh/
 /.viminfo
 /.zshrc
 /logs
