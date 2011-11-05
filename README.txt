@@ -13,7 +13,8 @@ are considered to be hidden files and are not published...except for
 ".htaccess", which IS published.  Those are most of the rules, but to see all
 the rules in detail, read ~/Makefile.py.
 
-Publish your work to dev.nomake.org by running 'make' in ~/.
+Publish your work to dev.nomake.org by running 'make' in ~/.  Or, if you're in
+a hurry, you can use 'make fast', which will skip ACL synchronization.
 
 When you're happy with the result, publish your work to nomake.org by running
 'make prod' in ~/.

@@ -49,7 +49,8 @@ def getStats(path, includeSize=True, includeMTime=True):
     # Return the important, comparable filesystem stats that can
     # be used to compare file metadata.
     s = os.stat(path)
-    acl = getACL(path)
+    acl = None
+    if int(os.environ.get('ACL_CHECK', 1)): acl = getACL(path)
     stats= {'mode':s.st_mode,
             'uid':s.st_uid,
             'gid':s.st_gid,
@@ -58,13 +59,15 @@ def getStats(path, includeSize=True, includeMTime=True):
     if includeSize: stats['size'] = s.st_size
     return stats
 def cpStats(srcPath, dstPath, touch=True):
-    cpACL(srcPath, dstPath)
+    if int(os.environ.get('ACL_CHECK', 1)): cpACL(srcPath, dstPath)
     shutil.copystat(srcPath, dstPath)
     if touch: os.utime(dstPath, None) # set the modtime to now.
 def cpData(srcPath, dstPath, touch=True):
     dstDir = os.path.dirname(dstPath)
     if not os.path.isdir(dstDir):
-        raise ValueError('The destination directory does not exist!  Create it manually: %r'%(dstDir,))
+        print 'Creating Directory:'
+        print '\t%s'%(dstDir,)
+        os.makedirs(dstDir)
     shutil.copy2(data['absPath'],dstPath) # Copy data, permissions, modtime.
     if touch: os.utime(dstPath, None) # set the modtime to now.
 
@@ -132,6 +135,21 @@ def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
         if os.path.exists(d): getMakoTemplateDeps(d, allDeps)
     return allDeps
 
+def walk(path):
+    for dirpath, dirnames, filenames in os.walk(path):
+        symlinks = []
+        for i,filename in reversed(list(enumerate(filenames))):
+            absPath = os.path.join(dirpath, filename)
+            if os.path.islink(absPath):
+                symlinks.append(filename)
+                filenames.pop(i)
+        for i,dirname in reversed(list(enumerate(dirnames))):
+            absPath = os.path.join(dirpath, dirname)
+            if os.path.islink(absPath):
+                symlinks.append(dirname)
+                dirnames.pop(i)
+        yield dirpath, dirnames, filenames, symlinks
+
 
 
 okDstFiles = []
@@ -177,11 +195,23 @@ def normalFileHandler(data):
         print '\t%s  -->  %s'%(data['absPath'],dstPath)
         cpStats(data['absPath'], dstPath, touch=False)
     okDstFiles.append(dstPath)
+def symlinkHandler(data):
+    dstPath = os.path.join(WWW_DIR, data['srcPath'])
+    linkto = os.readlink(data['absPath'])
+    needToCreate = True
+    if os.path.islink(dstPath):
+        if os.readlink(dstPath) == linkto: needToCreate = False
+    if needToCreate:
+        print 'Creating Symlink:'
+        print '\t%s  -->  %s'%(dstPath,linkto)
+        if os.path.exists(dstPath): os.remove(dstPath)
+        os.symlink(linkto, dstPath)
+    okDstFiles.append(dstPath)
+        
 
 allItems = []
-for dirpath, dirnames, filenames in os.walk(SRC_DIR):
-    for filename in filenames:
-
+for dirpath, dirnames, filenames, symlinks in walk(SRC_DIR):
+    for filename in (filenames+symlinks):
         absPath = os.path.join(dirpath, filename)
         assert absPath.startswith(SRC_DIR)
         srcPath = absPath[len(SRC_DIR):]
@@ -203,14 +233,15 @@ for dirpath, dirnames, filenames in os.walk(SRC_DIR):
 
         if isHiddenFile(filename, fnameBase, fnameExt): data['handler'] = hiddenFileHandler
         elif fnameExt.lower() == '.tmpl': data['handler'] = tmplFileHandler
+        elif os.path.islink(absPath): data['handler'] = symlinkHandler
         else: data['handler'] = normalFileHandler
 
         allItems.append(data)
 
 for data in allItems: data['handler'](data)
 
-for dirpath, dirnames, filenames in os.walk(WWW_DIR):
-    for filename in filenames:
+for dirpath, dirnames, filenames, symlinks in walk(WWW_DIR):
+    for filename in (filenames+symlinks):
         absPath = os.path.join(dirpath, filename)
         if absPath not in okDstFiles:
             print 'Unexpected WWW File:',absPath
