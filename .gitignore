@@ -8,5 +8,6 @@
 /.zshrc
 /logs
 /mako/
+/tmp/
 /www/dev/
 /www/prod/

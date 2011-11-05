@@ -1,0 +1,111 @@
+BODY {
+	PADDING-BOTTOM: 100px; MARGIN: 0px; PADDING-TOP: 0px
+}
+HTML {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+BODY {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+DIV {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+CENTER {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+P {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+TABLE {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+TR {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+TH {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+TD {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+UL {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+LI {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: arial,helvetica,sans-serif
+}
+BIG {
+	FONT-SIZE: 18px; FONT-FAMILY: arial,helvetica,sans-serif
+}
+SMALL {
+	FONT-SIZE: 10px; FONT-FAMILY: verdana,helvetica,sans-serif
+}
+CODE {
+	FONT-SIZE: 13px; FONT-FAMILY: courier new,courier; WHITE-SPACE: nowrap
+}
+TT {
+	FONT-SIZE: 13px; FONT-FAMILY: courier new,courier; WHITE-SPACE: nowrap
+}
+A:link {
+	FONT-WEIGHT: bold; COLOR: #3355cc; TEXT-DECORATION: underline
+}
+A:visited {
+	FONT-WEIGHT: bold; COLOR: #8800aa; TEXT-DECORATION: underline
+}
+A:hover {
+	FONT-WEIGHT: bold; BACKGROUND: #ececec; COLOR: #660099; TEXT-DECORATION: underline
+}
+A:active {
+	FONT-WEIGHT: bold; COLOR: #3355cc; TEXT-DECORATION: underline
+}
+A.nodeco:link {
+	TEXT-DECORATION: none
+}
+A.nodeco:visited {
+	TEXT-DECORATION: none
+}
+A.nodeco:hover {
+	TEXT-DECORATION: none
+}
+A.nodeco:active {
+	TEXT-DECORATION: none
+}
+A.code:link {
+	FONT-SIZE: 13px; BACKGROUND: #e0e0e0; FONT-FAMILY: courier new,courier; TEXT-DECORATION: none
+}
+A.code:visited {
+	FONT-SIZE: 13px; BACKGROUND: #e0e0e0; FONT-FAMILY: courier new,courier; TEXT-DECORATION: none
+}
+A.code:hover {
+	FONT-SIZE: 13px; BACKGROUND: #e0e0e0; FONT-FAMILY: courier new,courier; TEXT-DECORATION: none
+}
+A.code:active {
+	FONT-SIZE: 13px; BACKGROUND: #e0e0e0; FONT-FAMILY: courier new,courier; TEXT-DECORATION: none
+}
+INPUT {
+	FONT-SIZE: 12px; COLOR: black; FONT-FAMILY: courier new,courier,arial,helvetica,sans-serif
+}
+TEXTAREA {
+	FONT-SIZE: 12px; FONT-FAMILY: courier new,courier; BACKGROUND-COLOR: white
+}
+.lite {
+	COLOR: #cc6666
+}
+.bt1 {
+	FONT-SIZE: 17px; FONT-FAMILY: arial,helvetica,sans-serif
+}
+.bt1b {
+	FONT-WEIGHT: bold; FONT-SIZE: 17px; FONT-FAMILY: arial,helvetica,sans-serif
+}
+.bt2 {
+	FONT-SIZE: 13px; FONT-FAMILY: arial,helvetica,sans-serif
+}
+.bt2b {
+	FONT-WEIGHT: bold; FONT-SIZE: 13px; FONT-FAMILY: arial,helvetica,sans-serif
+}
+.bt3 {
+	FONT-SIZE: 11px; FONT-FAMILY: arial,helvetica,sans-serif
+}
+.bt3b {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; FONT-FAMILY: arial,helvetica,sans-serif
+}

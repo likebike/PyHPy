@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!--  Fetched from http://gualtierozorni.altervista.org/jsgraphics/demos/animarc.htm -->
+
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+  <title>JavaScript Vectorgraphics Library: Animated Pie</title>
+  <link rel="stylesheet" type="text/css" href="../../newwalterzorn.css">
+  <style type="text/css">
+  <!--
+  body {margin:10px;}
+  -->
+  </style>
+  <script type="text/javascript" src="walterzorn.js"></script>
+  <script type="text/javascript" src="wz_jsgraphics.js"></script>
+  </head>
+  <body>
+  Back to <a href="../jsgraphics_e.htm">Vectorgraphics Library</a> Main Page (English)
+  <br>
+  Zur&uuml;ck zur <a href="http://www.walterzorn.de/jsgraphics/jsgraphics.htm">Vectorgrafik-Bibliothek</a>-Hauptseite (deutsch)
+  <br>
+  <div id="cnv1" style="position:absolute;z-index:0;left:100px;top:140px;width:150px;height:100px;"></div>
+  <div id="cnv2" style="position:absolute;z-index:1;left:100px;top:140px;width:150px;height:100px;"></div>
+  <script type="text/javascript">
+<!--
+// Implements double-buffering, by using two identical canvas DIVs at the same
+// location, drawing to the invisible background DIV whenever the animation is
+// updated, and then switching the z-indices of these DIVs, so that the
+// updated background DIV becomes visible and the outdated foreground DIV is
+// hidden.
+
+// Array of DIV references (for faster access)
+var g_aDiv = [document.getElementById("cnv1"), document.getElementById("cnv2")];
+
+// Array of jsGraphics objects related to each of these DIVs
+var g_aJg = [new jsGraphics(g_aDiv[0]), new jsGraphics(g_aDiv[1])];
+
+// Index of DIV to be redrawn and to become the foreground DIV
+var g_i = 0;
+
+g_aJg[0].setStroke(2);
+g_aJg[1].setStroke(2);
+
+function AnimArc(iAng)
+{
+    var fAngRad;
+    var jg;
+    
+    // Reference to current jsGraphics object (for faster access)
+    jg = g_aJg[g_i];
+    
+    // Repaint the background DIV
+    iAng %= 360;
+    jg.setColor("#ff6666");
+    jg.fillArc(0, 0, 150, 100, iAng + 310, iAng + 70);
+    jg.setColor("#6666ff");
+    fAngRad = (iAng + 180) * Math.PI / 180;
+    jg.drawLine(74, 49, Math.round(74 + 74 * Math.cos(fAngRad)), Math.round(49 + 49 * Math.sin(fAngRad)));
+    jg.setColor("#339933");
+    jg.fillEllipse(69, 45, 12, 9);
+    jg.paint();
+    
+    // Show background DIV, hide hitherto foreground DIV, by switching their
+    // z-indices
+    g_aDiv[g_i].style.zIndex = 1;
+    // Switch index of active DIV
+    g_i ^= 1;
+    g_aDiv[g_i].style.zIndex = 0;
+    // Clear outdated DIV (which is from now on in the background)
+    g_aJg[g_i].clear();
+
+    window.setTimeout("AnimArc(" + (iAng + 2) + ");", 50);
+}
+
+AnimArc(0);
+//-->
+  </script>
+  </body>
+</html>
