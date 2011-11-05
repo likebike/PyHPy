@@ -1,0 +1,6 @@
+RewriteEngine on
+
+# Allow easy cache filename incrementing without requiring actual filename
+# changes.  Just change the cache folder number from cache_001 to cache_002.
+RewriteRule ^cache_[0123456789]+/(.*)$ /cache/$1 [L]
+

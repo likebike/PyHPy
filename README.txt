@@ -42,6 +42,15 @@ change, edit the template and regenerate the httpd.conf file by running "make
 publish" in /home/addon/apache/conf/.src.  (You shouldn't need to make any
 changes, though...)
 
+The 'addon' Apache writes its logs to serveral places:
+
+    /home/nomake/logs/access_log   # These two are specific to the nomake.org
+    /home/nomake/logs/error_log    # site.  You'll usually want to look here.
+
+    /home/addon/apache/logs/access_log   # These two are useful for diagnosing
+    /home/addon/apache/logs/error_log    # 'systematic' issues with the server,
+                                         # rather than the site.
+
 
 
 === Why Static? ===

@@ -45,7 +45,7 @@ def cpACL(srcPath, dstPath):
     retcode = subprocess.call('getfacl %r | setfacl --set-file=- %r'%(srcPath, dstPath), shell=True)
     if retcode != 0:
         raise ValueError('Error copying ACL: %r  -->  %r'%(srcPath, dstPath))
-def getStats(path, includeSize=True):
+def getStats(path, includeSize=True, includeMTime=True):
     # Return the important, comparable filesystem stats that can
     # be used to compare file metadata.
     s = os.stat(path)
@@ -53,18 +53,20 @@ def getStats(path, includeSize=True):
     stats= {'mode':s.st_mode,
             'uid':s.st_uid,
             'gid':s.st_gid,
-            'mtime':s.st_mtime,
             'acl':acl}
+    if includeMTime: stats['mtime'] = s.st_mtime
     if includeSize: stats['size'] = s.st_size
     return stats
-def cpStats(srcPath, dstPath):
+def cpStats(srcPath, dstPath, touch=True):
     cpACL(srcPath, dstPath)
     shutil.copystat(srcPath, dstPath)
-def cpData(srcPath, dstPath):
+    if touch: os.utime(dstPath, None) # set the modtime to now.
+def cpData(srcPath, dstPath, touch=True):
     dstDir = os.path.dirname(dstPath)
     if not os.path.isdir(dstDir):
         raise ValueError('The destination directory does not exist!  Create it manually: %r'%(dstDir,))
     shutil.copy2(data['absPath'],dstPath) # Copy data, permissions, modtime.
+    if touch: os.utime(dstPath, None) # set the modtime to now.
 
     
 def isHiddenFile(filename, fnameBase, fnameExt):
@@ -76,25 +78,88 @@ def isHiddenFile(filename, fnameBase, fnameExt):
     return False
 
 
+def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
+    ''' Pretend that you have a template named "index.html.tmpl", and it
+        inherits from "_master.tmpl".  When you give this function the path to
+        the index template, this will return the path to _master so you can
+        check the modification times of the deps.  This way, you can regenerate
+        index.html if the master changes.
+    
+        Several methods are used to determine dependencies:
+        
+        First, standard Mako "inherit" lines are detected (using a very
+        primitive algorithm... so be nice with your line formatting, please.):
+
+            <%inherit file="_master.tmpl"/>
+
+        Secondly, dependencies are extracted from 'namespace' lines:
+
+            <%namespace name="task_common" file="task/common.tmpl"/>
+        
+        Finally, the user can add lines like this:
+
+            ## DEP: /path/to/dep/file1.py
+            ## DEP: ../_file2.tmpl
+
+        Dependencies are recursively searched for dependencies too.
+    '''
+    assert os.path.isabs(tmplPath)
+    if allDeps==None: allDeps = []
+    deps = []
+    for line in open(tmplPath):
+        line = line.strip()
+        if not line: continue
+        pieces = line.split()
+        if len(pieces)>2  and  pieces[0]=='##'  and  pieces[1]=='DEP:':
+            path = line[line.index(pieces[2]):]
+            if not os.path.isabs(path):
+                path = os.path.join(os.path.dirname(tmplPath), path)
+            deps.append(path)
+        elif line.startswith('<%inherit')  or  line.startswith('<%namespace'):
+            fileI = line.index('file=')
+            quoteChar = line[fileI+5]
+            path = line[fileI+6:line.index(quoteChar, fileI+6)]
+            if not os.path.isabs(path):
+                path = os.path.join(os.path.dirname(tmplPath), path)
+            deps.append(path)
+    newDeps = []
+    for d in deps:
+        if d not in allDeps:
+            newDeps.append(d)
+            allDeps.append(d)
+    if not recursive: return newDeps
+    for d in newDeps:
+        if os.path.exists(d): getMakoTemplateDeps(d, allDeps)
+    return allDeps
+
+
+
 okDstFiles = []
 def hiddenFileHandler(data):
     #print 'Skipping hidden file:',data['srcPath']
     pass
 def tmplFileHandler(data):
+    lastModTime = data['srcModTime']
+    for dep in getMakoTemplateDeps(data['absPath']):
+        assert os.path.isabs(dep)
+        if not os.path.exists(dep):
+            print 'Dependency does not exist: %r'%(dep,)
+            continue
+        lastModTime = max(lastModTime, os.path.getmtime(dep))
     dstPath = os.path.join(WWW_DIR, data['fnameBase'])
     dstModTime = 0
     if os.path.exists(dstPath): dstModTime = os.path.getmtime(dstPath)
-    if data['srcModTime'] > dstModTime:
+    if lastModTime > dstModTime:
         print 'Evaluating Mako Template:'
         print '\t%s  -->  %s'%(data['absPath'],dstPath)
         retcode = subprocess.call(
-                               'mako-render %r > %r'%(data['absPath'], dstPath),
+                               'cd %r; mako-render %r > %r'%(data['dirpath'], data['absPath'], dstPath),
                                shell=True)
         if retcode != 0:
             raise ValueError('Error with Mako Template: %r'%(data['absPath'],))
         cpStats(data['absPath'],dstPath)
-    if getStats(data['absPath'], includeSize=False) != \
-       getStats(dstPath, includeSize=False):
+    if getStats(data['absPath'], includeSize=False, includeMTime=False) != \
+       getStats(dstPath, includeSize=False, includeMTime=False):
         print 'Copying Filesystem Metadata:'
         print '\t%s  -->  %s'%(data['absPath'],dstPath)
         cpStats(data['absPath'],dstPath)
@@ -110,7 +175,7 @@ def normalFileHandler(data):
     if getStats(data['absPath']) != getStats(dstPath):
         print 'Copying Filesystem Metadata:'
         print '\t%s  -->  %s'%(data['absPath'],dstPath)
-        cpStats(data['absPath'],dstPath)
+        cpStats(data['absPath'], dstPath, touch=False)
     okDstFiles.append(dstPath)
 
 allItems = []
