@@ -1,3 +1,5 @@
+# I need to work with the "apps tree" from multiple places.
+# This module allows me to keep the logic in one place.
 
 import os, json, time, hashlib
 
@@ -35,8 +37,9 @@ def iterAppVersions(appDir):
         packagePath = os.path.join(PACKAGE_DIR, packageFilename)
         assert os.path.exists(packagePath), 'Package file does not exist: %r'%(packagePath,)
         props['version'] = version
+        props['mtime'] = os.path.getmtime(packagePath)
         if 'date' not in props:
-            props['date'] = time.strftime('%Y-%M-%d', time.localtime(os.path.getmtime(packagePath)))
+            props['date'] = time.strftime('%Y-%M-%d', time.localtime(props['mtime']))
         if 'hash_md5' not in props:
             print 'Calculating md5 of %s...'%(packagePath),
             hex = hashfile(open(packagePath, 'rb'), hashlib.md5())
@@ -51,18 +54,24 @@ def iterAppVersions(appDir):
 
 def readScreenshots(appDir):
     fullPath = os.path.join(appDir, 'screenshots.json')
-    return json.load(open(fullPath))
+    props = {'screenshots':json.load(open(fullPath))}
+    props['mtime:screenshots.json'] = os.path.getmtime(fullPath)
+    return props
 
 def readAppMetadata(appDir):
     fullPath = os.path.join(appDir, 'app.json')
-    return json.load(open(fullPath))
+    props = json.load(open(fullPath))
+    props['mtime:app.json'] = os.path.getmtime(fullPath)
+    return props
 
 def iterApps():
     for appDir in iterAppDirs():
-        props = {}
+        props = {'appDirPath':appDir,
+                 'appDir':os.path.basename(appDir)}
         props.update(readAppMetadata(appDir))
-        props['screenshots'] = readScreenshots(appDir)
+        props.update(readScreenshots(appDir))
         props['versions'] = [v for v in iterAppVersions(appDir)]
+        props['mtime'] = max(props['mtime:app.json'], props['mtime:screenshots.json'], *[v['mtime'] for v in props['versions']])
         yield props
 
 

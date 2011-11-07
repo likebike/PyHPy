@@ -9,6 +9,9 @@
 /.zshrc
 /logs
 /mako/
+/src/www/apps/
+/src/www/list.html.tmpl
 /tmp/
+/www/bigfiles/
 /www/dev/
 /www/prod/
