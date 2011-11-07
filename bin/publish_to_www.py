@@ -15,7 +15,7 @@ assert len(sys.argv) == 2
 mode = sys.argv[1]  # dev or prod
 assert mode in ['dev', 'prod']
 
-SRC_DIR='/home/nomake/src'
+SRC_DIR='/home/nomake/src/www'
 WWW_DIR='/home/nomake/www/dev'
 DOT_FILES_THAT_ARE_NOT_HIDDEN=['.htaccess']  # Dot files that we actually want
                                              # to copy.
@@ -202,6 +202,11 @@ def symlinkHandler(data):
     if os.path.islink(dstPath):
         if os.readlink(dstPath) == linkto: needToCreate = False
     if needToCreate:
+        dstDir = os.path.dirname(dstPath)
+        if not os.path.isdir(dstDir):
+            print 'Creating Directory:'
+            print '\t%s'%(dstDir,)
+            os.makedirs(dstDir)
         print 'Creating Symlink:'
         print '\t%s  -->  %s'%(dstPath,linkto)
         if os.path.exists(dstPath): os.remove(dstPath)
