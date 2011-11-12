@@ -7,11 +7,11 @@ Welcome to BetterThanCPP; a simple framework for producing static websites.
 
 === Overview ===
 
-Do your work in ~/src.  "*.tmpl" files will be rendered as Mako templates.
-All other types of files will just be copied normally.  ".*" and "_*" files
+Do your work in ~/src/www.  '*.tmpl' files will be rendered as Mako templates.
+All other types of files will just be copied normally.  '.*' and '_*' files
 are considered to be hidden files and are not published...except for
-".htaccess", which IS published.  Those are most of the rules, but to see all
-the rules in detail, read ~/Makefile.py.
+'.htaccess', which IS published.  Those are most of the rules, but to see all
+the rules in detail, read ~/bin/publish_to_www.py.
 
 Publish your work to dev.nomake.org by running 'make' in ~/.  Or, if you're in
 a hurry, you can use 'make fast', which will skip ACL synchronization.
@@ -19,16 +19,70 @@ a hurry, you can use 'make fast', which will skip ACL synchronization.
 When you're happy with the result, publish your work to nomake.org by running
 'make prod' in ~/.
 
-Files that you put in ~/src/cache will be served with very aggressive Expires
-Headers caching, which will cause the items to be *permanently* cached on the
-browser side.  This results in super speeds for the website, but be aware that
-if you need to push new data out, you need to use a new filename because
+Files that you put in ~/src/www/cache will be served with very aggressive
+Expires Headers caching, which will cause the items to be *permanently* cached
+on the browser side.  This results in super speeds for the website, but be aware
+that if you need to push new data out, you need to use a new filename because
 changes to existing files won't be seen by client browsers.
 
 You can use some basic .htaccess directives, like the ones from mod_rewrite
 and mod_headers, and Mime types.  CGI and PHP are *not* enabled.
 
-All of this is actually served by the 'addon' user's "mianfeidawang" webserver
+
+
+=== NoMake.org File Structure ===
+
+Life starts in ~/src/apps.  This is a directory structure of JSON files that
+serves as a database for the build scripts.  Here is an example section of the
+directory:
+
+    apps/
+    apps/aria2c
+    apps/aria2c/app.json
+    apps/aria2c/screenshots.json
+    apps/aria2c/versions
+    apps/aria2c/versions/1.13.0.json
+
+The above listing shows one app entry: aria2c.  There is one apps/APPNAME
+directory for each app.  Under that, there are several items:
+
+    app.json --  Some data about the app, including its name, description,
+                 homepage, etc.
+
+    screenshots.json  --  A list of screenshots and their descriptions.
+
+    versions  --  A directory containing version files.  The version files
+                  contain information such as the package filename, its creation
+                  date, and its checksums.
+
+When you run a 'make' command, the FIRST thing that happens is the
+~/bin/create_app_pages.py script runs and turns all this JSON data into TMPL
+files in the ~/src/www/apps directory.
+
+So, that's where the ~/src/www/apps pages come from.
+
+In additon to that, you manually create TMPL, HTML, CSS, and JS (and whatever
+else) under the ~/src/www/ directory.  (Just don't put any manual data
+under ~/src/apps because that is an auto-generated area.)
+
+The SECOND thing that a 'make' command does is copy (almost) everything from
+~/src/www to ~/www/dev or ~/www/prod.  The file data and metadata (owner,
+permissions, ACL, and sometimes the modification time (depending on file type))
+
+So that's how stuff gets from the ~/src/www area to the ~/www area.
+
+There's one more area that needs some explanation: ~/src/www/d.  This contains
+a bunch of synlinks that all point to ~/www/bigfiles.  A new randomly-named
+symlink is created daily (and the site is regenerated using this new symlink
+in the download URLs), and any symlinks older than a month are deleted.  This
+allows us to have auto-expiring download links so people don't leech off us
+too much.
+
+
+
+=== Server Architecture (of Christopher's WebFaction account) ===
+
+All of this is actually served by the 'addon' user's 'mianfeidawang' webserver
 framework.  Communication works like this:
 
             HTTP             HTTP             Static & .htaccess
@@ -36,21 +90,23 @@ framework.  Communication works like this:
     Browser         Nginx          in 'addon'                     in 'nomake'
                                     account.                        account.
 
-The httpd.conf file that controls everything is located at
-/home/addon/apache/conf/httpd.conf.  This file is generated from
-/home/addon/apache/conf/.src/httpd.conf.tmpl... so if you need to make a
-change, edit the template and regenerate the httpd.conf file by running "make
-publish" in /home/addon/apache/conf/.src.  (You shouldn't need to make any
-changes, though...)
 
 The 'addon' Apache writes its logs to serveral places:
 
-    /home/nomake/logs/access_log   # These two are specific to the nomake.org
-    /home/nomake/logs/error_log    # site.  You'll usually want to look here.
+    /home/nomake/logs/access_log_addon   # These two are specific to the
+    /home/nomake/logs/error_log_addon    # nomake.org site.  You'll usually
+                                         # want to look here.
+
 
     /home/addon/apache/logs/access_log   # These two are useful for diagnosing
     /home/addon/apache/logs/error_log    # 'systematic' issues with the server,
                                          # rather than the site.
+
+
+The httpd.conf file that controls everything is located at
+/home/addon/apache/conf/httpd.conf.  Talk to Christopher if you need a change to
+be made because this file is an important part of the 'mianfeidawang' framework,
+which serves a dozen sites besides nomake.org.
 
 
 
@@ -71,7 +127,7 @@ $2/month 100MB CGI-enabled (!) webhost, and that was that.
 Sounds crazy, right?  Well, it was.  Needless to say, the C Preprocessor just
 can't handle that sort of thing very well.  It wasn't very long before this
 setup became more trouble than it was worth, and Christopher abandoned this
-"static" approach for newfangled "agile" web technologies, such as CherryPy,
+'static' approach for newfangled 'agile' web technologies, such as CherryPy,
 Turbogears, Ruby on Rails, Django, Wordpress, CodeIgniter, and Mongrel2.
 These new dynamic technoliges made Christopher's life much easier, and he made
 dozens and dozens of websites more quickly and easier than ever before.  Life
@@ -82,7 +138,7 @@ websites that he was making required a steady amount of maintenance.  Things
 would break, libraries needed updates, APIs would change, and servers would
 get moved around and reconfigured.  Not to mention the security and bug fixes!
 Christopher was always moving on to new things, so he didn't maintain the old
-websites enough, and after a while all of his "agile" websites broke and went
+websites enough, and after a while all of his 'agile' websites broke and went
 offline.
 
 Meanwhile, that old stupid stockguy.net site is still running... with zero
