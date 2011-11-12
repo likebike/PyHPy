@@ -12,26 +12,35 @@ def mkdir(path):
 
 if __name__ == '__main__':
     maxAppMTime = 0
+    myMTime = mtime(__file__)
+    allApps = []
     for app in nomake_apps.iterApps():
+        allApps.append(app)
         maxAppMTime = max(maxAppMTime, app['mtime'])
         dstPath = os.path.join(nomake_apps.SRC_WWW_DIR, 'apps', '%s.html.tmpl'%(app['appDir'],))
-        if app['mtime'] > mtime(dstPath):
-            print app['name'], 'App Page', dstPath
+        if max(myMTime, app['mtime'])>mtime(dstPath):
+            print 'App Page', app['name'], dstPath
             mkdir(os.path.dirname(dstPath))
-            open(dstPath, 'w').write('test')
+            open(dstPath, 'w').write('''
+<%%inherit file="../_appPage.tmpl"/>
+            '''%dict())
         for ver in app['versions']:
-            dstMTime = 0 # TODO
             dstPath = os.path.join(nomake_apps.SRC_WWW_DIR, 'apps', '%s-%s.html.tmpl'%(app['appDir'],ver['version']))
-            if ver['mtime'] > mtime(dstPath):
-                print app['name'], ver['version'], 'Version Page', dstPath
+            if max(myMTime, ver['mtime'])>mtime(dstPath):
+                print 'Version Page', app['name'], ver['version'], dstPath
                 mkdir(os.path.dirname(dstPath))
-                open(dstPath, 'w').write('test')
+                open(dstPath, 'w').write('''
+<%%inherit file="../_appVersion.tmpl"/>
+                '''%dict())
 
-    dstPath = os.path.join(nomake_apps.SRC_WWW_DIR, 'list.html.tmpl')
-    if maxAppMTime > mtime(dstPath):
-        print 'List Page', dstPath
+    dstPath = os.path.join(nomake_apps.SRC_WWW_DIR, 'apps', 'index.html.tmpl')
+    if max(myMTime, maxAppMTime)>mtime(dstPath):
+        print 'Apps List Page', dstPath
         mkdir(os.path.dirname(dstPath))
-        open(dstPath, 'w').write('test')
+        open(dstPath, 'w').write('''
+<%%inherit file="../_appsIndex.tmpl"/>
+<%%def name='listApps()'><%% return %(allApps)r %%></%%def>
+        '''%dict(allApps=allApps))
 
 
 

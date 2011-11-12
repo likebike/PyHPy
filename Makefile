@@ -11,3 +11,7 @@ fast:
 	python ${HOME}/bin/create_app_pages.py
 	ACL_CHECK=0 python ${HOME}/bin/publish_to_www.py dev
 
+touch:
+	touch ${HOME}/bin/create_app_pages.py
+	touch ${HOME}/src/www/_master_core.tmpl
+

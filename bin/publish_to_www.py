@@ -10,6 +10,7 @@
 # Written by Christopher Sebastian, 2011-11-04
 
 import os, shutil, subprocess, sys
+import mako.template, mako.lookup
 
 assert len(sys.argv) == 2
 mode = sys.argv[1]  # dev or prod
@@ -42,7 +43,7 @@ def getACL(path):
     if retcode != 0: raise ValueError('Error getting ACL: %r'%(path,))
     return curACLs
 def cpACL(srcPath, dstPath):
-    retcode = subprocess.call('getfacl %r | setfacl --set-file=- %r'%(srcPath, dstPath), shell=True)
+    retcode = subprocess.call('getfacl --absolute-names %r | setfacl --set-file=- %r'%(srcPath, dstPath), shell=True)
     if retcode != 0:
         raise ValueError('Error copying ACL: %r  -->  %r'%(srcPath, dstPath))
 def getStats(path, includeSize=True, includeMTime=True):
@@ -79,6 +80,32 @@ def isHiddenFile(filename, fnameBase, fnameExt):
         if filename.startswith(n): return False
     if filename[0] in '_.': return True
     return False
+
+
+
+def walk(path):
+    for dirpath, dirnames, filenames in os.walk(path):
+        symlinks = []
+        for i,filename in reversed(list(enumerate(filenames))):
+            absPath = os.path.join(dirpath, filename)
+            if os.path.islink(absPath):
+                symlinks.append(filename)
+                filenames.pop(i)
+        for i,dirname in reversed(list(enumerate(dirnames))):
+            absPath = os.path.join(dirpath, dirname)
+            if os.path.islink(absPath):
+                symlinks.append(dirname)
+                dirnames.pop(i)
+        yield dirpath, dirnames, filenames, symlinks
+
+
+
+okDstFiles = []
+
+
+def hiddenFileHandler(data):
+    #print 'Skipping hidden file:',data['srcPath']
+    pass
 
 
 def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
@@ -134,28 +161,39 @@ def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
     for d in newDeps:
         if os.path.exists(d): getMakoTemplateDeps(d, allDeps)
     return allDeps
+class ChrisTemplateLookup(object):
+    ''' I used the "French Cafe" method (1) to build a better Mako
+        TemplateLookup.  The default TemplateLookup handles relative paths of
+        includes in a very strange way that is non-intuitive and doesn't scale.
+        This one implements a much simpler one.
 
-def walk(path):
-    for dirpath, dirnames, filenames in os.walk(path):
-        symlinks = []
-        for i,filename in reversed(list(enumerate(filenames))):
-            absPath = os.path.join(dirpath, filename)
-            if os.path.islink(absPath):
-                symlinks.append(filename)
-                filenames.pop(i)
-        for i,dirname in reversed(list(enumerate(dirnames))):
-            absPath = os.path.join(dirpath, dirname)
-            if os.path.islink(absPath):
-                symlinks.append(dirname)
-                dirnames.pop(i)
-        yield dirpath, dirnames, filenames, symlinks
-
-
-
-okDstFiles = []
-def hiddenFileHandler(data):
-    #print 'Skipping hidden file:',data['srcPath']
-    pass
+        (1) http://samba.org/ftp/tridge/misc/french_cafe.txt
+    '''
+    def __init__(self, defaultPath):
+        assert os.path.isabs(defaultPath)
+        self.uriCache = {}
+        self.defaultPath = defaultPath
+    def adjust_uri(self, uri, relativeto):
+        result = os.path.normpath(os.path.join(os.path.dirname(
+                         self.uriCache.get(relativeto, self.defaultPath)), uri))
+        #print 'adjust_uri', uri, relativeto, result
+        return result
+    def get_template(self, uri):
+        path = os.path.normpath(os.path.join(os.path.dirname(self.defaultPath),
+                                                                           uri))
+        template = getMakoTemplate(path, lookup=self)
+        self.uriCache[template.uri] = path
+        #print 'got_tempalte: %r %r'%(template.uri,path)
+        return template
+#   def __getattr__(self, name):
+#       raise ValueError('ChrisTemplateLookup: Tried to getattr: %r'%name)
+#   def __setattr__(self, name, value):
+#       print 'ChrisTemplateLookup: Setting attr: %r %r'%(name,value)
+#       object.__setattr__(self, name, value)
+def getMakoTemplate(path, lookup=None):
+    if not lookup: lookup = ChrisTemplateLookup(path)
+    return mako.template.Template(open(path).read(), lookup=lookup)
+def makoRender(path): return getMakoTemplate(path).render()
 def tmplFileHandler(data):
     lastModTime = data['srcModTime']
     for dep in getMakoTemplateDeps(data['absPath']):
@@ -168,13 +206,17 @@ def tmplFileHandler(data):
     dstModTime = 0
     if os.path.exists(dstPath): dstModTime = os.path.getmtime(dstPath)
     if lastModTime > dstModTime:
+        dstDir = os.path.dirname(dstPath)
+        if not os.path.isdir(dstDir):
+            print 'Creating Directory:'
+            print '\t%s'%(dstDir,)
+            os.makedirs(dstDir)
         print 'Evaluating Mako Template:'
         print '\t%s  -->  %s'%(data['absPath'],dstPath)
-        retcode = subprocess.call(
-                               'cd %r; mako-render %r > %r'%(data['dirpath'], data['absPath'], dstPath),
-                               shell=True)
-        if retcode != 0:
-            raise ValueError('Error with Mako Template: %r'%(data['absPath'],))
+        result = makoRender(data['absPath'])
+        outFile = open(dstPath, 'wb')
+        outFile.write(result)
+        outFile.close()
         cpStats(data['absPath'],dstPath)
     if getStats(data['absPath'], includeSize=False, includeMTime=False) != \
        getStats(dstPath, includeSize=False, includeMTime=False):
@@ -182,6 +224,8 @@ def tmplFileHandler(data):
         print '\t%s  -->  %s'%(data['absPath'],dstPath)
         cpStats(data['absPath'],dstPath)
     okDstFiles.append(dstPath)        
+
+
 def normalFileHandler(data):
     dstPath = os.path.join(WWW_DIR, data['srcPath'])
     dstModTime = 0
@@ -195,6 +239,8 @@ def normalFileHandler(data):
         print '\t%s  -->  %s'%(data['absPath'],dstPath)
         cpStats(data['absPath'], dstPath, touch=False)
     okDstFiles.append(dstPath)
+
+
 def symlinkHandler(data):
     dstPath = os.path.join(WWW_DIR, data['srcPath'])
     linkto = os.readlink(data['absPath'])
