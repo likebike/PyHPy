@@ -1,7 +1,8 @@
-App List:
+<h1>App List:</h1>
+<p>These apps are available for download:</p>
 <ul>
   %for app in self.listApps():
-    <li>app['name']</li>
+    <li><a href="${app['appDir']}.html">${app['name']}</a></li>
   %endfor
 </ul>
 <%inherit file="_master_ui.tmpl"/>

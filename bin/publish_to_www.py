@@ -162,12 +162,12 @@ def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
         if os.path.exists(d): getMakoTemplateDeps(d, allDeps)
     return allDeps
 class ChrisTemplateLookup(object):
-    ''' I used the "French Cafe" method (1) to build a better Mako
+    ''' I used the "French Cafe" method {1} to build a better Mako
         TemplateLookup.  The default TemplateLookup handles relative paths of
         includes in a very strange way that is non-intuitive and doesn't scale.
         This one implements a much simpler one.
 
-        (1) http://samba.org/ftp/tridge/misc/french_cafe.txt
+        {1} http://samba.org/ftp/tridge/misc/french_cafe.txt
     '''
     def __init__(self, defaultPath):
         assert os.path.isabs(defaultPath)

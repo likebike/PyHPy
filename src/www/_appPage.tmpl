@@ -1,2 +1,11 @@
-App Page
+<% app = self.app() %>
+<h1>App Page for ${app['name']}</h1>
+<p>Available Versions:</p>
+<ul>
+  %for ver in self.appVersions():
+    <li><a href="${'%s-%s.html'%(app['appDir'], ver['version'])}">${ver['version']}</li>
+  %endfor
+</ul>
+
+
 <%inherit file="_master_ui.tmpl"/>

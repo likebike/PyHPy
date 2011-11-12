@@ -23,7 +23,9 @@ if __name__ == '__main__':
             mkdir(os.path.dirname(dstPath))
             open(dstPath, 'w').write('''
 <%%inherit file="../_appPage.tmpl"/>
-            '''%dict())
+<%%def name='app()'><%% return %(app)r %%></%%def>
+<%%def name='appVersions()'><%% return %(appVersions)r %%></%%def>
+            '''%dict(app=app, appVersions=app['versions']))
         for ver in app['versions']:
             dstPath = os.path.join(nomake_apps.SRC_WWW_DIR, 'apps', '%s-%s.html.tmpl'%(app['appDir'],ver['version']))
             if max(myMTime, ver['mtime'])>mtime(dstPath):
@@ -31,7 +33,9 @@ if __name__ == '__main__':
                 mkdir(os.path.dirname(dstPath))
                 open(dstPath, 'w').write('''
 <%%inherit file="../_appVersion.tmpl"/>
-                '''%dict())
+<%%def name='app()'><%% return %(app)r %%></%%def>
+<%%def name='version()'><%% return %(ver)r %%></%%def>
+                '''%dict(app=app, ver=ver))
 
     dstPath = os.path.join(nomake_apps.SRC_WWW_DIR, 'apps', 'index.html.tmpl')
     if max(myMTime, maxAppMTime)>mtime(dstPath):
