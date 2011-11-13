@@ -3,7 +3,7 @@
 <p>Available Versions:</p>
 <ul>
   %for ver in self.appVersions():
-    <li><a href="${'%s-%s.html'%(app['appDir'], ver['version'])}">${ver['version']}</li>
+    <li><a href="${'%s-%s.html'%(app['appDir'], ver['version'])}">${ver['version']}</a></li>
   %endfor
 </ul>
 
