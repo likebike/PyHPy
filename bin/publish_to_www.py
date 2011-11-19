@@ -16,12 +16,12 @@ assert len(sys.argv) == 2
 mode = sys.argv[1]  # dev or prod
 assert mode in ['dev', 'prod']
 
-SRC_DIR='/home/nomake/src/www'
-WWW_DIR='/home/nomake/www/dev'
+SRC_DIR=os.path.expanduser('~/src/www')
+WWW_DIR=os.path.expanduser('~/www/dev')
 DOT_FILES_THAT_ARE_NOT_HIDDEN=['.htaccess']  # Dot files that we actually want
                                              # to copy.
 EXTENSIONS_TO_IGNORE=['.swp', '.pyc']
-if mode == 'prod': WWW_DIR='/home/nomake/www/prod'
+if mode == 'prod': WWW_DIR=os.path.expanduser('~/www/prod')
 
 print 'BUILD MODE:',mode
 print 'SRC_DIR =',SRC_DIR

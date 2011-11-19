@@ -1,8 +1,8 @@
 <h1>App List:</h1>
 <p>These apps are available for download:</p>
 <ul>
-  %for app in self.listApps():
-    <li><a href="${app['appDir']}.html">${app['name']}</a></li>
+  %for app in self.APPS():
+    <li><a href="${app['dbFileBase']}.html">${app['name']}</a></li>
   %endfor
 </ul>
 <p>Don't see what you want?  Vote for new packages:</p>
