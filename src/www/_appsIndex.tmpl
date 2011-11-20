@@ -1,30 +1,33 @@
 <h1>App List:</h1>
 <p>These apps are available for download:</p>
-<ul>
+<ul id=appList>
   %for app in self.APPS():
     <li><a href="${app['dbFileBase']}.html">${app['name']}</a></li>
   %endfor
 </ul>
-<p>Don't see what you want?  Vote for new packages:</p>
-<form action="/vote.html" method=get>
-  <ul>
-    <li>git <input type=submit name=git value="+1"></li>
-    <li>axel <input type=submit name=axel value="+1"></li>
-    <li>rsync <input type=submit name=rsync value="+1"></li>
-    <li>gcc <input type=submit name=gcc value="+1"></li>
-    <li>vlc <input type=submit name=vlc value="+1"></li>
-    <li>scipy <input type=submit name=scipy value="+1"></li>
-    <li>mplayer <input type=submit name=mplayer value="+1"></li>
-    <li>putty <input type=submit name=putty value="+1"></li>
-    <li>firefox <input type=submit name=firefox value="+1"></li>
-    <li>samba <input type=submit name=samba value="+1"></li>
-    <li>hugin <input type=submit name=hugin value="+1"></li>
-    <li>xaraxtreme <input type=submit name=xaraxtreme value="+1"></li>
-    <li>blender <input type=submit name=blender value="+1"></li>
-    <li>Sublime2 <input type=submit name=Sublime2 value="+1"></li>
-  </ul>
-</form>
-<form action="/vote.html" method=get>
-  <p>Something Else: <input type=text name=newPackageName><input type=submit value="+1"></p>
-</form>
+<div id=voteSection>
+  <p>Don't see what you want?  Vote for new packages:</p>
+  <form id=voteForm action="/vote.html" method=get>
+    <ul>
+      <li>rsync <input type=submit name=rsync value="+1"></li>
+      <li>gcc <input type=submit name=gcc value="+1"></li>
+      <li>vlc <input type=submit name=vlc value="+1"></li>
+      <li>scipy <input type=submit name=scipy value="+1"></li>
+      <li>mplayer <input type=submit name=mplayer value="+1"></li>
+      <li>putty <input type=submit name=putty value="+1"></li>
+      <li>firefox <input type=submit name=firefox value="+1"></li>
+      <li>samba <input type=submit name=samba value="+1"></li>
+      <li>hugin <input type=submit name=hugin value="+1"></li>
+      <li>xaraxtreme <input type=submit name=xaraxtreme value="+1"></li>
+      <li>blender <input type=submit name=blender value="+1"></li>
+      <li>Sublime2 <input type=submit name=Sublime2 value="+1"></li>
+    </ul>
+  </form>
+  <form id=newVoteForm action="/vote.html" method=get>
+    <p>Something Else: <input type=text name=newPackageName><input type=submit value="+1"></p>
+  </form>
+</div>
 <%inherit file="_master_ui.tmpl"/>
+<%def name='PAGE_CSS()'>
+    <link rel="stylesheet" type="text/css" href="/appList.css">
+</%def>

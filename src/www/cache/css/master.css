@@ -1,0 +1,29 @@
+body {
+    min-width: 700px;
+}
+#masterContainer {
+    padding: 20px;
+}
+#header {
+    position: relative;
+}
+#header #slogan {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+#header #headerTabs {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+}
+#header #headerTabs li {
+    display: inline-block;
+    margin-left: 20px;
+}
+#footer {
+    margin-top: 20px;
+}
+#footer #legalNotice {
+    font-size: 80%;
+}

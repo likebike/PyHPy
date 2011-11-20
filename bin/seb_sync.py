@@ -56,7 +56,7 @@ def cpData(srcPath, dstPath, touch=True):
         print 'Creating Directory:'
         print '\t%s'%(dstDir,)
         os.makedirs(dstDir)
-    shutil.copy2(data['absPath'],dstPath) # Copy data, permissions, modtime.
+    shutil.copy2(srcPath,dstPath) # Copy data, permissions, modtime.
     if touch: os.utime(dstPath, None) # set the modtime to now.
 
 
@@ -67,6 +67,7 @@ def syncNormalFile(srcPath, dstPath):
         print 'Copying Normal File:'
         print '\t%s  -->  %s'%(srcPath,dstPath)
         cpData(srcPath, dstPath)
+        cpStats(srcPath, dstPath, touch=False)
     if getStats(srcPath) != getStats(dstPath):
         print 'Copying Filesystem Metadata:'
         print '\t%s  -->  %s'%(srcPath,dstPath)
