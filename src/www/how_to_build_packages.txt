@@ -1,0 +1,112 @@
+Create a virtual machine with Ubuntu 10.04.
+
+Add a virtual disk and create a full backup of your system's filesystem (Only need to do this once during system setup):
+
+    rsync -av / /mnt/origSys/ --exclude /dev --exclude /mnt --exclude /proc --exclude /sys --exclude /var/log
+
+Use aptitude to install the app.
+
+Use 'rsync' to see the files that have been installed/modified:
+
+    rsync -nav / /mnt/origSys/ --exclude /dev --exclude /mnt --exclude /proc --exclude /sys --exclude /var/log > fs_diff.txt
+
+Edit the fs_diff.txt down to the important lines:
+    1) Get rid of the lines you obviously don't need (like /var/cache/dpkg stuff).
+    2) Get rid of all the directory lines (the lines ending in /).
+    3) Handle symlinks manually... or at least edit the line and take off the '-> ...' stuff.
+    You should be left with something like this:
+
+    usr/bin/aria2c
+    usr/lib/libcares.so.2.0.0
+    usr/share/doc/aria2/README.gz
+    usr/share/doc/aria2/README.html
+    usr/share/doc/aria2/aria2c.1.html
+
+Bundle those files into a chroot (as the normal user, not root).  Use a script like this:
+
+    #!/bin/bash
+    chrootDir="/home/user/aria2_chroot"
+    while read line; do
+        echo "$line"
+        dstDir="$chrootDir/$(dirname "$line")"
+        echo mkdir -p "$dstDir"
+        echo cd "$dstDir"
+        echo cp "/$line" .
+    done < "$chrootDir/fs_diff.txt"
+
+Enter the chroot:
+
+    asdf
+
+List the missing deps:
+
+    ldd
+
+copy them into the chroot:
+
+    cp asdf
+
+Once the app is running, bundle it:
+
+    tar 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ------  Try again:
+# This time, configure apt to install into a chroot.
+
+
+# Install prerequisites:
+apt-get install schroot debootstrap
+
+
+# Create a base system:
+ROOT_DIR=/nomake
+mkdir $ROOT_DIR
+
+# lucid = Ubuntu 10.04
+# See other releases here: https://wiki.ubuntu.com/Releases
+# See the raw mirror directory:  http://mirror.us.leaseweb.net/ubuntu/dists/
+# Find other mirrors here: https://launchpad.net/ubuntu/+archivemirrors
+/usr/sbin/debootstrap --arch i386 lucid $ROOT_DIR  http://mirror.us.leaseweb.net/ubuntu/
+
+
+# Enter the new base system:
+LANG=C chroot $ROOT_DIR /bin/bash
+
+
+# Install the run.sh script into the root:
+apt-get install wget
+cd / 
+wget -O run.sh http://dev.nomake.org/run.sh
+
+# Install the app with apt or aptitude.
+
+# Exit the chroot.
+exit
+
+# As root, tar up the chroot:
+tar czf app_name.tar.gz $ROOT_DIR
+
+
+

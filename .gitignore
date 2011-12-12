@@ -4,6 +4,7 @@
 /.bash_logout
 /.emacs
 /.gitconfig
+/.lesshst
 /.ssh/
 /.viminfo
 /.zshrc
