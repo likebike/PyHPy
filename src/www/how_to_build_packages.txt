@@ -38,9 +38,34 @@ vi /etc/apt/sources.list
 apt-get update
 
 
-# Create a backup of the base system:
+# tar 1.22 has a huge bug that prevents the chroot from being fully functional
+# on older systems, like RHEL 5.5.  Make sure you are using tar.1.23 or later:
+tar --version
+vim /etc/apt/sources.list
+# deb http://us.archive.ubuntu.com/ubuntu/ natty main
+apt-get update
+apt-get upgrade tar
+vim /etc/apt/sources.list
+# Comment the natty line
+apt-get update
+
+
+# Use symlinks to re-use the work we're already doing for the host mounts:
 exit
 ./umount_host.py
+cd "$ROOT_DIR"
+mv dev dev_BAD
+ln -s mnt/host/dev dev
+mv proc proc_BAD
+ln -s mnt/host/proc proc
+mv sys sys_BAD
+ln -s mnt/host/sys sys
+
+
+
+
+# Create a backup of the base system:
+cd "$DEBOOTSTRAP_DIR"
 tar czf ROOT_base.tar.gz "$ROOT_DIR/"
 
 

@@ -22,10 +22,16 @@ if [ "${CHROOT_DIR:-notset}" = "notset" ]; then
 fi
 
 
+if [ ! -f "$MYDIR/README.txt" ]; then
+    wget -q -O "$MYDIR/README.txt" http://nomake.org/README.txt
+fi
+
+
 # Create some mounts to the host system:
-if [ "$(ls /dev | wc -l)" != "$(ls $CHROOT_DIR/dev | wc -l)" ]; then mount -o bind /dev $CHROOT_DIR/dev; fi
-if [ "$(ls /sys | wc -l)" != "$(ls $CHROOT_DIR/sys | wc -l)" ]; then mount -o bind /sys $CHROOT_DIR/sys; fi
-if [ "$(ls /proc | wc -l)" != "$(ls $CHROOT_DIR/proc | wc -l)" ]; then mount -o bind /proc $CHROOT_DIR/proc; fi
+#if [ "$(ls /dev | wc -l)" != "$(ls $CHROOT_DIR/dev | wc -l)" ]; then mount -o bind /dev $CHROOT_DIR/dev; fi
+#if [ "$(ls /dev/pts | wc -l)" != "$(ls $CHROOT_DIR/dev/pts | wc -l)" ]; then mount -o bind /dev/pts $CHROOT_DIR/dev/pts; fi
+#if [ "$(ls /sys | wc -l)" != "$(ls $CHROOT_DIR/sys | wc -l)" ]; then mount -o bind /sys $CHROOT_DIR/sys; fi
+#if [ "$(ls /proc | wc -l)" != "$(ls $CHROOT_DIR/proc | wc -l)" ]; then mount -o bind /proc $CHROOT_DIR/proc; fi
 
 # And a way to access the root filesystem:
 if [ "${MOUNT_HOST:-1}" == "1" ]; then
@@ -49,17 +55,21 @@ set +o errexit  # Don't abort if an error occurs after this point.
 if [ -z "$*" ]; then               # If there are no args...
     chroot $CHROOT_DIR /bin/bash   # Just run a shell.
     result=$?
+    ASK_FOR_UMOUNT=1
 else
     chroot $CHROOT_DIR "$@"        # Otherwise, run the specified command.
     result=$?
+    ASK_FOR_UMOUNT=0
 fi
 
-echo
-read -p 'Unmount the chroot host entries? (y/N) ' answer
-if [ "${answer:-N}" = "y" ]; then
-    CHROOT_DIR="$CHROOT_DIR" MOUNT=0 "$MYDIR/umount_host.py"
+if [ "$ASK_FOR_UMOUNT" = 1 ]; then
+    echo
+    read -p 'Unmount the chroot host entries? (y/N) ' answer
+    if [ "${answer:-N}" = "y" ]; then
+        CHROOT_DIR="$CHROOT_DIR" MOUNT=0 "$MYDIR/umount_host.py"
+    fi
+    echo
 fi
-echo
 
 exit $result
 
