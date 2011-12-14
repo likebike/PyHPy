@@ -60,6 +60,8 @@ mv proc proc_BAD
 ln -s mnt/host/proc proc
 mv sys sys_BAD
 ln -s mnt/host/sys sys
+mv tmp tmp_BAD           # Must link tmp for X apps to work.
+ln -s mnt/host/tmp tmp
 
 
 
