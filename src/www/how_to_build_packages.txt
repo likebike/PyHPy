@@ -17,13 +17,32 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/ga
 ./debootstrap --arch i386 lucid "$ROOT_DIR"
 
 
-# Get the nomake run scripts and enter the chroot:
-wget -O run.sh http://nomake.org/run.sh
-chmod a+x run.sh
-./run.sh
+# Get the nomake start scripts and enter the chroot:
+wget -O start http://nomake.org/code/start
+chmod a+x start
+./start
+./run
+
+
+# Create some basic nomake files:
+mkdir /nomake
+cat > /nomake/boot.sh <<EOF
+#!/bin/bash
+
+echo 'BOOTING CHROOT...'
+EOF
+chmod a+x /nomake/boot.sh
+cat > /nomake/halt.sh <<EOF
+#!/bin/bash
+
+echo 'HALTING CHROOT...'
+EOF
+chmod a+x /nomake/halt.sh
+
 
 
 # Install the official Debian keyring so we don't get security warnings while using apt:
+# Not needed on LUCID:
 apt-get install debian-archive-keyring
 apt-get update
 
@@ -41,69 +60,103 @@ apt-get update
 # tar 1.22 has a huge bug that prevents the chroot from being fully functional
 # on older systems, like RHEL 5.5.  Make sure you are using tar.1.23 or later:
 tar --version
-vim /etc/apt/sources.list
+vi /etc/apt/sources.list
 # deb http://us.archive.ubuntu.com/ubuntu/ natty main
 apt-get update
-apt-get upgrade tar
-vim /etc/apt/sources.list
+apt-get install tar
+vi /etc/apt/sources.list
 # Comment the natty line
 apt-get update
 
 
-# Use symlinks to re-use the work we're already doing for the host mounts:
+# Done building.
 exit
-./umount_host.py
-cd "$ROOT_DIR"
-mv dev dev_BAD
-ln -s mnt/host/dev dev
-mv proc proc_BAD
-ln -s mnt/host/proc proc
-mv sys sys_BAD
-ln -s mnt/host/sys sys
-mv tmp tmp_BAD           # Must link tmp for X apps to work.
-ln -s mnt/host/tmp tmp
-
-
+./stop
 
 
 # Create a backup of the base system:
-cd "$DEBOOTSTRAP_DIR"
-tar czf ROOT_base.tar.gz "$ROOT_DIR/"
+tar cjf ROOT_base-lucid.tar.bz2 ROOT
 
 
-#############  Done with chroot setup.
-
-
-
-
-
-
-
-
-
-
-
-
-
+#############  Done with base filesystem setup.
 
 #######################################################################
 
-#############  Next: application installation.
-./run.sh
-apt-get install man-db
-apt-get install vim
+#############  Next: some more basics:
+./start
+./run
 
 
-# Create user with the 'adduser' command or by manually editing /etc/passwd
-# and /etc/group files.
+adduser user
+
+# Test:
+CHROOT_USER=user ./run
+
+exit
+./stop
 
 
-# Install the app with apt or aptitude.
-apt-get install aptitude
+# Bundle:
+mkdir nomake_base
+mv ROOT nomake_base/
+wget -O nomake_base/start http://nomake.org/code/start
+chmod a+x nomake_base/start
+./nomake_base/start
+./nomake_base/run
+exit
+./stop
 
-# (For advanced GUI apps that the host X11 does not support) Install Xephyr
-apt-get install xserver-xephyr
-DISPLAY=:1 Xephyr :2 -ac -screen 640x480 -br -reset -terminate
+tar cjf nomake_base-lucid.tar.bz2 nomake_base
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -140,6 +193,15 @@ DISPLAY=:1 Xephyr :2 -ac -screen 640x480 -br -reset -terminate
 ##############################  S T O P  #####################################################
 ##############################################################################################
 ##############################################################################################
+
+
+
+### # (For advanced GUI apps that the host X11 does not support) Install Xephyr
+### apt-get install xserver-xephyr
+### DISPLAY=:1 Xephyr :2 -ac -screen 640x480 -br -reset -terminate
+
+
+
 
 ####    #### NO WORKIE!!!
 ####
