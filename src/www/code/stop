@@ -13,7 +13,7 @@ export CHROOT_DIR="${CHROOT_DIR:-$MYDIR/ROOT}"            #
 ###########################################################
 
 
-rm "$CHROOT_DIR/nomake/.RUNNING"
+rm "$CHROOT_DIR/nomake/.RUNNING" 2>/dev/null
 "$MYDIR/run" /nomake/halt.sh
 
 "$MYDIR/umount_host"
