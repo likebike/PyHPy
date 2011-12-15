@@ -1,0 +1,17 @@
+#!/bin/bash
+# Written by Christopher Sebastian, 2011-12-14
+###########################################################
+# set -o errexit   # Abort script if there is an error    #
+# set -o nounset   # Using an un-set variable is an error #
+# set -x           # Trace                                #
+if [ "$(id -u)" != "0" ]; then                            #
+    echo 'You should be root to run this.' 1>&2           #
+    exit 1                                                #
+fi                                                        #
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" #
+export CHROOT_DIR="${CHROOT_DIR:-$MYDIR/ROOT}"            #
+###########################################################
+
+
+"$MYDIR/recursive_mount" umount "$CHROOT_DIR/mnt/host"
+

@@ -1,0 +1,44 @@
+#!/bin/bash
+# Written by Christopher Sebastian, 2011-12-14
+###########################################################
+# set -o errexit   # Abort script if there is an error    #
+# set -o nounset   # Using an un-set variable is an error #
+# set -x           # Trace                                #
+if [ "$(id -u)" != "0" ]; then                            #
+    echo 'You should be root to run this.' 1>&2           #
+    exit 1                                                #
+fi                                                        #
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" #
+export CHROOT_DIR="${CHROOT_DIR:-$MYDIR/ROOT}"            #
+###########################################################
+
+
+# Auto-download other files:
+for x in README.txt run stop recursive_mount mount_host umount_host; do
+    if [ ! -f "$MYDIR/$x" ]; then
+        wget -q -O "$MYDIR/.downloading" "http://nomake.org/code/$x";
+        mv "$MYDIR/.downloading" "$MYDIR/$x"
+        if [ "$x" != "README.txt" ]; then
+            chmod a+x "$MYDIR/$x"
+        fi
+    fi
+done
+
+# Core mounts:
+"$MYDIR/recursive_mount" mount /dev "$CHROOT_DIR/dev"
+"$MYDIR/recursive_mount" mount /proc "$CHROOT_DIR/proc"
+"$MYDIR/recursive_mount" mount /sys "$CHROOT_DIR/sys"
+"$MYDIR/recursive_mount" mount /tmp "$CHROOT_DIR/tmp"
+
+# Host mounts:
+if [ "${MOUNT_HOST:-0}" = 1 ]; then
+    ./mount_host
+fi
+
+if [ ! -d "$CHROOT_DIR/nomake" ]; then
+    mkdir "$CHROOT_DIR/nomake"
+fi
+if [ ! -f "$CHROOT_DIR/nomake/.RUNNING" ]; then
+    "$MYDIR/run" /nomake/boot.sh
+    touch "$CHROOT_DIR/nomake/.RUNNING"
+fi

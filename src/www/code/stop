@@ -1,0 +1,28 @@
+#!/bin/bash
+# Written by Christopher Sebastian, 2011-12-14
+###########################################################
+# set -o errexit   # Abort script if there is an error    #
+# set -o nounset   # Using an un-set variable is an error #
+# set -x           # Trace                                #
+if [ "$(id -u)" != "0" ]; then                            #
+    echo 'You should be root to run this.' 1>&2           #
+    exit 1                                                #
+fi                                                        #
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" #
+export CHROOT_DIR="${CHROOT_DIR:-$MYDIR/ROOT}"            #
+###########################################################
+
+
+rm "$CHROOT_DIR/nomake/.RUNNING"
+"$MYDIR/run" /nomake/halt.sh
+
+"$MYDIR/umount_host"
+
+"$MYDIR/recursive_mount" umount "$CHROOT_DIR/tmp"
+"$MYDIR/recursive_mount" umount "$CHROOT_DIR/sys"
+"$MYDIR/recursive_mount" umount "$CHROOT_DIR/proc"
+"$MYDIR/recursive_mount" umount "$CHROOT_DIR/dev"
+
+# In case the user mounted anything extra:
+"$MYDIR/recursive_mount" umount "$CHROOT_DIR"
+

@@ -1,0 +1,131 @@
+#!/usr/bin/python
+#
+# usage: ./recursive_mount mount SRC_PATH DST_PATH
+# usage: ./recursive_mount umount DST_PATH
+#
+# example: ./recursive_mount mount /dev /path/to/chroot/dev
+# example: ./recursive_mount umount /path/to/chroot/dev
+#
+# Written by Christopher Sebastian, 2011-12-13
+# Completely Re-Written on 2011-12-14.  :)
+
+import subprocess, sys, re, os, shutil
+
+def stripEndingSlash(s):
+    while s.endswith('/'): s = s[:-1]
+    return s
+def sortByPathLength(paths):
+    # You need to mount shorter paths first to support nested mounts.
+    return [y for l,y in sorted([(len(x),x) for x in paths])]
+def bashQuote(s):
+    return "'%s'"%(s.replace("'","\'"),)
+def ableToListDir(path):
+    try:
+        for x in os.listdir(path): return True
+        return True
+    except: return False
+def a_containedin_b(aPath, bPath):
+    if bPath != '':
+        assert bPath[-1]!='/'
+        assert bPath[0] == '/'
+    assert aPath[0] == '/'
+    return aPath==bPath  or  aPath.startswith(bPath+'/')
+
+def listAllMountPoints(uniq=True):
+    mountPoints = []
+    if os.path.exists('/proc/self/mounts'):
+        for line in open('/proc/self/mounts'):
+            # Lines like this: 
+            #     /dev/sda1 /boot ext3 rw,data=ordered 0 0
+            # Line with spaces and slash in dirname:
+            #     /dev /local/nomake/christopher_land/test\040with\040\134\040slash tmpfs rw 0 0
+            device, path, type, options, num1, num2 = line.split(' ')
+
+            # Translate ocal excapes to characters:
+            # test\040with\040\134\040slash  -->  test with \ slash
+            # Through much effort, i managed to find a built-in encoding that handles this for me.
+            # Note that the data is NOT unicode.
+            #mountPoint = path.decode('unicode_escape') # Nope.
+            mountPoint = path.decode('string_escape')
+            mountPoints.append(mountPoint)
+    else:
+        # The 'mount' command does not list the automount entries in some cases.
+        # That's why we attempt to use /proc/mounts directly.
+        popen = subprocess.Popen('mount', stdout=subprocess.PIPE, shell=True)
+        stdout = popen.stdout.read()
+        retcode = popen.wait()
+        if retcode: sys.exit(retcode)
+        for line in stdout.splitlines():
+            mountPoint = os.path.abspath(re.search('.+ on (.+) type .+', line).group(1))
+            mountPoints.append(mountPoint)
+    if uniq: mountPoint = set(mountPoints)
+    return sortByPathLength(mountPoints)
+
+def mount(src_path, dst_path):
+    src_path = stripEndingSlash(os.path.abspath(src_path))
+    dst_path = stripEndingSlash(os.path.abspath(dst_path))
+
+    srcMounts = []
+    dstAlreadyMounted = []
+    for mountPoint in listAllMountPoints():
+        if a_containedin_b(mountPoint, src_path): srcMounts.append(mountPoint)
+        if a_containedin_b(mountPoint, dst_path): dstAlreadyMounted.append(mountPoint)
+
+    if not srcMounts:
+        # The user has asked to copy-mount a directory that is not a mount.
+        # (For example, the /tmp directory is usually like this.)
+        srcMounts.append(src_path)
+
+    def getDstMountPoint(srcMntPoint):
+        assert srcMntPoint[0] == '/'
+        assert srcMntPoint.startswith(src_path)
+        assert dst_path[-1] != '/'
+        return stripEndingSlash( dst_path + srcMntPoint[len(src_path):] )
+
+    todoMountPoints = [x for x in srcMounts if getDstMountPoint(x) not in dstAlreadyMounted]
+    todoMountPoints = [x for x in todoMountPoints if not a_containedin_b(x,dst_path)] # So we don't mount our mounts in our mount-mounts.
+
+    retcode = 0
+    for srcMntPoint in todoMountPoints:
+        dstMountPoint = getDstMountPoint(srcMntPoint)
+        if not os.path.exists(dstMountPoint):
+            print >> sys.stderr, 'Creating: %s'%(dstMountPoint)
+            os.makedirs(dstMountPoint)
+            shutil.copymode(srcMntPoint, dstMountPoint)  # Copy permissions
+        if not os.path.isdir(dstMountPoint): print >> sys.stderr, 'Skipping mount.  Not a directory: %s'%(dstMountPoint,)
+        if not ableToListDir(srcMntPoint): print >> sys.stderr, 'Skipping mount.  Unable to access: %s'%(srcMntPoint,)  # If you mount these, they are un-mountable.
+        else:
+            print >> sys.stderr, 'Mounting: %s'%(dstMountPoint)
+            retcode = subprocess.call('mount --bind %s %s'%(bashQuote(srcMntPoint), bashQuote(dstMountPoint)), shell=True) or retcode
+    return retcode
+
+def umount(dst_path):
+    dst_path = stripEndingSlash(os.path.abspath(dst_path))
+    retcode = 0
+    for mountPoint in reversed(listAllMountPoints(uniq=False)):  # Reversed because we need to unmount the long ones first.
+        #print dst_path,mountPoint 
+        if a_containedin_b(mountPoint, dst_path):
+            print >> sys.stderr, 'Unmounting: %s'%(mountPoint,)
+            retcode = subprocess.call('umount %s'%(bashQuote(mountPoint),), shell=True) or retcode
+    return retcode
+
+def print_usage(outfile, exit=True):
+    print >> outfile, 'usage: ./recursive_mount mount SRC_PATH DST_PATH'
+    print >> outfile, '       ./recursive_mount umount DST_PATH'
+    if exit: sys.exit(1)
+
+if __name__ == '__main__':
+    if os.getuid() != 0:
+        print 'You should be root to run this.'
+        sys.exit(1)
+
+    if len(sys.argv) < 3: print_usage(sys.stdout)
+    command = sys.argv[1]
+    if command == 'mount':
+        if len(sys.argv) != 4: print_usage(sys.stdout)
+        sys.exit(mount(sys.argv[2], sys.argv[3]))
+    elif command == 'umount':
+        if len(sys.argv) != 3: print_usage(sys.stdout)
+        sys.exit(umount(sys.argv[2]))
+    else: print_usage(sys.stdout)
+        
