@@ -71,7 +71,7 @@ def mount(src_path, dst_path):
         if a_containedin_b(mountPoint, src_path): srcMounts.append(mountPoint)
         if a_containedin_b(mountPoint, dst_path): dstAlreadyMounted.append(mountPoint)
 
-    if src_path not in srcMounts:
+    if not srcMounts:
         # The user has asked to copy-mount a directory that is not a mount.
         # (For example, the /tmp directory is usually like this.)
         srcMounts.append(src_path)

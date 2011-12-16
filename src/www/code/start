@@ -5,11 +5,17 @@
 # set -o nounset   # Using an un-set variable is an error #
 # set -x           # Trace                                #
 if [ "$(id -u)" != "0" ]; then                            #
-    echo 'You should be root to run this.' 1>&2           #
-    exit 1                                                #
+    echo 'You should be root to run this.' ; exit 1       #
 fi                                                        #
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" #
-export CHROOT_DIR="${CHROOT_DIR:-$MYDIR/ROOT}"            #
+RUNNING_FILE="${MYDIR}000_RUNNING"                        #
+IS_RUNNING=0                                              #
+if [ -f "$RUNNING_FILE" ]; then IS_RUNNING=1 ; fi         #
+export CHROOT_DIR="$MYDIR/ROOT"                           #
+if [ ! -d "$CHROOT_DIR" ]; then                           #
+    echo "Error: CHROOT_DIR does not exist: $CHROOT_DIR"  #
+    exit 1;                                               #
+fi                                                        #
 ###########################################################
 
 
@@ -24,6 +30,10 @@ for x in README.txt run stop recursive_mount mount_host umount_host; do
     fi
 done
 
+# Make the 'RUNNING' file:
+touch "$RUNNING_FILE"
+chmod 777 "$RUNNING_FILE"  # For colors in LS listings.
+
 # Core mounts:
 "$MYDIR/recursive_mount" mount /dev "$CHROOT_DIR/dev"
 "$MYDIR/recursive_mount" mount /proc "$CHROOT_DIR/proc"
@@ -35,10 +45,10 @@ if [ "${MOUNT_HOST:-0}" = 1 ]; then
     ./mount_host
 fi
 
-if [ ! -d "$CHROOT_DIR/nomake" ]; then
-    mkdir "$CHROOT_DIR/nomake"
-fi
-if [ ! -f "$CHROOT_DIR/nomake/.RUNNING" ]; then
+# Boot script:
+if [ "$IS_RUNNING" = 0 ]; then
     "$MYDIR/run" /nomake/boot.sh
-    touch "$CHROOT_DIR/nomake/.RUNNING"
+else
+    echo 'Already started.'
 fi
+

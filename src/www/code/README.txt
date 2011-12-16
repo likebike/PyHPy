@@ -26,23 +26,30 @@ USAGE:
     2)  It mounts some important core things, like /dev /proc /sys and /tmp.
 
     3)  If the MOUNT_HOST=1 environment variable is set, it mounts a bunch of
-        other things that allow you to have full access to your host system from
-        the chroot.
+        other things in /mnt/host that allow you to have access to your host
+        system from the chroot.  WARNING:  If you do this, it is especially
+        important to remember to 'stop' the chroot before you delete the chroot
+        directory!  Otherwise, you will end up deleting everyting on your host
+        computer as well!
 
     4)  Runs the '/nomake/boot.sh' script in the CHROOT.  This script executes
         *inside* the chroot environment.  The behavior of this script is
         specific to the chroot image.  It might start a web server, mount a
         samba share, or even start a graphical XFCE session.
 
-    5)  It creates a '/nomake/.RUNNING' file in your chroot to indicate that the
-        chroot has already been started.
+    5)  It creates a '*000_RUNNING' file next to the nomake environment
+        directory (not in the chroot -- in the directory one level above this
+        README.txt file).  The purpose of this file is to remind you that the
+        chroot environment is currently running.  This helps to avoid deleting
+        chroots that have active mounts inside of them (and thereby accidentally
+        deleting stuff on your host system).
 
     It is fine to run the 'start' script multiple times.  It does not do
     anything if the work is already done.
 
-    Note that it is *possible* to 'run' stuff without running 'start' first, but
-    you'll be lucky if the commands work because important pieces of the system
-    will be missing or turned off.
+    Note that it is sometimes possible to 'run' stuff without running 'start'
+    first, but this only works for very simple things because important pieces
+    of the system will be missing or turned off.
 
 
     ==============   RUN   ==============
@@ -80,7 +87,7 @@ USAGE:
     The 'stop' script is opposite to the 'start' script.  It turns off all the
     things that 'start' turned on, in the reverse order.
 
-    1)  It removes the '.RUNNING' file.
+    1)  It removes the '*000_RUNNING' file.
 
     2)  It runs the '/nomake/halt.sh' script in the CHROOT.
 
