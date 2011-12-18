@@ -19,16 +19,34 @@ fi                                                        #
 ###########################################################
 
 
+ANY_ERRORS=0
+
 "$MYDIR/run" /nomake/halt.sh
+result=$?
+if [ "$result" != 0 ]; then
+    echo 'Error in halt.sh.'
+    ANY_ERRORS=1
+fi
 
 "$MYDIR/umount_host"
+result=$?; if [ "$result" != 0 ]; then ANY_ERRORS=1; fi
 
 "$MYDIR/recursive_mount" umount "$CHROOT_DIR/tmp"
+result=$?; if [ "$result" != 0 ]; then ANY_ERRORS=1; fi
 "$MYDIR/recursive_mount" umount "$CHROOT_DIR/sys"
+result=$?; if [ "$result" != 0 ]; then ANY_ERRORS=1; fi
 "$MYDIR/recursive_mount" umount "$CHROOT_DIR/proc"
+result=$?; if [ "$result" != 0 ]; then ANY_ERRORS=1; fi
 "$MYDIR/recursive_mount" umount "$CHROOT_DIR/dev"
+result=$?; if [ "$result" != 0 ]; then ANY_ERRORS=1; fi
+
 
 # In case the user mounted anything extra:
 "$MYDIR/recursive_mount" umount "$CHROOT_DIR"
+result=$?; if [ "$result" != 0 ]; then ANY_ERRORS=1; fi
 
-rm "$RUNNING_FILE" 2>/dev/null
+if [ "$ANY_ERRORS" = 0 ]; then
+    rm "$RUNNING_FILE" 2>/dev/null
+fi
+
+exit $ANY_ERRORS
