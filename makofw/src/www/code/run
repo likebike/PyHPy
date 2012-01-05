@@ -1,0 +1,71 @@
+#!/bin/bash
+# Written by Christopher Sebastian, 2011-12-14
+###########################################################
+# set -o errexit   # Abort script if there is an error    #
+# set -o nounset   # Using an un-set variable is an error #
+# set -x           # Trace                                #
+if [ "$(id -u)" != "0" ]; then                            #
+    echo 'You should be root to run this.' ; exit 1       #
+fi                                                        #
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" #
+RUNNING_FILE="${MYDIR}000_RUNNING"                        #
+IS_RUNNING=0                                              #
+if [ -f "$RUNNING_FILE" ]; then IS_RUNNING=1 ; fi         #
+export CHROOT_DIR="$MYDIR/ROOT"                           #
+if [ ! -d "$CHROOT_DIR" ]; then                           #
+    echo "Error: CHROOT_DIR does not exist: $CHROOT_DIR"  #
+    exit 1;                                               #
+fi                                                        #
+###########################################################
+
+
+# Example usage:
+#
+# # Run a shell as root:
+# ./run
+#
+# # Run a shell as 'user':
+# CHROOT_USER=user ./run
+#
+# # You can send in quotes, or just use args is you don't care about spaces:
+# CHROOT_USER=user ./run 'ls ~/ ; whoami ; echo "a   b" ; echo "c" "d"' \; ls /dev
+#
+# # You can use stdin, stdout, and stderr like normal commands:
+# CHROOT_USER=user ./run cat \; whoami < README.txt
+#
+# # Term / curses apps are fine:
+# ./run aptitude
+# CHROOT_USER=user ./run top
+
+
+CHROOT_USER=${CHROOT_USER:-root}
+
+
+# Need to copy some files from the host system:
+cp /etc/resolv.conf $CHROOT_DIR/etc/resolv.conf
+
+
+# The Run Part:
+if [ "x$*" != "x" ]; then   # If there are args, run the specified command.
+    COMMAND="$@"
+    exec chroot "$CHROOT_DIR" su - "$CHROOT_USER" -c "$COMMAND"
+    echo 'Exec did not work!' 1>&2
+    exit 1
+fi
+
+# If we get here, there are no args.  Run a shell instead.
+chroot "$CHROOT_DIR" su - "$CHROOT_USER"
+result=$?
+
+echo
+read -p 'Do you want to stop the chroot mounts and processes? (y/N) ' answer
+answer="${answer:-N}"
+if [ "$answer" = "y"  -o  "$answer" = "Y" ]; then
+    "$MYDIR/stop"
+else
+    echo 'Chroot will keep running.  Remember to stop it when you are done!'
+fi
+echo
+
+exit $result
+

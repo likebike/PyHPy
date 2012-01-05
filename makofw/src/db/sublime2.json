@@ -1,0 +1,12 @@
+{"name":"Sublime Text 2",
+ "description":"Sublime Text 2 is a beautiful cross-platform text editor.  It supports advanced features for programmers, such as code folding, a filesystem and project browser, mini-map support, and multi-select.",
+ "homepage":"http://www.sublimetext.com/2",
+
+ "screenshots":[{"filename":"sublime2_1.png",
+                 "description":"Sublime Text 2's tabs and mini-map features."
+                }
+               ],
+
+ "versions":[{"version":"build 2139", "filename":"sublime2_b2139.tar.gz", "hash_md5":"2caecdd6114b63caffd21583b62c3a5f", "hash_sha1":"802658075d20bc5bad7faa96e3b90d3939674c45"}
+            ]
+}
