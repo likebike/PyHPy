@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-# Make Sucks.
-#
 # This script publishes the src directory to the www directory in an intelligent
 # way.  Copies file data & permissions & ACLs, evaluates Mako templates, ignores
 # hidden files, and notifies the user of files that are in the 'www' area that
