@@ -1,0 +1,30 @@
+div#header {
+    margin-bottom: 3em;
+    position: relative;
+    min-width: 575px;
+}
+a#logo {
+    display: block;
+    padding: 2em;
+    font-size: 162%;
+}
+div#slogan {
+    position: absolute;
+    top: 2em;
+    left: 25em;
+}
+ul#headerTabs {
+    position: absolute;
+    top: 4em;
+    left: 25em;
+    margin: 0;
+}
+ul#headerTabs li {
+    list-style: none;
+    float: left;
+    margin-right: 2em;
+}
+div#footer {
+    margin-top: 3em;
+    text-align: center;
+}

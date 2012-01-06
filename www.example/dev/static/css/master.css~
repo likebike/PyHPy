@@ -1,0 +1,14 @@
+div#header {
+    margin-bottom: 3em;
+    position: relative;
+}
+a#logo {
+    display: block;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    padding-left: 2em;
+}
+div#footer {
+    margin-top: 3em;
+    text-align: center;
+}
