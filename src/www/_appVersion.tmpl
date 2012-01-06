@@ -1,9 +1,0 @@
-<%
-  app = self.APP()
-  ver = self.VERSION()
-%>
-<h1>${app['name']} ${ver['version']}</h1>
-
-<p><a href="/d/7ujm/packages/${ver['filename']}">Download ${ver['filename']}</a> (md5:${ver['hash_md5']},  sha1:${ver['hash_sha1']})</p>
-
-<%inherit file="_master_ui.tmpl"/>

@@ -1,8 +1,0 @@
-# Never cache this stuff.
-<IfModule mod_headers.c>
-    Header unset ETag
-    Header unset Last-Modified
-    Header set Expires "Fri, 04 Nov 2000 21:59:49 GMT"
-    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-    Header set Pragma "no-cache"
-</IfModule>
