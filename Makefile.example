@@ -5,34 +5,32 @@
 MAKOFW_DIR=${HOME}/makofw
 
 # The "source" files:
-SRC_DIR=${HOME}/src/htdocs
-DB_DIR=${HOME}/src/db
+SRC_DIR=${HOME}/src
 
 # The publication locations:
 WWW_DEV=${HOME}/www/dev
 WWW_PROD=${HOME}/www/prod
 
+# The python binary to use:
+PYTHON=python2.7
 
-PYTHONPATH:=${MAKOFW_DIR}/lib/python:${PYTHONPATH}
+
+export PYTHONPATH:=${MAKOFW_DIR}/lib/python:${PYTHONPATH}
 
 
 # By default, publish to the development site:
-dev:
-	python ${MAKOFW_DIR}/bin/create_app_pages.py
-	python ${MAKOFW_DIR}/bin/publish_to_www.py dev
+dev: touch
+	${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${SRC_DIR}" "${WWW_DEV}"
 
 # Publish to the development site without doing as many ACL checks:
 fast:
-	python ${MAKOFW_DIR}/bin/create_app_pages.py
-	ACL_CHECK=0 python ${MAKOFW_DIR}/bin/publish_to_www.py dev
+	ACL_CHECK=0 ${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${SRC_DIR}" "${WWW_DEV}"
 
 # Publish to the production site:
 prod:
-	python ${MAKOFW_DIR}/bin/create_app_pages.py
-	python ${MAKOFW_DIR}/bin/publish_to_www.py prod
+	${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${SRC_DIR}" "${WWW_PROD}"
 
 # Touch some critical files that force the whole site to be rebuilt:
 touch:
-	touch ${MAKOFW_DIR}/bin/create_app_pages.py
-	touch ${SRC_DIR}/_master_core.tmpl
+	touch ${SRC_DIR}/_master.html.tmpl
 

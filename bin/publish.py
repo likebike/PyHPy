@@ -29,6 +29,7 @@ def isHiddenFile(filename, fnameBase, fnameExt):
     for n in DOT_FILES_THAT_ARE_NOT_HIDDEN:
         if filename.startswith(n): return False
     if filename[0] in '_.': return True
+    if filename[-1] in '~': return True
     return False
 
 

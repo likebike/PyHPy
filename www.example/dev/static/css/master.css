@@ -1,30 +1,66 @@
+html {
+    background-color: #ffc073;
+}
+body {
+    width:90%;
+    background-color: #fff;
+    margin-left: 5%;
+    min-width: 660px;
+}
 div#header {
+    margin-top: 3em;
     margin-bottom: 3em;
     position: relative;
-    min-width: 575px;
+    background-color: #ffa940;
+}
+div#header div.vspacer {
+    height: 115px;
 }
 a#logo {
     display: block;
-    padding: 2em;
-    font-size: 162%;
+    position: absolute;
+    top: 50px;
+    left: 30px;
+    color: #333;
+    font-size: 262%;
 }
 div#slogan {
     position: absolute;
-    top: 2em;
-    left: 25em;
+    top: 30px;
+    right: 30px;
+    color: #fff;
+    font-family: serif;
+    font-weight: bold;
+    font-size: 162%;
 }
 ul#headerTabs {
     position: absolute;
-    top: 4em;
-    left: 25em;
+    top: 60px;
+    right: 30px;
     margin: 0;
 }
 ul#headerTabs li {
     list-style: none;
     float: left;
-    margin-right: 2em;
+    margin-left: 1em;
+    font-size: 162%;
+    background-color: #bf7f30;
+    padding: 10px;
+    border: 1px solid #888;
+    border-radius: 10px;
+}
+ul#headerTabs li.selected {
+    background-color: #ff8c00;
+}
+ul#headerTabs li a {
+    color: #ccc;
+}
+ul#headerTabs li.selected a {
+    color: #333;
 }
 div#footer {
     margin-top: 3em;
     text-align: center;
+    background-color: #a65b00;
+    color: #ccc;
 }

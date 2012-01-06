@@ -33,12 +33,13 @@
   </head>
   <body>
     <div id=header>
-      <a id=logo href="${self.URL('/')}">MakoFW Example</a>
+      <a id=logo href="${self.URL('/')}">MakoFW Album</a>
       <div id=slogan>A Simple Example to Get You Started.</div>
       <ul id=headerTabs>
-        <li><a href="${self.URL('/')}">Home</a></li>
-        <li><a href="${self.URL('/photos.html')}">Photos</a></li>
+        <li class=${'selected' if next.uri.endswith('/index.html.tmpl') else 'unselected'}><a href="${self.URL('/')}"}>Home</a></li>
+        <li class=${'selected' if next.uri.endswith('/photos.html.tmpl') else 'unselected'}><a href="${self.URL('/photos.html')}"}>Photos</a></li>
       </ul>
+      <div class=vspacer></div>
       <hr>
     </div>
     ## Render the inheriting template:

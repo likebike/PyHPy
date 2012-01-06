@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, mako.template, mako.lookup
+import sys, os, codecs, mako.template, mako.lookup
 
 
 def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
@@ -31,7 +31,7 @@ def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
     assert os.path.isabs(tmplPath)
     if allDeps==None: allDeps = []
     deps = []
-    for line in open(tmplPath):
+    for line in codecs.open(tmplPath, encoding='utf-8'):
         line = line.strip()
         if not line: continue
         pieces = line.split()
@@ -93,10 +93,10 @@ class ChrisTemplateLookup(object):
 
 def getMakoTemplate(path, lookup=None):
     if not lookup: lookup = ChrisTemplateLookup(path)
-    return mako.template.Template(open(path).read(), lookup=lookup)
+    return mako.template.Template(codecs.open(path, encoding='utf-8').read(), lookup=lookup, input_encoding='utf-8', filename=path)
 
 
-def makoRender(path): return getMakoTemplate(path).render()
+def makoRender(path): return getMakoTemplate(path).render_unicode()
 
 
 

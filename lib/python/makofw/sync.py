@@ -1,4 +1,5 @@
-import os, shutil, subprocess, seb_mako_render
+import os, shutil, subprocess, codecs
+import makofw.mako_render
 
 def walk(path):
     for dirpath, dirnames, filenames in os.walk(path):
@@ -93,7 +94,7 @@ def syncSymlink(srcPath, dstPath):
 
 def syncMakoTemplate(srcPath, dstPath):
     lastModTime = os.path.getmtime(srcPath)
-    for dep in seb_mako_render.getMakoTemplateDeps(srcPath):
+    for dep in makofw.mako_render.getMakoTemplateDeps(srcPath):
         assert os.path.isabs(dep)
         if not os.path.exists(dep):
             print 'Dependency does not exist: %r'%(dep,)
@@ -109,8 +110,8 @@ def syncMakoTemplate(srcPath, dstPath):
             os.makedirs(dstDir)
         print 'Evaluating Mako Template:'
         print '\t%s  -->  %s'%(srcPath,dstPath)
-        result = seb_mako_render.makoRender(srcPath)
-        outFile = open(dstPath, 'wb')
+        result = makofw.mako_render.makoRender(srcPath)
+        outFile = codecs.open(dstPath, 'wb', encoding='utf-8')
         outFile.write(result)
         outFile.close()
         cpStats(srcPath,dstPath)
