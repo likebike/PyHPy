@@ -4,5 +4,14 @@
 
 <p>This is a basic example that shows how to create a small website with the MakoFW static website framework.</p>
 
+<p>I chose to create a photo album because it is simple to understand and simple to implement, and yet useful at the same time.  Note that you shouldn't take this photo album too seriously -- it is primarily meant to be a good MakoFW example.  There are many other photo albums on the market that are much better than this one.  In particular, <a href="http://www.phpalbum.net/">phpAlbum</a> is nice.</p>
+
+<p>This photo album works in all browsers, even if they don't support Javascript.  If Javascript is not supported, the album will still work -- it just won't be as pretty.</p>
+
+<p>Also note that the included photos have been pre-sized, and the thumbnails have been pre-generated.  It would be easy to do all this stuff from the Mako templates themselves with something like PIL or ImageMagik, but I did not do this because I did not want MakeoFW to require extra dependencies.</p>
+
 <h3><a href="${self.URL('/photos.html')}">Click here to see the photos.</a></h3>
 
+<%def name='PAGE_CSS()'>
+  <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/home.css', timestamp='auto')}">
+</%def>

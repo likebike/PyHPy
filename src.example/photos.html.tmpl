@@ -1,2 +1,31 @@
 <%inherit file="_master.html.tmpl" />
+<%! import os %>
+<%
+  photos_fs_dir = os.path.join(os.path.dirname(globals()['_template_filename']), 'static', 'photoalbum')
+  orig_photos = [x[:-5] for x in os.listdir(photos_fs_dir) if x.endswith('.jpeg')  and  '_THUMB' not in x]
+%>
+<script type="text/javascript">
+  var photos = [];
+  %for p in orig_photos:
+    photos.push("${self.URL('/static/photoalbum/%s.jpeg'%(p,), timestamp='auto')}");
+  %endfor
+</script>
 
+<div id=bigPhotoArea>
+  <a id=prev href="#">&lt;&nbsp;Previous</a>
+  <a id=next href="#">Next&nbsp;&gt;</a>
+  <img id=bigPhoto src="">
+</div>
+<ul>
+%for p in orig_photos:
+  <li class=thumbnail><a href="${self.URL('/static/photoalbum/%s.jpeg'%(p,), timestamp='auto')}"><img src="${self.URL('/static/photoalbum/%s_THUMB.jpeg'%(p,), timestamp='auto')}"></a></li>
+%endfor
+</ul>
+<div class=clearFloats></div>
+
+<%def name='PAGE_CSS()'>
+  <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/photos.css', timestamp='auto')}">
+</%def>
+<%def name='PAGE_JS()'>
+  <script type="text/javascript" src="${self.URL('/static/js/photos.js', timestamp='auto')}"></script>
+</%def>

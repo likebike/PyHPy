@@ -3,23 +3,25 @@ html {
 }
 body {
     width:90%;
-    background-color: #fff;
     margin-left: 5%;
-    min-width: 660px;
+    min-width: 500px;
 }
 div#header {
     margin-top: 3em;
-    margin-bottom: 3em;
     position: relative;
     background-color: #ffa940;
+    border-radius: 10px 10px 0 0;
 }
 div#header div.vspacer {
     height: 115px;
 }
+div#header hr {
+    margin-bottom: 0;
+}
 a#logo {
     display: block;
     position: absolute;
-    top: 50px;
+    top: 57px;
     left: 30px;
     color: #333;
     font-size: 262%;
@@ -58,9 +60,17 @@ ul#headerTabs li a {
 ul#headerTabs li.selected a {
     color: #333;
 }
+div#content {
+    background-color: #fff;
+    padding-top: 3em;
+    padding-bottom: 3em;
+}
 div#footer {
-    margin-top: 3em;
     text-align: center;
     background-color: #a65b00;
     color: #ccc;
+    border-radius: 0 0 10px 10px;
+}
+div#footer hr {
+    margin-top: 0;
 }
