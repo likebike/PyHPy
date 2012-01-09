@@ -1,3 +1,10 @@
+a {
+    color: #00e;
+}
+a:visited {
+    color: #00e;
+}
+
 html {
     background-color: #ffc073;
 }
@@ -23,7 +30,7 @@ a#logo {
     position: absolute;
     top: 57px;
     left: 30px;
-    color: #333;
+    color: #03436a;
     font-size: 262%;
 }
 div#slogan {
@@ -58,7 +65,7 @@ ul#headerTabs li a {
     color: #ccc;
 }
 ul#headerTabs li.selected a {
-    color: #333;
+    color: #03436a;
 }
 div#content {
     background-color: #fff;
@@ -68,7 +75,7 @@ div#content {
 div#footer {
     text-align: center;
     background-color: #a65b00;
-    color: #ccc;
+    color: #a6ddfd;
     border-radius: 0 0 10px 10px;
 }
 div#footer hr {

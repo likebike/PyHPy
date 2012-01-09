@@ -1,5 +1,4 @@
 div#bigPhotoArea {
-    display: none;
     position: relative;
 }
 a#prev {
@@ -19,6 +18,7 @@ a#next {
 img#bigPhoto {
     border-radius: 10px;
     margin-left: 3em;
+    height: 500px;
 }
 li.thumbnail {
     float: left;

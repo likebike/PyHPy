@@ -3,29 +3,51 @@
 <%
   photos_fs_dir = os.path.join(os.path.dirname(globals()['_template_filename']), 'static', 'photoalbum')
   orig_photos = [x[:-5] for x in os.listdir(photos_fs_dir) if x.endswith('.jpeg')  and  '_THUMB' not in x]
-%>
-<script type="text/javascript">
-  var photos = [];
-  %for p in orig_photos:
-    photos.push("${self.URL('/static/photoalbum/%s.jpeg'%(p,), timestamp='auto')}");
-  %endfor
-</script>
 
-<div id=bigPhotoArea>
-  <a id=prev href="#">&lt;&nbsp;Previous</a>
-  <a id=next href="#">Next&nbsp;&gt;</a>
-  <img id=bigPhoto src="">
-</div>
+  if self.uri.endswith('/photos.html.tmpl'):
+    # We are rendering *this* template (rather than an inheriting one).
+    # Take this opportunity to generate all the individual photo pages.
+
+
+
+    photo_pages_dir = os.path.join(os.path.dirname(globals()['_template_filename']), 'photos')
+    if not os.path.exists(photo_pages_dir): os.mkdir(photo_pages_dir)
+    for i,photo in enumerate(orig_photos):
+        prev_photo_i = i-1
+        next_photo_i = i+1 if i<len(orig_photos)-1 else 0
+
+        # I split 'inherit' into two pieces so it does not get detected as a dependency of this template:
+        page_tmpl = '''
+<%inh'''+'''erit file="../photos.html.tmpl" />
+<%def name='THIS_PHOTO()'><% return "'''+photo+'''" %></%def>
+<%def name='PREV_PHOTO()'><% return "'''+orig_photos[prev_photo_i]+'''" %></%def>
+<%def name='NEXT_PHOTO()'><% return "'''+orig_photos[next_photo_i]+'''" %></%def>
+        '''
+        photo_page_fs_path = os.path.join(photo_pages_dir, '%s.html.tmpl'%(photo,))
+        if os.path.exists(photo_page_fs_path):
+            if open(photo_page_fs_path).read() == page_tmpl:
+                # No need to overwrite because the data is the same.
+                continue
+        open(photo_page_fs_path, 'w').write(page_tmpl)
+%>
+%if self.THIS_PHOTO():
+  <div id=bigPhotoArea>
+    <a id=prev href="${self.URL('/photos/%s.html'%(self.PREV_PHOTO(),))}">&lt;&nbsp;Previous</a>
+    <a id=next href="${self.URL('/photos/%s.html'%(self.NEXT_PHOTO(),))}">Next&nbsp;&gt;</a>
+    <img id=bigPhoto src="${self.URL('/static/photoalbum/%s.jpeg'%(self.THIS_PHOTO(),))}">
+  </div>
+%endif
+
 <ul>
 %for p in orig_photos:
-  <li class=thumbnail><a href="${self.URL('/static/photoalbum/%s.jpeg'%(p,), timestamp='auto')}"><img src="${self.URL('/static/photoalbum/%s_THUMB.jpeg'%(p,), timestamp='auto')}"></a></li>
+  <li class=thumbnail><a href="${self.URL('/photos/%s.html'%(p,))}"><img src="${self.URL('/static/photoalbum/%s_THUMB.jpeg'%(p,))}"></a></li>
 %endfor
 </ul>
 <div class=clearFloats></div>
 
 <%def name='PAGE_CSS()'>
-  <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/photos.css', timestamp='auto')}">
+  <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/photos.css')}">
 </%def>
-<%def name='PAGE_JS()'>
-  <script type="text/javascript" src="${self.URL('/static/js/photos.js', timestamp='auto')}"></script>
-</%def>
+<%def name='THIS_PHOTO()'><% return None %></%def>
+<%def name='PREV_PHOTO()'><% return None %></%def>
+<%def name='NEXT_PHOTO()'><% return None %></%def>
