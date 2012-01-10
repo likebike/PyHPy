@@ -1,4 +1,4 @@
-import os, shutil, subprocess, codecs
+import os, shutil, subprocess, codecs, sys
 import makofw.mako_render
 
 def walk(path):
@@ -19,6 +19,7 @@ def walk(path):
 
 def getACL(path):
     curACLs = []
+    if sys.platform.startswith('win'): return curACLs  # Not supported on Windows.
     popen = subprocess.Popen('getfacl --absolute-names %r'%(path,),
                              stdout=subprocess.PIPE,
                              shell=True)
@@ -31,6 +32,7 @@ def getACL(path):
     if retcode != 0: raise ValueError('Error getting ACL: %r'%(path,))
     return curACLs
 def cpACL(srcPath, dstPath):
+    if sys.platform.startswith('win'): return  # Not supported on Windows.
     retcode = subprocess.call('getfacl --absolute-names %r | setfacl --set-file=- %r'%(srcPath, dstPath), shell=True)
     if retcode != 0:
         raise ValueError('Error copying ACL: %r  -->  %r'%(srcPath, dstPath))
