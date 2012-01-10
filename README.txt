@@ -20,6 +20,8 @@ these:
     WWW_DEV     --  The directory that your Development site is served from.
     WWW_PROD    --  The directory that your Production site is served from.
     PYTHON      --  The path to your Python executable.
+    PYTHONPATH  --  On Windows, you need to change the ':' to ';'.
+                    Also, you may want to change '/' chars to '\\'.
 
 
 === Overview ===

@@ -36,7 +36,7 @@ def cpACL(srcPath, dstPath):
     retcode = subprocess.call('getfacl --absolute-names %r | setfacl --set-file=- %r'%(srcPath, dstPath), shell=True)
     if retcode != 0:
         raise ValueError('Error copying ACL: %r  -->  %r'%(srcPath, dstPath))
-def getStats(path, includeSize=True, includeMTime=True):
+def getStats(path, includeSize=True, includeMTime=False):
     # Return the important, comparable filesystem stats that can
     # be used to compare file metadata.
     s = os.stat(path)
@@ -62,12 +62,18 @@ def cpData(srcPath, dstPath, touch=True):
     shutil.copy2(srcPath,dstPath) # Copy data, permissions, modtime.
     if touch: os.utime(dstPath, None) # set the modtime to now.
 
+def getmtime(path):
+    # Windows modification time has some funny rounding issues.
+    # This function compensates for them.
+    mtime = os.path.getmtime(path)
+    if sys.platform.startswith('win'): mtime = float(int(mtime*10))/10.0
+    return mtime
 
 def syncNormalFile(srcPath, dstPath):
     dstModTime = 0
-    if os.path.exists(dstPath): dstModTime = os.path.getmtime(dstPath)
-    if os.path.getmtime(srcPath) > dstModTime:
-        print 'Copying Normal File:'
+    if os.path.exists(dstPath): dstModTime = getmtime(dstPath)
+    if getmtime(srcPath) > dstModTime:
+        print 'Copying Normal File:', getmtime(srcPath), dstModTime
         print '\t%s  -->  %s'%(srcPath,dstPath)
         cpData(srcPath, dstPath)
         cpStats(srcPath, dstPath, touch=False)
@@ -95,15 +101,15 @@ def syncSymlink(srcPath, dstPath):
 
 
 def syncMakoTemplate(srcPath, dstPath):
-    lastModTime = os.path.getmtime(srcPath)
+    lastModTime = getmtime(srcPath)
     for dep in makofw.mako_render.getMakoTemplateDeps(srcPath):
         assert os.path.isabs(dep)
         if not os.path.exists(dep):
             print 'Dependency does not exist: %r'%(dep,)
             continue
-        lastModTime = max(lastModTime, os.path.getmtime(dep))
+        lastModTime = max(lastModTime, getmtime(dep))
     dstModTime = 0
-    if os.path.exists(dstPath): dstModTime = os.path.getmtime(dstPath)
+    if os.path.exists(dstPath): dstModTime = getmtime(dstPath)
     if lastModTime > dstModTime:
         dstDir = os.path.dirname(dstPath)
         if not os.path.isdir(dstDir):
@@ -117,8 +123,8 @@ def syncMakoTemplate(srcPath, dstPath):
         outFile.write(result)
         outFile.close()
         cpStats(srcPath,dstPath)
-    if getStats(srcPath, includeSize=False, includeMTime=False) != \
-       getStats(dstPath, includeSize=False, includeMTime=False):
+    if getStats(srcPath, includeSize=False) != \
+       getStats(dstPath, includeSize=False):
         print 'Copying Filesystem Metadata:'
         print '\t%s  -->  %s'%(srcPath,dstPath)
         cpStats(srcPath,dstPath)

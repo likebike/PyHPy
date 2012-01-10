@@ -57,7 +57,7 @@ for dirpath, dirnames, filenames, symlinks in makofw.sync.walk(SRC_DIR):
         absPath = os.path.join(dirpath, filename)
         assert absPath.startswith(SRC_DIR)
         srcPath = absPath[len(SRC_DIR):]
-        assert srcPath[0] == '/'
+        assert srcPath[0] == os.sep
         srcPath = srcPath[1:]
         assert srcPath
         srcModTime = os.path.getmtime(os.path.join(SRC_DIR, srcPath))
