@@ -196,7 +196,6 @@ class _GenerateRenderMethod(object):
                                    (", ".join(self.compiler.future_imports),))
         self.printer.writeline("from mako import runtime, filters, cache")
         self.printer.writeline("UNDEFINED = runtime.UNDEFINED")
-        self.printer.writeline("Undefined = runtime.Undefined")
         self.printer.writeline("__M_dict_builtin = dict")
         self.printer.writeline("__M_locals_builtin = locals")
         self.printer.writeline("_magic_number = %r" % MAGIC_NUMBER)
@@ -502,8 +501,8 @@ class _GenerateRenderMethod(object):
                 if getattr(self.compiler, 'has_ns_imports', False):
                     if self.compiler.strict_undefined:
                         self.printer.writelines(
-                        "%s = _import_ns.get(%r, Undefined(%r))" %
-                        (ident, ident, ident),
+                        "%s = _import_ns.get(%r, UNDEFINED)" %
+                        (ident, ident),
                         "if %s is UNDEFINED:" % ident,
                             "try:",
                                 "%s = context[%r]" % (ident, ident),
@@ -514,8 +513,8 @@ class _GenerateRenderMethod(object):
                         )
                     else:
                         self.printer.writeline(
-                        "%s = _import_ns.get(%r, context.get(%r, Undefined(%r)))" %
-                        (ident, ident, ident, ident))
+                        "%s = _import_ns.get(%r, context.get(%r, UNDEFINED))" %
+                        (ident, ident, ident))
                 else:
                     if self.compiler.strict_undefined:
                         self.printer.writelines(
@@ -528,7 +527,7 @@ class _GenerateRenderMethod(object):
                         )
                     else:
                         self.printer.writeline(
-                            "%s = context.get(%r, Undefined(%r))" % (ident, ident, ident)
+                            "%s = context.get(%r, UNDEFINED)" % (ident, ident)
                         )
 
         self.printer.writeline("__M_writer = context.writer()")

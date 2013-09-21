@@ -1,5 +1,5 @@
 # mako/pyparser.py
-# Copyright (C) 2006-2013 the Mako authors and contributors <see AUTHORS file>
+# Copyright (C) 2006-2011 the Mako authors and contributors <see AUTHORS file>
 #
 # This module is part of Mako and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -10,22 +10,22 @@ Parsing to AST is done via _ast on Python > 2.5, otherwise the compiler
 module is used.
 """
 
-from mako import exceptions, util, compat
-from mako.compat import StringIO
+from StringIO import StringIO
+from mako import exceptions, util
 import operator
 
-if compat.py3k:
-    # words that cannot be assigned to (notably
+if util.py3k:
+    # words that cannot be assigned to (notably 
     # smaller than the total keys in __builtins__)
     reserved = set(['True', 'False', 'None', 'print'])
 
     # the "id" attribute on a function node
     arg_id = operator.attrgetter('arg')
 else:
-    # words that cannot be assigned to (notably
+    # words that cannot be assigned to (notably 
     # smaller than the total keys in __builtins__)
     reserved = set(['True', 'False', 'None'])
-
+ 
     # the "id" attribute on a function node
     arg_id = operator.attrgetter('id')
 
@@ -33,7 +33,7 @@ else:
 try:
     import _ast
     util.restore__ast(_ast)
-    from mako import _ast_util
+    import _ast_util
 except ImportError:
     _ast = None
     from compiler import parse as compiler_parse
@@ -42,20 +42,20 @@ except ImportError:
 
 def parse(code, mode='exec', **exception_kwargs):
     """Parse an expression into AST"""
-
+ 
 
     try:
         if _ast:
             return _ast_util.parse(code, '<unknown>', mode)
         else:
-            if isinstance(code, compat.text_type):
+            if isinstance(code, unicode):
                 code = code.encode('ascii', 'backslashreplace')
             return compiler_parse(code, mode)
-    except Exception:
+    except Exception, e:
         raise exceptions.SyntaxException(
                     "(%s) %s (%r)" % (
-                        compat.exception_as().__class__.__name__,
-                        compat.exception_as(),
+                        e.__class__.__name__, 
+                        e, 
                         code[0:50]
                     ), **exception_kwargs)
 
@@ -66,15 +66,13 @@ if _ast:
         def __init__(self, listener, **exception_kwargs):
             self.in_function = False
             self.in_assign_targets = False
-            self.local_ident_stack = set()
+            self.local_ident_stack = {}
             self.listener = listener
             self.exception_kwargs = exception_kwargs
 
         def _add_declared(self, name):
             if not self.in_function:
                 self.listener.declared_identifiers.add(name)
-            else:
-                self.local_ident_stack.add(name)
 
         def visit_ClassDef(self, node):
             self._add_declared(node.name)
@@ -92,7 +90,7 @@ if _ast:
                 self.visit(n)
             self.in_assign_targets = in_a
 
-        if compat.py3k:
+        if util.py3k:
 
             # ExceptHandler is in Python 2, but this block only works in
             # Python 3 (and is required there)
@@ -112,14 +110,6 @@ if _ast:
             self._add_declared(node.name)
             self._visit_function(node, False)
 
-        def _expand_tuples(self, args):
-            for arg in args:
-                if isinstance(arg, _ast.Tuple):
-                    for n in arg.elts:
-                        yield n
-                else:
-                    yield arg
-
         def _visit_function(self, node, islambda):
 
             # push function state onto stack.  dont log any more
@@ -128,20 +118,23 @@ if _ast:
             # argument names in each function header so they arent
             # counted as "undeclared"
 
+            saved = {}
             inf = self.in_function
             self.in_function = True
-
-            local_ident_stack = self.local_ident_stack
-            self.local_ident_stack = local_ident_stack.union([
-                arg_id(arg) for arg in self._expand_tuples(node.args.args)
-            ])
+            for arg in node.args.args:
+                if arg_id(arg) in self.local_ident_stack:
+                    saved[arg_id(arg)] = True
+                else:
+                    self.local_ident_stack[arg_id(arg)] = True
             if islambda:
                 self.visit(node.body)
             else:
                 for n in node.body:
                     self.visit(n)
             self.in_function = inf
-            self.local_ident_stack = local_ident_stack
+            for arg in node.args.args:
+                if arg_id(arg) not in saved:
+                    del self.local_ident_stack[arg_id(arg)]
 
         def visit_For(self, node):
 
@@ -156,10 +149,8 @@ if _ast:
 
         def visit_Name(self, node):
             if isinstance(node.ctx, _ast.Store):
-                # this is eqiuvalent to visit_AssName in
-                # compiler
                 self._add_declared(node.id)
-            elif node.id not in reserved and node.id \
+            if node.id not in reserved and node.id \
                 not in self.listener.declared_identifiers and node.id \
                 not in self.local_ident_stack:
                 self.listener.undeclared_identifiers.add(node.id)
@@ -237,15 +228,13 @@ else:
 
         def __init__(self, listener, **exception_kwargs):
             self.in_function = False
-            self.local_ident_stack = set()
+            self.local_ident_stack = {}
             self.listener = listener
             self.exception_kwargs = exception_kwargs
 
         def _add_declared(self, name):
             if not self.in_function:
                 self.listener.declared_identifiers.add(name)
-            else:
-                self.local_ident_stack.add(name)
 
         def visitClass(self, node, *args):
             self._add_declared(node.name)
@@ -258,6 +247,7 @@ else:
             # flip around the visiting of Assign so the expression gets
             # evaluated first, in the case of a clause like "x=x+5" (x
             # is undeclared)
+
             self.visit(node.expr, *args)
             for n in node.nodes:
                 self.visit(n, *args)
@@ -269,14 +259,6 @@ else:
             self._add_declared(node.name)
             self._visit_function(node, args)
 
-        def _expand_tuples(self, args):
-            for arg in args:
-                if isinstance(arg, tuple):
-                    for n in arg:
-                        yield n
-                else:
-                    yield arg
-
         def _visit_function(self, node, args):
 
             # push function state onto stack.  dont log any more
@@ -285,18 +267,20 @@ else:
             # argument names in each function header so they arent
             # counted as "undeclared"
 
+            saved = {}
             inf = self.in_function
             self.in_function = True
-
-            local_ident_stack = self.local_ident_stack
-            self.local_ident_stack = local_ident_stack.union([
-                arg for arg in self._expand_tuples(node.argnames)
-            ])
-
+            for arg in node.argnames:
+                if arg in self.local_ident_stack:
+                    saved[arg] = True
+                else:
+                    self.local_ident_stack[arg] = True
             for n in node.getChildNodes():
                 self.visit(n, *args)
             self.in_function = inf
-            self.local_ident_stack = local_ident_stack
+            for arg in node.argnames:
+                if arg not in saved:
+                    del self.local_ident_stack[arg]
 
         def visitFor(self, node, *args):
 
@@ -349,11 +333,9 @@ else:
                 self.listener.codeargs.append(p)
                 self.listener.args.append(ExpressionGenerator(n).value())
                 self.listener.declared_identifiers = \
-                    self.listener.declared_identifiers.union(
-                                                      p.declared_identifiers)
+                    self.listener.declared_identifiers.union(p.declared_identifiers)
                 self.listener.undeclared_identifiers = \
-                    self.listener.undeclared_identifiers.union(
-                                                      p.undeclared_identifiers)
+                    self.listener.undeclared_identifiers.union(p.undeclared_identifiers)
 
         def visit(self, expr):
             visitor.walk(expr, self)  # , walker=walker())
@@ -540,32 +522,11 @@ else:
                     self.visit(a)
             self.buf.write(')')
 
-        def visitLambda(self, node, *args):
-            self.buf.write('lambda ')
-
-            argnames = list(node.argnames)
-
-            kw = arg = None
-            if node.kwargs > 0:
-                kw = argnames.pop(-1)
-            if node.varargs > 0:
-                arg = argnames.pop(-1)
-
-            if arg:
-                argnames.append("*%s" % arg)
-            if kw:
-                argnames.append("**%s" % kw)
-
-            self.buf.write(", ".join(argnames))
-
-            self.buf.write(': ')
-            self.visit(node.code)
-
 
     class walker(visitor.ASTVisitor):
 
         def dispatch(self, node, *args):
-            print('Node:', str(node))
+            print 'Node:', str(node)
 
             # print "dir:", dir(node)
 

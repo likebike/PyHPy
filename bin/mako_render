@@ -1,0 +1,4 @@
+#!/bin/bash
+MY_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+PYTHONPATH="$MY_DIR/../lib/python${PYTHONPATH+:${PYTHONPATH:-}}" exec python "$MY_DIR/../lib/python/makofw/mako_render.py" "$@"
+

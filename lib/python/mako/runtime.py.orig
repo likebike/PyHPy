@@ -222,11 +222,8 @@ class Undefined(object):
     object.
 
     """
-    def __init__(self, name):                        # By Christopher Sebastian
-        self.name = name                             # By Christopher Sebastian
-
     def __str__(self):
-        raise NameError("Undefined: %s"%(self.name,)) # Edited by Christopher Sebastian
+        raise NameError("Undefined")
 
     def __nonzero__(self):
         return self.__bool__()
@@ -234,10 +231,7 @@ class Undefined(object):
     def __bool__(self):
         return False
 
-    def __eq__(self, other):                          # By Christopher Sebastian
-        return self.__class__ == other.__class__      # By Christopher Sebastian
-
-UNDEFINED = Undefined(None)
+UNDEFINED = Undefined()
 
 class LoopStack(object):
     """a stack for LoopContexts that implements the context manager protocol

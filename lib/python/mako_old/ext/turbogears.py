@@ -1,5 +1,5 @@
 # ext/turbogears.py
-# Copyright (C) 2006-2013 the Mako authors and contributors <see AUTHORS file>
+# Copyright (C) 2006-2011 the Mako authors and contributors <see AUTHORS file>
 #
 # This module is part of Mako and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -19,7 +19,7 @@ class TGPlugin(object):
 
         # Pull the options out and initialize the lookup
         lookup_options = {}
-        for k, v in options.items():
+        for k, v in options.iteritems():
             if k.startswith('mako.'):
                 lookup_options[k[5:]] = v
             elif k in ['directories', 'filesystem_checks', 'module_directory']:
@@ -39,14 +39,13 @@ class TGPlugin(object):
             return Template(template_string, **self.tmpl_options)
         # Translate TG dot notation to normal / template path
         if '/' not in templatename:
-            templatename = '/' + templatename.replace('.', '/') + '.' +\
-                    self.extension
+            templatename = '/' + templatename.replace('.', '/') + '.' + self.extension
 
         # Lookup template
         return self.lookup.get_template(templatename)
 
     def render(self, info, format="html", fragment=False, template=None):
-        if isinstance(template, str):
+        if isinstance(template, basestring):
             template = self.load_template(template)
 
         # Load extra vars func if provided
