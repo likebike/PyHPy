@@ -96,13 +96,18 @@ def getMakoTemplate(path, lookup=None):
     return mako.template.Template(codecs.open(path, encoding='utf-8').read(), lookup=lookup, input_encoding='utf-8', filename=path)
 
 
-def makoRender(path): return getMakoTemplate(path).render_unicode()
+def makoRender(path, kwargs): return getMakoTemplate(path).render_unicode(**kwargs)
 
+
+def varsplit(var):
+    if "=" not in var: return (var, "")
+    return var.split("=", 1)
 
 
 if __name__=='__main__':
     tmplPath = sys.argv[1]
+    kwargs = dict([varsplit(var) for var in sys.argv[2:]])
     tmplPath = os.path.abspath(tmplPath)
-    sys.stdout.write(makoRender(tmplPath))
+    sys.stdout.write(makoRender(tmplPath, kwargs))
 
 
