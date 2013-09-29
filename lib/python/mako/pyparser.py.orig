@@ -53,10 +53,10 @@ def parse(code, mode='exec', **exception_kwargs):
             return compiler_parse(code, mode)
     except Exception:
         raise exceptions.SyntaxException(
-                    "(%s) %s :\n%s" % (                ##################  Edited by Christopher Sebastian
+                    "(%s) %s (%r)" % (
                         compat.exception_as().__class__.__name__,
                         compat.exception_as(),
-                        code                           ##################  Edited by Christopher Sebastian
+                        code[0:50]
                     ), **exception_kwargs)
 
 
