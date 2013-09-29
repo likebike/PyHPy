@@ -63,17 +63,18 @@ def cpData(srcPath, dstPath, touch=True):
     if touch: os.utime(dstPath, None) # set the modtime to now.
 
 def getmtime(path):
-    # Windows modification time has some funny rounding issues.
-    # This function compensates for them.
+    # Get a truncated file modification time to compensate for OS weirdness.
     mtime = os.path.getmtime(path)
-    if sys.platform.startswith('win'): mtime = float(int(mtime*10))/10.0
+    factor = 1000.0
+    if sys.platform.startswith('win'): factor = 10.0
+    mtime = float(int(mtime*factor))/factor
     return mtime
 
 def syncNormalFile(srcPath, dstPath):
     dstModTime = 0
     if os.path.exists(dstPath): dstModTime = getmtime(dstPath)
     if getmtime(srcPath) > dstModTime:
-        print 'Copying Normal File:', getmtime(srcPath), dstModTime
+        print 'Copying Normal File: %r > %r'%(getmtime(srcPath), dstModTime)
         print '\t%s  -->  %s'%(srcPath,dstPath)
         cpData(srcPath, dstPath)
         cpStats(srcPath, dstPath, touch=False)
@@ -118,7 +119,7 @@ def syncMakoTemplate(srcPath, dstPath):
             os.makedirs(dstDir)
         print 'Evaluating Mako Template:'
         print '\t%s  -->  %s'%(srcPath,dstPath)
-        result = makofw.mako_render.makoRender(srcPath)
+        result = makofw.mako_render.makoRender(srcPath, {})    #### 2013-09-28 -- I need to double-check the logic for the {} ...
         outFile = codecs.open(dstPath, 'wb', encoding='utf-8')
         outFile.write(result)
         outFile.close()

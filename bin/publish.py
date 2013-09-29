@@ -53,6 +53,9 @@ def makoFileHandler(data):
 
 allItems = []
 for dirpath, dirnames, filenames, symlinks in makofw.sync.walk(SRC_DIR):
+    for dirname in list(dirnames):                # 2013-09-28: I added this logic in a hurry.
+        if isHiddenFile(dirname, dirname, ''):    # Maybe bugs...
+            dirnames.remove(dirname)              #
     for filename in (filenames+symlinks):
         absPath = os.path.join(dirpath, filename)
         assert absPath.startswith(SRC_DIR)

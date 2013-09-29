@@ -2,7 +2,7 @@
 ##
 ## This is the master template.  You probably don't want to use this directly.
 ## Instead, you should probably inherit from it by using
-## <%inherit file="/master.tmpl"/> in another template.  You can then override
+## <%inherit file="./master.tmpl"/> in another template.  You can then override
 ## whatever you want by using '<%def>' sections.
 ##
 ## Here is the Mako website and docs: http://www.makotemplates.org/
@@ -31,7 +31,7 @@
 ##     next.body()  --  Refers to the 'body()' of the "next" template in the inheritance chain.
 ##
 ##
-## HTML 5:
+## Because of this DOCTYPE, our pages use HTML 5 mode:
 <!DOCTYPE html>
 <html lang=en>
   <head>
