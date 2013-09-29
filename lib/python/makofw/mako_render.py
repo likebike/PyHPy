@@ -96,7 +96,13 @@ def getMakoTemplate(path, lookup=None):
     return mako.template.Template(codecs.open(path, encoding='utf-8').read(), lookup=lookup, input_encoding='utf-8', filename=path)
 
 
-def makoRender(path, kwargs): return getMakoTemplate(path).render_unicode(**kwargs)
+def makoRender(path, kwargs):
+    template = getMakoTemplate(path)
+    try: return template.render_unicode(**kwargs)
+    except:
+        print >> sys.stderr, 'Error while executing this generated code:'
+        print >> sys.stderr, '\n'.join(['%03d: %s'%(i+1,l) for i,l in enumerate(template._code.splitlines())])
+        raise
 
 
 def varsplit(var):
