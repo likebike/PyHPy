@@ -30,8 +30,14 @@
 ##     self.body()  --  Refers to the 'body()' of the "end"  template in the inheritance chain.
 ##     next.body()  --  Refers to the 'body()' of the "next" template in the inheritance chain.
 ##
+##     ### Using one template from another ###
+##     <%include file="db.json.tmpl" />
+##     ${context.lookup.get_template('db.json.tmpl').render_unicode().strip()}
 ##
-## Because of this DOCTYPE, our pages use HTML 5 mode:
+##
+##
+##
+## This DOCTYPE specifies that our page is HTML 5:
 <!DOCTYPE html>
 <html lang=en>
   <head>
@@ -39,10 +45,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
     <title>${self.TITLE()}</title>
-    <link rel="stylesheet" type="text/css" href="/static/lib/yui_3.3.0/reset_base_fonts_grids-min.css">
+    <link rel="stylesheet" type="text/css" href="/static/lib/yui-3.12.0/reset_base_fonts-min.css">
     <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/master.css')}">
     ${self.PAGE_CSS()}
-    <script type="text/javascript" src="/static/lib/jquery_1.4.4/jquery.js"></script>
+    <script type="text/javascript" src="/static/lib/jquery-1.10.2/jquery.js"></script>
+    <script type="text/javascript" src="/static/lib/underscore-1.5.2/underscore.js"></script>
     <script type="text/javascript">
       ## Prevent the use of '$' because it is cryptic,
       ## and is easily confused with Mako template stuff.
@@ -50,7 +57,13 @@
       jQuery.noConflict();
     </script>
     %if self.debugPage():
-      <script type="text/javascript" src="/static/lib/firebug/build/firebug-lite.js"></script>
+      <script type="text/javascript" src="/static/lib/firebug-lite-1.3.2/build/firebug-lite.js">
+        // You can use Ctrl+F12 or F12 to activate Firebug-lite.
+        {
+          startOpened:true,         // Make it obvious that we are in debug mode.
+          showIconWhenHidden:false  // Don't screw with the elements on the page.
+        }
+      </script>
     %endif
     <script type="text/javascript" src="${self.URL('/static/js/master.js')}"></script>
     ${self.PAGE_JS()}
