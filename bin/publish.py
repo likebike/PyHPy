@@ -10,18 +10,9 @@
 import os, sys
 import makofw.sync
 
-assert len(sys.argv) == 3
-
-SRC_DIR=sys.argv[1]
-DST_DIR=sys.argv[2]
 DOT_FILES_THAT_ARE_NOT_HIDDEN=['.htaccess']  # Dot files that we actually want
                                              # to copy.
 EXTENSIONS_TO_IGNORE=['.swp', '.pyc']
-
-print 'SRC_DIR =',SRC_DIR
-print 'DST_DIR =',DST_DIR
-print 'ACL_CHECK =',os.environ.get('ACL_CHECK', 1)
-    
 
 def isHiddenFile(filename, fnameBase, fnameExt):
     for ext in EXTENSIONS_TO_IGNORE:
@@ -33,60 +24,84 @@ def isHiddenFile(filename, fnameBase, fnameExt):
     return False
 
 
-okDstFiles = []
-def normalFileHandler(data):
+def normalFileHandler(data, DST_DIR, okDstFiles):
     dstPath = os.path.join(DST_DIR, data['srcPath'])
     makofw.sync.syncNormalFile(data['absPath'], dstPath)
     okDstFiles.append(dstPath)
-def hiddenFileHandler(data):
+def hiddenFileHandler(data, DST_DIR, okDstFiles):
     #print 'Skipping hidden file:',data['srcPath']
     pass
-def symlinkHandler(data):
+def symlinkHandler(data, DST_DIR, okDstFiles):
     dstPath = os.path.join(DST_DIR, data['srcPath'])
     makofw.sync.syncSymlink(data['absPath'], dstPath)
     okDstFiles.append(dstPath)
-def makoFileHandler(data):
+def makoFileHandler(data, DST_DIR, okDstFiles):
     dstPath = os.path.join(DST_DIR, data['fnameBase'])
     makofw.sync.syncMakoTemplate(data['absPath'], dstPath)
     okDstFiles.append(dstPath)        
 
+def walkAndClassify(rootDir):
+    results = {}
+    for dirpath, dirnames, filenames, symlinks in makofw.sync.walk(rootDir):
+        for dirname in list(dirnames):
+            if isHiddenFile(dirname, dirname, ''):
+                dirnames.remove(dirname)
+        for filename in (filenames+symlinks):
+            absPath = os.path.join(dirpath, filename)
+            assert absPath.startswith(rootDir)
+            srcPath = absPath[len(rootDir):]
+            assert srcPath[0] == os.sep
+            srcPath = srcPath[1:]
+            assert srcPath
+            srcModTime = os.path.getmtime(os.path.join(rootDir, srcPath))
+            fnameBase, fnameExt = os.path.splitext(srcPath)
+            data = {'dirpath':dirpath,
+                    'filename':filename,
+                    'absPath':absPath,
+                    'srcPath':srcPath,
+                    'srcModTime':srcModTime,
+                    'fnameBase':fnameBase,
+                    'fnameExt':fnameExt,
+                   }
 
-allItems = []
-for dirpath, dirnames, filenames, symlinks in makofw.sync.walk(SRC_DIR):
-    for dirname in list(dirnames):                # 2013-09-28: I added this logic in a hurry.
-        if isHiddenFile(dirname, dirname, ''):    # Maybe bugs...
-            dirnames.remove(dirname)              #
-    for filename in (filenames+symlinks):
-        absPath = os.path.join(dirpath, filename)
-        assert absPath.startswith(SRC_DIR)
-        srcPath = absPath[len(SRC_DIR):]
-        assert srcPath[0] == os.sep
-        srcPath = srcPath[1:]
-        assert srcPath
-        srcModTime = os.path.getmtime(os.path.join(SRC_DIR, srcPath))
-        fnameBase, fnameExt = os.path.splitext(srcPath)
-        data = {'dirpath':dirpath,
-                'filename':filename,
-                'absPath':absPath,
-                'srcPath':srcPath,
-                'srcModTime':srcModTime,
-                'fnameBase':fnameBase,
-                'fnameExt':fnameExt,
-               }
+            if isHiddenFile(filename, fnameBase, fnameExt):
+                data['handler'] = hiddenFileHandler
+            elif fnameExt.lower() == '.tmpl': data['handler'] = makoFileHandler
+            elif os.path.islink(absPath): data['handler'] = symlinkHandler
+            else: data['handler'] = normalFileHandler
+            results[srcPath] = data
+    return results
+    
+def publish(SRC_DIR, DST_DIR):
+    okDstFiles = []
+    processed, toProcess = {}, walkAndClassify(SRC_DIR)    # A simple way to support auto-generation of files/templates.  (Loop until the filesystem is stable.)
+    while sorted(processed) != sorted(toProcess):
+        okDstFiles = []
+        for srcPath,data in sorted(toProcess.items()): data['handler'](data, DST_DIR, okDstFiles)
+        processed, toProcess = toProcess, walkAndClassify(SRC_DIR)
+    unexpectedDstFiles = []
+    for dirpath, dirnames, filenames, symlinks in makofw.sync.walk(DST_DIR):
+        for filename in (filenames+symlinks):
+            absPath = os.path.join(dirpath, filename)
+            if absPath not in okDstFiles:
+                unexpectedDstFiles.append(absPath)
+    return processed, unexpectedDstFiles
 
-        if isHiddenFile(filename, fnameBase, fnameExt):
-            data['handler'] = hiddenFileHandler
-        elif fnameExt.lower() == '.tmpl': data['handler'] = makoFileHandler
-        elif os.path.islink(absPath): data['handler'] = symlinkHandler
-        else: data['handler'] = normalFileHandler
-        allItems.append(data)
+def main(SRC_DIR, DST_DIR):
+    processed, unexpectedDstFiles = publish(SRC_DIR, DST_DIR)
+    for f in unexpectedDstFiles: print 'Unexpected WWW File:',f
 
-for data in allItems: data['handler'](data)
 
-for dirpath, dirnames, filenames, symlinks in makofw.sync.walk(DST_DIR):
-    for filename in (filenames+symlinks):
-        absPath = os.path.join(dirpath, filename)
-        if absPath not in okDstFiles:
-            print 'Unexpected WWW File:',absPath
+if __name__ == '__main__':
+    assert len(sys.argv) == 3
+    _SRC_DIR=sys.argv[1]
+    _DST_DIR=sys.argv[2]
 
-print 'Done.  :)'
+    print 'SRC_DIR =',_SRC_DIR
+    print 'DST_DIR =',_DST_DIR
+    print 'ACL_CHECK =',os.environ.get('ACL_CHECK', 1)
+        
+    main(_SRC_DIR, _DST_DIR)
+
+    print 'Done.  :)'
+

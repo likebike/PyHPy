@@ -14,6 +14,7 @@ def walk(path):
             if os.path.islink(absPath):
                 symlinks.append(dirname)
                 dirnames.pop(i)
+        dirnames.sort(); filenames.sort(); symlinks.sort();  # So the real references can be returned.
         yield dirpath, dirnames, filenames, symlinks
 
 
