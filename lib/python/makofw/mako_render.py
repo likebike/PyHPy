@@ -91,17 +91,24 @@ class ChrisTemplateLookup(object):
 
 
 
+def getTemplateCode(template): return '\n'.join(['%03d: %s'%(i+1,l) for i,l in enumerate(template._code.splitlines())])
+
+__ALL_TEMPLATES = []
 def getMakoTemplate(path, lookup=None):
     if not lookup: lookup = ChrisTemplateLookup(path)
-    return mako.template.Template(codecs.open(path, encoding='utf-8').read(), lookup=lookup, input_encoding='utf-8', filename=path)
+    template = mako.template.Template(codecs.open(path, encoding='utf-8').read(), lookup=lookup, input_encoding='utf-8', filename=path)
+    __ALL_TEMPLATES.append((path,template))
+    return template
 
 
 def makoRender(path, kwargs):
     template = getMakoTemplate(path)
     try: return template.render_unicode(**kwargs)
     except:
-        print >> sys.stderr, 'Error while executing this generated code:'
-        print >> sys.stderr, '\n'.join(['%03d: %s'%(i+1,l) for i,l in enumerate(template._code.splitlines())])
+        print >> sys.stderr, '\nThere was an error in one of the following templates:'
+        for p,t in __ALL_TEMPLATES:
+            print >> sys.stderr, '\n\n=== Template Code for %s: ==='%(p,)
+            print >> sys.stderr, getTemplateCode(t)
         raise
 
 
