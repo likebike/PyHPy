@@ -89,7 +89,11 @@ def publish(SRC_DIR, DST_DIR):
 
 def main(SRC_DIR, DST_DIR):
     processed, unexpectedDstFiles = publish(SRC_DIR, DST_DIR)
-    for f in unexpectedDstFiles: print 'Unexpected WWW File:',f
+    for f in unexpectedDstFiles:
+        if int(os.environ.get('AUTO_RM', '0')) == 1:
+            print 'Auto-Removing:',f
+            os.unlink(f)
+        else: print 'Unexpected WWW File:',f
 
 
 if __name__ == '__main__':
