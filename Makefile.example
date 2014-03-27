@@ -1,15 +1,16 @@
 # Adjust this Makefile to suit your server and project requirements.
 
+PROJ_ROOT=${HOME}
 
 # The MakoFW location:
-MAKOFW_DIR=${HOME}/makofw
+MAKOFW_DIR=${PROJ_ROOT}/makofw
 
 # The "source" files:
-SRC_DIR=${HOME}/src
+SRC_DIR=${PROJ_ROOT}/src
 
 # The publication locations:
-WWW_DEV=${HOME}/www/dev
-WWW_PROD=${HOME}/www/prod
+WWW_DEV=${PROJ_ROOT}/www/dev
+WWW_PROD=${PROJ_ROOT}/www/prod
 
 # The python binary to use:
 PYTHON=python2.7
