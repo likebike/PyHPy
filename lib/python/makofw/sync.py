@@ -63,12 +63,16 @@ def cpData(srcPath, dstPath, touch=True):
     shutil.copy2(srcPath,dstPath) # Copy data, permissions, modtime.
     if touch: os.utime(dstPath, None) # set the modtime to now.
 
-def getmtime(path):
+def getmtime(path, includeMeta=True, noExistTime=None):
     # Get a truncated file modification time to compensate for OS weirdness.
+    if noExistTime!=None and not os.path.exists(path): return noExistTime
     mtime = os.path.getmtime(path)
     factor = 1000.0
     if sys.platform.startswith('win'): factor = 10.0
     mtime = float(int(mtime*factor))/factor
+    if includeMeta and not path.lower().endswith('.meta'):
+        metaPath = path+'.meta'
+        if os.path.exists(metaPath): mtime = max(mtime, getmtime(metaPath, includeMeta=False))
     return mtime
 
 def syncNormalFile(srcPath, dstPath):

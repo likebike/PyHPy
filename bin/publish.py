@@ -7,12 +7,13 @@
 #
 # Written by Christopher Sebastian, 2011-11-04
 
-import os, sys
+import os, sys, json, codecs
+import makofw
 import makofw.sync
 
 DOT_FILES_THAT_ARE_NOT_HIDDEN=['.htaccess']  # Dot files that we actually want
                                              # to copy.
-EXTENSIONS_TO_IGNORE=['.swp', '.pyc']
+EXTENSIONS_TO_IGNORE=['.swp', '.pyc', '.meta']
 
 def isHiddenFile(filename, fnameBase, fnameExt):
     for ext in EXTENSIONS_TO_IGNORE:
@@ -39,6 +40,28 @@ def makoFileHandler(data, DST_DIR, okDstFiles):
     dstPath = os.path.join(DST_DIR, data['fnameBase'])
     makofw.sync.syncMakoTemplate(data['absPath'], dstPath)
     okDstFiles.append(dstPath)        
+def markdownFileHandler(data, DST_DIR, okDstFiles):
+    tmplPath = os.path.join(data['dirpath'], data['fnameBase'])+'.tmpl'
+    tmplModTime = makofw.sync.getmtime(tmplPath, noExistTime=-1)
+    if data['srcModTime'] > tmplModTime:
+        metaPath = data['absPath']+'.meta'
+        if os.path.exists(metaPath): makofw.sync.cpData(metaPath, tmplPath+'.meta')
+        tmpl = ''
+        meta = makofw.meta(data['absPath'])
+        if meta['inherit']: tmpl += '<%%inherit file="%s"/>\n'%(meta['inherit'],)
+        tmpl += makofw.markdown(codecs.open(data['absPath'], encoding='utf-8').read())
+        outFile = codecs.open(tmplPath, 'wb', encoding='utf-8')
+        outFile.write(tmpl)
+        outFile.close()
+        newData = {'dirpath':data['dirpath'],
+                   'filename':data['fnameBase']+'.tmpl',
+                   'absPath':tmplPath,
+                   'srcPath':tmplPath[len(data['absPath'])-len(data['srcPath']):],
+                   'srcModTime':data['srcModTime'],
+                   'fnameBase':data['fnameBase'],
+                   'fnameExt':'.tmpl',
+        }
+        makoFileHandler(newData, DST_DIR, okDstFiles)
 
 def walkAndClassify(rootDir):
     results = {}
@@ -53,7 +76,7 @@ def walkAndClassify(rootDir):
             assert srcPath[0] == os.sep
             srcPath = srcPath[1:]
             assert srcPath
-            srcModTime = os.path.getmtime(os.path.join(rootDir, srcPath))
+            srcModTime = makofw.sync.getmtime(os.path.join(rootDir, srcPath))
             fnameBase, fnameExt = os.path.splitext(srcPath)
             data = {'dirpath':dirpath,
                     'filename':filename,
@@ -67,6 +90,7 @@ def walkAndClassify(rootDir):
             if isHiddenFile(filename, fnameBase, fnameExt):
                 data['handler'] = hiddenFileHandler
             elif fnameExt.lower() == '.tmpl': data['handler'] = makoFileHandler
+            elif fnameExt.lower() == '.md': data['handler'] = markdownFileHandler
             elif os.path.islink(absPath): data['handler'] = symlinkHandler
             else: data['handler'] = normalFileHandler
             results[srcPath] = data

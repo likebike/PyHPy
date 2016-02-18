@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, codecs, mako.template, mako.lookup
+import sys, os, codecs, mako.template, mako.lookup, json
 
 
 def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
@@ -26,6 +26,11 @@ def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
             ## DEP: /path/to/dep/file1.py
             ## DEP: ../_file2.tmpl
 
+        2016-02-18: Added ability to use '.meta' JSON 'extra_deps' entry:
+
+            page.html.tmpl         ...checks:
+            page.html.tmpl.meta -- { "extra_deps" : ["/a/b/c.xyz", "../e/f.ghi"] }
+
         Dependencies are recursively searched for dependencies too.
     '''
     assert os.path.isabs(tmplPath)
@@ -47,6 +52,11 @@ def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
             if not os.path.isabs(path):
                 path = os.path.join(os.path.dirname(tmplPath), path)
             deps.append(path)
+    metaPath = tmplPath+'.meta'
+    if os.path.exists(metaPath):
+        metaDeps = json.load(open(metaPath)).get('extra_deps', [])
+        if isinstance(metaDeps, basestring): raise ValueError("META 'extra_deps' needs to be a list, not a string!")
+        deps.extend(metaDeps)
     newDeps = []
     for d in deps:
         if d not in allDeps:
@@ -96,19 +106,28 @@ def getTemplateCode(template): return '\n'.join(['%03d: %s'%(i+1,l) for i,l in e
 __ALL_TEMPLATES = []
 def getMakoTemplate(path, lookup=None):
     if not lookup: lookup = ChrisTemplateLookup(path)
-    template = mako.template.Template(codecs.open(path, encoding='utf-8').read(), lookup=lookup, input_encoding='utf-8', filename=path)
+    template = None
+    try: template = mako.template.Template(codecs.open(path, encoding='utf-8').read(), lookup=lookup, input_encoding='utf-8', filename=path)
+    except:
+        class FakeTmpl: _code = '!!! Mako Parse Error !!!'
+        __ALL_TEMPLATES.append((path, FakeTmpl()))
+        raise
     __ALL_TEMPLATES.append((path,template))
     return template
 
 
 def makoRender(path, kwargs):
-    template = getMakoTemplate(path)
-    try: return template.render_unicode(**kwargs)
+    try:
+        template = getMakoTemplate(path)
+        return template.render_unicode(**kwargs)
     except:
         print >> sys.stderr, '\nThere was an error in one of the following templates:'
         for p,t in __ALL_TEMPLATES:
             print >> sys.stderr, '\n\n=== Template Code for %s: ==='%(p,)
             print >> sys.stderr, getTemplateCode(t)
+        print >> sys.stderr
+        print >> sys.stderr, sys.exc_info()[1].message
+        print >> sys.stderr
         raise
 
 

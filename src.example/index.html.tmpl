@@ -1,4 +1,4 @@
-<%inherit file="_master.html.tmpl" />
+<%inherit file="_master.tmpl" />
 
 <h1>Welcome to my MakoFW-Powered Photo Album!</h1>
 
@@ -12,6 +12,6 @@
 
 <h3><a href="${self.URL('/photos.html')}">Click here to see the photos.</a></h3>
 
-<%def name='PAGE_CSS()'>
+<%block name='PAGE_CSS'>
   <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/home.css')}">
-</%def>
+</%block>
