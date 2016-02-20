@@ -1,0 +1,21 @@
+<%inherit file="photos.html.tmpl" />
+<%! import os, makofw %>
+<div id=bigPhotoArea>
+  <a id=prev href="${self.URL('/photos/%s.html'%(self.PREV_PHOTO(),), timestamp=None)}"><i class="fa fa-arrow-left"></i>&nbsp;Previous</a>
+  <a id=next href="${self.URL('/photos/%s.html'%(self.NEXT_PHOTO(),), timestamp=None)}">Next&nbsp;<i class="fa fa-arrow-right"></i></a>
+  <%
+    photoPath = os.path.join(self.photosDir(), self.THIS_PHOTO()) + '.jpeg'  # We chopped off the extension in THIS_PHOTO(), so we need to add it back on.
+    meta = makofw.meta(photoPath)
+  %>
+  <div id=textStuff>
+    <p class=description>${meta['description']}</p>
+    <p class=location>${meta['location']}</p>
+  </div>
+  <img id=bigPhoto src="${self.URL('/static/photoalbum/%s.jpeg'%(self.THIS_PHOTO(),))}">
+</div>
+
+## These get overridden by inheriting templates:
+<%def name='THIS_PHOTO()'><% return None %></%def>
+<%def name='PREV_PHOTO()'><% return None %></%def>
+<%def name='NEXT_PHOTO()'><% return None %></%def>
+

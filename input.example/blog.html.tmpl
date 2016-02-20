@@ -1,0 +1,27 @@
+<%inherit file="_master.tmpl" />
+<%! import os, makofw, mako %>
+<% posts = reversed(sorted([self.postInfo(x) for x in os.listdir(os.path.join(self.ROOT_DIR(), 'blog')) if x.endswith('.html.md')])) %>
+
+%if self.URL()=='/blog.html.tmpl':
+<%block filter="makofw.markdown">
+HI from markdown
+</%block>
+%else:
+${next.body()}
+%endif
+
+<ul class=postList>
+%for date,mdFilename,meta,title in posts:
+    <li class=postPreview><a href="${self.URL('/blog/%s'%(mdFilename[:-3],), timestamp=None)}">${title}</a></li>
+%endfor
+</ul>
+
+<%block name='PAGE_CSS'>
+  <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/blog.css')}">
+</%block>
+<%def name="postInfo(mdFilename)"><%
+     assert mdFilename.endswith('.html.md')
+     meta = makofw.meta(os.path.join(self.ROOT_DIR(), 'blog', mdFilename))
+     title = mdFilename[:-8].replace('_', ' ')
+     return meta['date'], mdFilename, meta, title
+%></%def>

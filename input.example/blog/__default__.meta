@@ -1,0 +1,4 @@
+{
+  "inherit":"../_blogPost.tmpl",
+  "author" : "Christopher Sebastian"
+}

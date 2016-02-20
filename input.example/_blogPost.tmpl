@@ -1,0 +1,9 @@
+<%inherit file="blog.html.tmpl" />
+<%! import makofw %>
+<% 
+  assert self.uri.endswith('.html.tmpl')
+  date,mdFilename,meta,title = self.postInfo(self.uri[len(self.ROOT_DIR()+'/blog/'):-5]+'.md')
+%>
+<h1 class=postTitle>${title}</h1>
+<p class=postMeta>By: <span class=postAuthor>${meta['author']}</span>, <span class=postDate>${meta['date']}</span></p>
+${next.body()}
