@@ -1,5 +1,5 @@
 import os, shutil, subprocess, codecs, sys
-import makofw.mako_render
+import makofw, makofw.mako_render
 
 def walk(path):
     for dirpath, dirnames, filenames in os.walk(path):
@@ -63,23 +63,12 @@ def cpData(srcPath, dstPath, touch=True):
     shutil.copy2(srcPath,dstPath) # Copy data, permissions, modtime.
     if touch: os.utime(dstPath, None) # set the modtime to now.
 
-def getmtime(path, includeMeta=True, noExistTime=None):
-    # Get a truncated file modification time to compensate for OS weirdness.
-    if noExistTime!=None and not os.path.exists(path): return noExistTime
-    mtime = os.path.getmtime(path)
-    factor = 1000.0
-    if sys.platform.startswith('win'): factor = 10.0
-    mtime = float(int(mtime*factor))/factor
-    if includeMeta and not path.lower().endswith('.meta'):
-        metaPath = path+'.meta'
-        if os.path.exists(metaPath): mtime = max(mtime, getmtime(metaPath, includeMeta=False))
-    return mtime
-
 def syncNormalFile(srcPath, dstPath):
     dstModTime = 0
-    if os.path.exists(dstPath): dstModTime = getmtime(dstPath)
-    if getmtime(srcPath) > dstModTime:
-        print 'Copying Normal File: %r > %r'%(getmtime(srcPath), dstModTime)
+    if os.path.exists(dstPath): dstModTime = makofw.getmtime(dstPath, includeMeta=False)
+    srcModTime = makofw.getmtime(srcPath, includeMeta=False)
+    if srcModTime > dstModTime:
+        print 'Copying Normal File: %r > %r'%(srcModTime, dstModTime)
         print '\t%s  -->  %s'%(srcPath,dstPath)
         cpData(srcPath, dstPath)
         cpStats(srcPath, dstPath, touch=False)
@@ -107,15 +96,15 @@ def syncSymlink(srcPath, dstPath):
 
 
 def syncMakoTemplate(srcPath, dstPath):
-    lastModTime = getmtime(srcPath)
+    lastModTime = makofw.getmtime(srcPath)
     for dep in makofw.mako_render.getMakoTemplateDeps(srcPath):
         assert os.path.isabs(dep)
         if not os.path.exists(dep):
-            print 'Dependency does not exist: %r'%(dep,)
+            print 'Dependency of %r does not exist: %r'%(srcPath, dep,)
             continue
-        lastModTime = max(lastModTime, getmtime(dep))
+        lastModTime = max(lastModTime, makofw.getmtime(dep))
     dstModTime = 0
-    if os.path.exists(dstPath): dstModTime = getmtime(dstPath)
+    if os.path.exists(dstPath): dstModTime = makofw.getmtime(dstPath)
     if lastModTime > dstModTime:
         dstDir = os.path.dirname(dstPath)
         if not os.path.isdir(dstDir):

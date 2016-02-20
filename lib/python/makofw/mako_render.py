@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys, os, codecs, mako.template, mako.lookup, json
+import makofw
 
 
 def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
@@ -36,27 +37,30 @@ def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
     assert os.path.isabs(tmplPath)
     if allDeps==None: allDeps = []
     deps = []
-    for line in codecs.open(tmplPath, encoding='utf-8'):
-        line = line.strip()
-        if not line: continue
-        pieces = line.split()
-        if len(pieces)>2  and  pieces[0]=='##'  and  pieces[1]=='DEP:':
-            path = line[line.index(pieces[2]):]
-            if not os.path.isabs(path):
-                path = os.path.join(os.path.dirname(tmplPath), path)
-            deps.append(path)
-        elif line.startswith('<%inherit')  or  line.startswith('<%namespace'):
-            fileI = line.index('file=')
-            quoteChar = line[fileI+5]
-            path = line[fileI+6:line.index(quoteChar, fileI+6)]
-            if not os.path.isabs(path):
-                path = os.path.join(os.path.dirname(tmplPath), path)
-            deps.append(path)
-    metaPath = tmplPath+'.meta'
-    if os.path.exists(metaPath):
-        metaDeps = json.load(open(metaPath)).get('extra_deps', [])
-        if isinstance(metaDeps, basestring): raise ValueError("META 'extra_deps' needs to be a list, not a string!")
-        deps.extend(metaDeps)
+    lineGen = None
+    try:
+        for line in codecs.open(tmplPath, encoding='utf-8'):
+            line = line.strip()
+            if not line: continue
+            pieces = line.split()
+            if len(pieces)>2  and  pieces[0]=='##'  and  pieces[1]=='DEP:':
+                path = line[line.index(pieces[2]):]
+                if not os.path.isabs(path):
+                    path = os.path.join(os.path.dirname(tmplPath), path)
+                deps.append(path)
+            elif line.startswith('<%inherit')  or  line.startswith('<%namespace'):
+                fileI = line.index('file=')
+                quoteChar = line[fileI+5]
+                path = line[fileI+6:line.index(quoteChar, fileI+6)]
+                if not os.path.isabs(path):
+                    path = os.path.join(os.path.dirname(tmplPath), path)
+                deps.append(path)
+    except UnicodeDecodeError:
+        # This often happens when trying to open a binary file, such as a JPEG (which gets included as a dependency as some other template).
+        pass
+    metaDeps = makofw.meta(tmplPath).get('extra_deps', [])
+    if isinstance(metaDeps, basestring): raise ValueError("META 'extra_deps' needs to be a list, not a string!")
+    deps.extend(metaDeps)
     newDeps = []
     for d in deps:
         if d not in allDeps:

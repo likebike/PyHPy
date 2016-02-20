@@ -5,12 +5,13 @@ PROJ_ROOT=${HOME}/mysite
 # The MakoFW location:
 MAKOFW_DIR=${PROJ_ROOT}/makofw
 
-# The "source" files:
-SRC_DIR=${PROJ_ROOT}/src
+# The 'input' and 'build' directories:
+IN_DIR=${PROJ_ROOT}/input
+BUILD_DIR=${PROJ_ROOT}/build
 
 # The publication locations:
-WWW_DEV=${PROJ_ROOT}/www/dev
-WWW_PROD=${PROJ_ROOT}/www/prod
+OUT_DEV=${PROJ_ROOT}/output/dev
+OUT_PROD=${PROJ_ROOT}/output/prod
 
 # The python binary to use:
 PYTHON=python2.7
@@ -18,19 +19,31 @@ export PYTHONPATH:=${MAKOFW_DIR}/lib/python:${PYTHONPATH}
 
 
 # By default, publish to the development site:
-dev:
-	${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${SRC_DIR}" "${WWW_DEV}"
+dev: inputToBuild
+	MAKOFW_BUILD_MODE=dev ${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${BUILD_DIR}" "${OUT_DEV}"
 
 # Publish to the development site without doing as many ACL checks:
-fast:
-	ACL_CHECK=0 ${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${SRC_DIR}" "${WWW_DEV}"
+fast: inputToBuild
+	MAKOFW_BUILD_MODE=dev ACL_CHECK=0 ${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${BUILD_DIR}" "${OUT_DEV}"
 
 # Publish to the production site:
-prod:
-	${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${SRC_DIR}" "${WWW_PROD}"
+prod: inputToBuild
+	MAKOFW_BUILD_MODE=prod ${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${BUILD_DIR}" "${OUT_PROD}"
 
 # Touch some critical files that force the whole site to be rebuilt:
 touch:
-	touch ${SRC_DIR}/_master.tmpl
+	touch ${IN_DIR}/_master.tmpl
+
+# Useful for local development:
+devserver:
+	cd "${OUT_DEV}"; ${PYTHON} -m SimpleHTTPServer
+
+# Copy 'input' to 'build':
+inputToBuild:
+	rsync -va ${IN_DIR}/ ${BUILD_DIR}
+
+# Remove the 'build' area:
+clean: touch
+	rm -rf ${BUILD_DIR}
 
 
