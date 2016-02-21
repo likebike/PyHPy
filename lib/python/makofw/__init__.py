@@ -1,4 +1,4 @@
-import os, json, codecs, sys
+import os, json, codecs, sys, subprocess
 import markdown as _markdown  # Use a different name for the module.
 
 # A MarkDown Mako Filter.  Use like this:
@@ -13,6 +13,7 @@ def markdown(string, output_format='html5'):
     out = '<div class=markdownWrapper>\n'
     out += _markdown.markdown(string, output_format=output_format)
     out += '\n</div>\n'
+    out = out.replace('  ', '&nbsp; ')  # Make double-spaces visible in the web browser.
     return out
 
 
@@ -68,5 +69,24 @@ def getmtime(path, includeMeta=True, noExistTime=None):
         mtime = max(mtime, getmtime(os.path.join(os.path.dirname(path), '__default__.meta'), includeMeta=False, noExistTime=mtime))
         mtime = max(mtime, getmtime(path+'.meta', includeMeta=False, noExistTime=mtime))
     return mtime
+
+
+def thumb(fsRoot, relImgPath, relThumbPath=None, width=None, height=None):
+    ''' Uses ImageMagick CLI to create a thumbnail. '''
+    if width==None and height==None: height = 100
+    if width==None and height!=None: width = height*1.618
+    if width!=None and height==None: height = width/1.618
+    width, height = int(round(width)), int(round(height))
+    if relThumbPath==None:
+        base, ext = os.path.splitext(relImgPath)
+        relThumbPath = base+'_THUMB_%dx%d'%(width,height)+ext
+    assert fsRoot[0] == '/'  and  fsRoot[-1] != '/'
+    assert relImgPath[0] == '/'  and  relImgPath[-1] != '/'
+    assert relThumbPath[0] == '/'  and  relThumbPath[-1] != '/'
+    absImgPath, absThumbPath = fsRoot+relImgPath, fsRoot+relThumbPath
+    imgMtime, thumbMtime = getmtime(absImgPath, includeMeta=False), getmtime(absThumbPath, includeMeta=False, noExistTime=0)
+    if thumbMtime < imgMtime:
+        subprocess.check_call(['convert', absImgPath, '-thumbnail', '%dx%d^'%(width, height), '-gravity', 'center', '-extent', '%dx%d'%(width, height), absThumbPath])
+    return relThumbPath
 
 

@@ -1,0 +1,47 @@
+ul.posts {
+    margin: 0;
+}
+ul.posts li.post {
+    position: relative;
+    list-style: none;
+}
+ul.posts li.post-useSep {
+    border-top: 1px solid #888;
+    padding-top: 15px;
+    margin-top: 15px;
+}
+img.roundBorder {
+    border: 1px solid #888;
+    border-radius: 10px;
+}
+li.post img.postImg {
+    float:left;
+    margin-right: 1em;
+}
+li.post div.postTitle {
+    color: #000;
+    font-size: 162%;
+    font-weight: bold;
+}
+li.post div.postSummary {
+    color: #444;
+    margin-top: 0.5em;
+}
+li.post div.postMeta {
+    color: #888;
+    font-size: 85%;
+    margin-top: 1em;
+}
+
+h1.postTitle {
+    font-size: 262%;
+    margin: 0;
+    margin-bottom: 0.5em;
+}
+img.postMainImg {
+    margin: 2em 0;
+}
+
+hr.afterPost {
+    margin-top: 3em;
+}

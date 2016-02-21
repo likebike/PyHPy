@@ -46,6 +46,7 @@
 ##     <%block filter="makofw.markdown">...</%block>     --  Embed MarkDown
 ##
 ##
+<%inherit file="__init__.tmpl" />\
 ##
 ## This DOCTYPE specifies that our page is HTML 5:
 <!DOCTYPE html>
@@ -87,7 +88,7 @@
   </head>
   <body>
     <div id=header>
-      <a id=logo href="${self.URL('/index.html', timestamp=None)}">MakoFW Demo</a>
+      <a id=logo href="${self.URL('/index.html', timestamp=None)}"><i class="fa fa-skyatlas"></i> MakoFW</a>
       <div id=slogan>A Simple Example to Get You Started.</div>
       <ul id=headerTabs>
         <li class=${'selected' if self.URL() == '/index.html.tmpl' else 'unselected'}><a href="${self.URL('/index.html', timestamp=None)}"} class="fa fa-home"> Home</a></li>
@@ -103,7 +104,7 @@
     </div>
     <div id=footer>
       <hr>
-      ©2012 Baipu 使用百度前必读 京ICP证030173号
+      ©2016 你好世界
     </div>
   </body>
 </html>
@@ -112,19 +113,6 @@
 ## These are Mako '<%def>' sections.  They override values in the resulting templates.
 ## You can override these <%def>'s in templates that inherit from this one.
 <%def name='debugPage()'><% return False %></%def>
-<%def name="ROOT_DIR()"><% return os.path.dirname(globals()['_template_filename']) %></%def>
-<%def name="URL(path=None, timestamp='auto')"><%
-    urlRoot = ''                             ### <--------- Customize urlRoot (e.g. mount-point) to match your webserver settings.
-    buildDir = self.ROOT_DIR()
-    if path==None:
-        # Make it easy to figure out which page is being rendered.
-        # Just produce the URL to the template that is being rendered, WITHOUT THE URL-ROOT.
-        # If you really need a web-usable URL, you can URL(URL()).
-        assert self.uri.startswith(buildDir)
-        return self.uri[len(buildDir):]
-    return makofw.url(path, urlRoot=urlRoot, fsRoot=buildDir, timestamp=timestamp)
-%></%def>
-
 <%!  import os, makofw %>
 
 ## FOR FUTURE REFERENCE:

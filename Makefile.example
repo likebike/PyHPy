@@ -32,7 +32,7 @@ prod: inputToBuild
 
 # Touch some critical files that force the whole site to be rebuilt:
 touch:
-	touch ${IN_DIR}/_master.tmpl
+	touch ${IN_DIR}/__init__.tmpl
 
 # Useful for local development:
 devserver:
@@ -41,6 +41,14 @@ devserver:
 # Copy 'input' to 'build':
 inputToBuild:
 	rsync -va ${IN_DIR}/ ${BUILD_DIR}
+
+# Automatically remove unexpected files from the output:
+# The first line is a target-specific variable (http://www.gnu.org/software/make/manual/html_node/Target_002dspecific.html).
+autorm: export AUTO_RM = 1
+autorm: dev
+# ...And the same thing for prod:
+autorm-prod: export AUTO_RM = 1
+autorm-prod: prod
 
 # Remove the 'build' area:
 clean: touch

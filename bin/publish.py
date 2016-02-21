@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-# This script publishes the src directory to the www directory in an intelligent
+# This script publishes the input directory to the output directory in an intelligent
 # way.  Copies file data & permissions & ACLs, evaluates Mako templates, ignores
-# hidden files, and notifies the user of files that are in the 'www' area that
+# hidden files, and notifies the user of files that are in the 'output' area that
 # probably shouldn't be there.
 #
 # Written by Christopher Sebastian, 2011-11-04
@@ -115,7 +115,7 @@ def main(SRC_DIR, DST_DIR):
         if int(os.environ.get('AUTO_RM', '0')) == 1:
             print 'Auto-Removing:',f
             os.unlink(f)
-        else: print 'Unexpected WWW File:',f
+        else: print 'Unexpected file in output:',f
 
 
 if __name__ == '__main__':

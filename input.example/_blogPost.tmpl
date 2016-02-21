@@ -1,9 +1,10 @@
 <%inherit file="blog.html.tmpl" />
 <%! import makofw %>
 <% 
-  assert self.uri.endswith('.html.tmpl')
-  date,mdFilename,meta,title = self.postInfo(self.uri[len(self.ROOT_DIR()+'/blog/'):-5]+'.md')
+  assert self.uri.endswith('.html.tmpl'), 'Unexpected Extension: %r'%(self.uri,)
+  date,mdFilename,meta,title,image = self.postInfo(self.uri[len(self.ROOT_DIR()+'/blog/'):-5]+'.md')
 %>
 <h1 class=postTitle>${title}</h1>
-<p class=postMeta>By: <span class=postAuthor>${meta['author']}</span>, <span class=postDate>${meta['date']}</span></p>
+<div class=postMeta>Published <span class=postDate>${date}</span>,&nbsp; by <span class=postAuthor>${meta['author']}</span></div>
+<img class="postMainImg roundBorder" src="${image}" />
 ${next.body()}

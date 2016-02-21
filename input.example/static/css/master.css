@@ -7,12 +7,12 @@ a:visited {
 }
 
 html {
-    background-color: #ffc073;
+    background-color: #213554;
 }
 body {
     width:90%;
     margin-left: 5%;
-    min-width: 500px;
+    min-width: 725px;
 }
 div#header {
     margin-top: 3em;
@@ -29,19 +29,23 @@ div#header hr {
 a#logo {
     display: block;
     position: absolute;
-    top: 57px;
+    top: 30px;
     left: 30px;
     color: #03436a;
-    font-size: 262%;
+    font-size: 362%;
+}
+a#logo i {
+    font-size: 138%;
 }
 div#slogan {
     position: absolute;
     top: 30px;
     right: 30px;
-    color: #fff;
+    color: #f8f8f8;
     font-family: serif;
     font-weight: bold;
     font-size: 162%;
+    text-shadow: 0px 0px 8px #888;
 }
 ul#headerTabs {
     position: absolute;
@@ -54,19 +58,20 @@ ul#headerTabs li {
     float: left;
     margin-left: 1em;
     font-size: 162%;
-    background-color: #bf7f30;
+    background-color: #777;
     padding: 10px;
     border: 1px solid #888;
     border-radius: 10px;
 }
 ul#headerTabs li.selected {
-    background-color: #ff8c00;
+    background-color: #ff7700;
 }
 ul#headerTabs li a {
     color: #ccc;
+    text-shadow: 0 0 5px #333;
 }
 ul#headerTabs li.selected a {
-    color: #03436a;
+    color: #fff;
 }
 div#content {
     background-color: #fff;
@@ -78,10 +83,14 @@ div#content {
 div#footer {
     margin-bottom: 3em;
     text-align: center;
-    background-color: #a65b00;
-    color: #a6ddfd;
+    background-color: #D09043;
+    color: #213554;
     border-radius: 0 0 10px 10px;
 }
 div#footer hr {
     margin-top: 0;
+}
+
+div.clearFloats {
+    clear: both;
 }

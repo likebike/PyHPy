@@ -37,9 +37,7 @@ This is a MakoFW-Powered Photo Album.
 
 First, let me just say, this is *not* a very good photo album app.  Its only purpose is to be a small example of how to use MakoFW, so please don't judge it too harshly.  There are many better photo albums out there, such as [phpAlbum](http://www.phpalbum.net/).
 
-This photo album works by scanning a directory for JPEG files, and creating a separate HTML page for each image.  Additionally, `.meta` files are used to provide image information, such as `description` and `location`.
-
-Note that the included photos have been pre-sized, and the thumbnails have been pre-generated.  It would be easy to do all this stuff from the Mako templates themselves with something like PIL or ImageMagik, but I chose not to do this because I don't want MakoFW to have extra installation dependencies.
+This photo album scans a directory for JPEG files, and creates a thumbnail and HTML page for each image.  Additionally, `.meta` files are used to provide image information, such as `description` and `location`.
 </%block>
 %else:
 ${next.body()}
@@ -48,7 +46,7 @@ ${next.body()}
 
 <ul class=thumbnails>
 %for p in photos:
-  <li class=thumbnail><a href="${self.URL('/photos/%s.html'%(p,), timestamp=None)}"><img src="${self.URL('/static/photoalbum/%s_THUMB.jpeg'%(p,))}"></a></li>
+  <li class=thumbnail><a href="${self.URL('/photos/%s.html'%(p,), timestamp=None)}"><img src="${self.URL(makofw.thumb(self.ROOT_DIR(), '/static/photoalbum/%s.jpeg'%(p,), height=100))}"></a></li>
 %endfor
 </ul>
 <div class=clearFloats></div>

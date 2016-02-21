@@ -17,21 +17,21 @@ div#textStuff p.description {
 div#bigPhotoArea {
     position: relative;
 }
-a#prev {
+a.navLink {
     display: block;
     position: absolute;
     top:-20px;
-    left:30px;
     font-weight: bold;
+    font-size: 138%;
+}
+a#prev {
+    left:30px;
 }
 a#next {
-    display: block;
-    position: absolute;
-    top: -20px;
     right: 30px;
-    font-weight: bold;
 }
 img#bigPhoto {
+    border: 1px solid #888;
     border-radius: 10px;
     margin-left: 3em;
     height: 500px;
@@ -42,13 +42,10 @@ ul.thumbnails {
 li.thumbnail {
     float: left;
     list-style: none;
-    width: 150px;
-    height: 150px;
+    width: 172px;
+    height: 110px;
 }
 li.thumbnail img {
     border: 1px solid #888;
     border-radius: 5px;
-}
-div.clearFloats {
-    clear: both;
 }
