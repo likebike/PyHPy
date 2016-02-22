@@ -10,9 +10,9 @@ import markdown as _markdown  # Use a different name for the module.
 #     This is **MarkDown**!
 #     </%block>
 def markdown(string, output_format='html5'):
-    out = '<div class=markdownWrapper>\n'
-    out += _markdown.markdown(string, output_format=output_format)
-    out += '\n</div>\n'
+    out = '<article class="markdown-body">\n'    # We replicate the wrapper used on GitHub for compatibility with 3rd party CSS.
+    out += _markdown.markdown(string, output_format=output_format, extensions=['markdown.extensions.fenced_code'])
+    out += '\n</article>\n'
     out = out.replace('  ', '&nbsp; ')  # Make double-spaces visible in the web browser.
     return out
 

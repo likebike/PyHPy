@@ -1,6 +1,12 @@
+# This is the MakoFW Project Makefile.
 # Adjust this Makefile to suit your server and project requirements.
 
-PROJ_ROOT=${HOME}/mysite
+# Find the location of this Makefile:
+THIS_MAKEFILE=$(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+MAKEFILE_DIR=$(patsubst %/,%,$(dir $(THIS_MAKEFILE)))
+
+# We use the Makefile location to guess our project root:
+PROJ_ROOT=${MAKEFILE_DIR}
 
 # The MakoFW location:
 MAKOFW_DIR=${PROJ_ROOT}/makofw
@@ -30,17 +36,18 @@ fast: inputToBuild
 prod: inputToBuild
 	MAKOFW_BUILD_MODE=prod ${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${BUILD_DIR}" "${OUT_PROD}"
 
+# Copy 'input' to 'build':
+inputToBuild:
+	rsync -va ${IN_DIR}/ ${BUILD_DIR}
+
 # Touch some critical files that force the whole site to be rebuilt:
 touch:
 	touch ${IN_DIR}/__init__.tmpl
 
-# Useful for local development:
-devserver:
-	cd "${OUT_DEV}"; ${PYTHON} -m SimpleHTTPServer
+# Remove the 'build' area:
+clean: touch
+	rm -rf ${BUILD_DIR}
 
-# Copy 'input' to 'build':
-inputToBuild:
-	rsync -va ${IN_DIR}/ ${BUILD_DIR}
 
 # Automatically remove unexpected files from the output:
 # The first line is a target-specific variable (http://www.gnu.org/software/make/manual/html_node/Target_002dspecific.html).
@@ -50,8 +57,10 @@ autorm: dev
 autorm-prod: export AUTO_RM = 1
 autorm-prod: prod
 
-# Remove the 'build' area:
-clean: touch
-	rm -rf ${BUILD_DIR}
+
+# Useful for local development and testing:
+devserver:
+	cd "${OUT_DEV}"; ${PYTHON} -m SimpleHTTPServer 8000
+
 
 

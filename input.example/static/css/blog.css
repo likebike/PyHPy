@@ -37,6 +37,7 @@ h1.postTitle {
     font-size: 262%;
     margin: 0;
     margin-bottom: 0.5em;
+    color: #333;  /* Be consistent with markdown CSS */
 }
 img.postMainImg {
     margin: 2em 0;

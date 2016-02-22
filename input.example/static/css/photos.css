@@ -37,7 +37,7 @@ img#bigPhoto {
     height: 500px;
 }
 ul.thumbnails {
-    margin-top: 2em;
+    margin-top: 4em;
 }
 li.thumbnail {
     float: left;

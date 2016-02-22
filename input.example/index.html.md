@@ -4,8 +4,8 @@ Welcome to the MakoFW Demo Site!
 MakoFW is a minimalist static website generation framework, built on top of the [Mako](http://www.makotemplates.org/) templating engine.
 
 
-Static is Beautiful
--------------------
+<i class="fa fa-files-o fa-lg"></i> Static is Beautiful
+-------------------------------------------------------
 
 Static webpages have some very nice features:
 
@@ -18,8 +18,8 @@ Static webpages have some very nice features:
 * Easy to Host.  Static websites are supported by *every* web host.
 
 
-Mako is Awesome
----------------
+<i class="fa fa-thumbs-o-up fa-lg"></i> Mako is Awesome
+-------------------------------------------------------
 
 I chose to build this framework on top of [Mako](http://www.makotemplates.org/) for the following reasons:
 
@@ -32,8 +32,8 @@ I chose to build this framework on top of [Mako](http://www.makotemplates.org/) 
 * Widely Used.  Two famous users are [reddit.com](http://www.reddit.com/) and [Pylons/Pyramid](http://www.pylonsproject.org/).
 
 
-MakoFW Makes it Easy
---------------------
+<i class="fa fa-paper-plane-o fa-lg"></i> MakoFW Makes it Easy
+--------------------------------------------------------------
 
 MakoFW combines powerful tools like `rsync`, `make`, and `mako-render`, and adds a layer of convenience and integration on top.
 
@@ -43,19 +43,17 @@ MakoFW combines powerful tools like `rsync`, `make`, and `mako-render`, and adds
 
 * Improved Error Reporting.  When things go wrong, MakoFW produces very detailed and helpful error reports, allowing you to pin-point the cause of the problem with minimal effort.
 
-* Here's the typical process of building a site with MakoFW:
+Here's the typical process of building a site with MakoFW:
 
-    1. Create content (like MarkDown), mako templates, and static files (like images) in an `input` directory.
-    1. Run `make`.  Content and templates are rendered, and the results are published to an `output` directory.
-    1. View the output in a web browser.
-    1. GOTO 1 until you're happy with the result.
-    1. Upload the `output` directory to your webserver using `FTP` or `rsync`.
+1. Create content (like MarkDown), mako templates, and static files (like images) in an `input` directory.
+1. Run `make`.  Content and templates are rendered, and the results are published to an `output` directory.
+1. View the output in a web browser.
+1. GOTO 1 until you're happy with the result.
+1. Upload the `output` directory to your webserver using `FTP` or `rsync`.
 
-The best way to start learning MakoFW is to read through the included `input` files, which produce *this* website.  You can also read the documentation articles that are included in the [demo blog](${self.URL('/blog.html')}).  If you have questions, send them to [Christopher Sebastian](mailto:csebastian3@gmail.com).
+The best way to start learning MakoFW is to read through the included `input.example` files, which produce *this* website.  You can also read the documentation articles that are included in the [demo blog](${self.URL('/blog.html', timestamp=None)}).  If you have questions, send them to [Christopher Sebastian](mailto:csebastian3@gmail.com).
 
-[<i class="fa fa-photo"></i> View the Demo Photo Album](${self.URL('/photos.html', timestamp=None)})
-----------------------------------------------------------------------
+**[<i class="fa fa-photo fa-lg"></i> View the Demo Photo Album](${self.URL('/photos.html', timestamp=None)})**
 
-[<i class="fa fa-newspaper-o"></i> View the Demo Blog](${self.URL('/blog.html', timestamp=None)})
-----------------------------------------------------------------------------
+**[<i class="fa fa-newspaper-o fa-lg"></i> View the Demo Blog](${self.URL('/blog.html', timestamp=None)})**
 
