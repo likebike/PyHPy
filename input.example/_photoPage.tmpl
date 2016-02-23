@@ -1,8 +1,8 @@
 <%inherit file="photos.html.tmpl" />
 <%! import os, makofw %>
 <div id=bigPhotoArea>
-  <a id=prev class=navLink href="${self.URL('/photos/%s.html'%(self.PREV_PHOTO(),), timestamp=None)}"><i class="fa fa-arrow-left"></i>&nbsp;Previous</a>
-  <a id=next class=navLink href="${self.URL('/photos/%s.html'%(self.NEXT_PHOTO(),), timestamp=None)}">Next&nbsp;<i class="fa fa-arrow-right"></i></a>
+  <a id=prev class=navLink href="${self.URL('/photos/%s.html'%(self.PREV_PHOTO(),), mtime=None)}"><i class="fa fa-arrow-left"></i>&nbsp;Previous</a>
+  <a id=next class=navLink href="${self.URL('/photos/%s.html'%(self.NEXT_PHOTO(),), mtime=None)}">Next&nbsp;<i class="fa fa-arrow-right"></i></a>
   <%
     photoPath = os.path.join(self.photosDir(), self.THIS_PHOTO()) + '.jpeg'  # We chopped off the extension in THIS_PHOTO(), so we need to add it back on.
     meta = makofw.meta(photoPath)

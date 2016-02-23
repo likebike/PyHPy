@@ -9,7 +9,7 @@ MakoFW is a minimalist static website generation framework, built on top of the 
 
 Static webpages have some very nice features:
 
-* Static is *Fast*.  Nothing is faster than serving a static page.  They can easily survive huge traffic spikes.
+* Static is *Fast*.  Nothing is faster than serving a static page.  A static website can easily survive huge traffic spikes.
 
 * Static is Immortal.  Once a static webpage is online, it almost never breaks.  No maintenence is required to keep them online.  They handle server upgrades, library updates, and host migrations with ease.
 
@@ -51,9 +51,9 @@ Here's the typical process of building a site with MakoFW:
 1. GOTO 1 until you're happy with the result.
 1. Upload the `output` directory to your webserver using `FTP` or `rsync`.
 
-The best way to start learning MakoFW is to read through the included `input.example` files, which produce *this* website.  You can also read the documentation articles that are included in the [demo blog](${self.URL('/blog.html', timestamp=None)}).  If you have questions, send them to [Christopher Sebastian](mailto:csebastian3@gmail.com).
+The best way to start learning MakoFW is to read through the included `input.example` files, which produce *this* website.  You can also read the documentation articles that are included in the [demo blog](${self.URL('/blog.html', mtime=None)}).  If you have questions, send them to [Christopher Sebastian](mailto:csebastian3@gmail.com).
 
-**[<i class="fa fa-photo fa-lg"></i> View the Demo Photo Album](${self.URL('/photos.html', timestamp=None)})**
+**[<i class="fa fa-photo fa-lg"></i> View the Demo Photo Album](${self.URL('/photos.html', mtime=None)})**
 
-**[<i class="fa fa-newspaper-o fa-lg"></i> View the Demo Blog](${self.URL('/blog.html', timestamp=None)})**
+**[<i class="fa fa-newspaper-o fa-lg"></i> View the Demo Blog](${self.URL('/blog.html', mtime=None)})**
 

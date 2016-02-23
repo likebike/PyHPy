@@ -9,15 +9,18 @@ import markdown as _markdown  # Use a different name for the module.
 #     
 #     This is **MarkDown**!
 #     </%block>
-def markdown(string, output_format='html5'):
+def markdown(string, output_format='html5', allow_anglebracket_escape=False):
+    # Angle Bracket Escapes are disabled by default because they are dangerous if you don't trust the source of the markdown.
+    if allow_anglebracket_escape: string = string.replace('\\<', 'zzzESCAPEDLEFTANGLEBRACKETzzz').replace('\\>', 'zzzESCAPEDRIGHTANGLEBRACKETzzz')
     out = '<article class="markdown-body">\n'    # We replicate the wrapper used on GitHub for compatibility with 3rd party CSS.
     out += _markdown.markdown(string, output_format=output_format, extensions=['markdown.extensions.fenced_code'])
     out += '\n</article>\n'
     out = out.replace('  ', '&nbsp; ')  # Make double-spaces visible in the web browser.
+    if allow_anglebracket_escape: out = out.replace('zzzESCAPEDLEFTANGLEBRACKETzzz', '<').replace('zzzESCAPEDRIGHTANGLEBRACKETzzz', '>')
     return out
 
 
-def url(path, urlRoot, fsRoot=None, timestamp='auto'):
+def url(path, urlRoot, fsRoot=None, mtime='auto'):
     # This function makes it easy to serve static files that are aggressively cached
     # on the client side, without making life difficult on the server side.  Whenever
     # an update to the file occurs, the timestamp will also update, resulting in a
@@ -28,7 +31,7 @@ def url(path, urlRoot, fsRoot=None, timestamp='auto'):
     assert not fsRoot.endswith('/')
     U = urlRoot + path
 
-    if timestamp == 'auto':
+    if mtime == 'auto':
         fs_path = fsRoot + path
         if not os.path.exists(fs_path):
             # Could not find the referenced file.  Is it a markdown?
@@ -37,11 +40,11 @@ def url(path, urlRoot, fsRoot=None, timestamp='auto'):
             # Nope, not a markdown.  How about a template?
             fs_path = fsRoot + path + '.tmpl'
         if not os.path.exists(fs_path): raise ValueError('Unable to find fs_path for url: %r'%(path,))
-        timestamp = getmtime(fs_path)
-    if timestamp != None:
+        mtime = getmtime(fs_path)
+    if mtime != None:
         if '?' not in U: U += '?'
         else: U += '&'
-        U += 'timestamp=%s'%(timestamp,)
+        U += '_=%s'%(mtime,)
 
     return U
 

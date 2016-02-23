@@ -6,7 +6,7 @@
 %if self.URL()=='/photos.html.tmpl':
 <%
   # Generate the individual photo pages.
-  photo_pages_dir = os.path.join(self.ROOT_DIR(), 'photos')
+  photo_pages_dir = os.path.join(self.FS_ROOT(), 'photos')
   if not os.path.exists(photo_pages_dir): os.mkdir(photo_pages_dir)
   for i,photo in enumerate(photos):
       prev_photo_i = i-1
@@ -46,7 +46,7 @@ ${next.body()}
 
 <ul class=thumbnails>
 %for p in photos:
-  <li class=thumbnail><a href="${self.URL('/photos/%s.html'%(p,), timestamp=None)}"><img src="${self.URL(makofw.thumb(self.ROOT_DIR(), '/static/photoalbum/%s.jpeg'%(p,), height=100))}"></a></li>
+  <li class=thumbnail><a href="${self.URL('/photos/%s.html'%(p,), mtime=None)}"><img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/photoalbum/%s.jpeg'%(p,), height=100))}"></a></li>
 %endfor
 </ul>
 <div class=clearFloats></div>
@@ -54,5 +54,5 @@ ${next.body()}
 <%block name='PAGE_CSS'>
   <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/photos.css')}">
 </%block>
-<%def name="photosDir()"><% return os.path.join(self.ROOT_DIR(), 'static', 'photoalbum') %></%def>
+<%def name="photosDir()"><% return os.path.join(self.FS_ROOT(), 'static', 'photoalbum') %></%def>
 

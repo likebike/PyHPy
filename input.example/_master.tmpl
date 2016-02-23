@@ -41,7 +41,7 @@
 ##     self.URL()               --  Returns the project path of the template being rendered.
 ##                                  If /a/b/buildDir/x/y/z.tmpl is being rendered,
 ##                                  self.URL() --> /x/y/z.tmpl
-##     self.ROOT_DIR()          --  Returns the FS Path of the Build directory.
+##     self.FS_ROOT()           --  Returns the FS Path of the Build directory.
 ##     makofw.meta('/path/to/file.xyz')                  --  Returns metadata
 ##     <%block filter="makofw.markdown">...</%block>     --  Embed MarkDown
 ##
@@ -89,12 +89,12 @@
   </head>
   <body>
     <div id=header>
-      <a id=logo href="${self.URL('/index.html', timestamp=None)}"><i class="fa fa-skyatlas"></i> MakoFW</a>
+      <a id=logo href="${self.URL('/index.html', mtime=None)}"><i class="fa fa-skyatlas"></i> MakoFW</a>
       <div id=slogan>A Simple Example to Get You Started.</div>
       <ul id=headerTabs>
-        <li class=${'selected' if self.URL() == '/index.html.tmpl' else 'unselected'}><a href="${self.URL('/index.html', timestamp=None)}"}><i class="fa fa-home"></i> Home</a></li>
-        <li class=${'selected' if self.URL().startswith('/photos') else 'unselected'}><a href="${self.URL('/photos.html', timestamp=None)}"}><i  class="fa fa-photo"></i> Photos</a></li>
-        <li class=${'selected' if self.URL().startswith('/blog') else 'unselected'}><a href="${self.URL('/blog.html', timestamp=None)}"}><i class="fa fa-newspaper-o"></i> Blog</a></li>
+        <li class=${'selected' if self.URL() == '/index.html.tmpl' else 'unselected'}><a href="${self.URL('/index.html', mtime=None)}"}><i class="fa fa-home"></i> Home</a></li>
+        <li class=${'selected' if self.URL().startswith('/photos') else 'unselected'}><a href="${self.URL('/photos.html', mtime=None)}"}><i  class="fa fa-photo"></i> Photos</a></li>
+        <li class=${'selected' if self.URL().startswith('/blog') else 'unselected'}><a href="${self.URL('/blog.html', mtime=None)}"}><i class="fa fa-newspaper-o"></i> Blog</a></li>
       </ul>
       <div class=vspacer></div>
       <hr>

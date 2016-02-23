@@ -2,7 +2,7 @@
 <%! import makofw %>
 <% 
   assert self.uri.endswith('.html.tmpl'), 'Unexpected Extension: %r'%(self.uri,)
-  date,mdFilename,meta,title,image = self.postInfo(self.uri[len(self.ROOT_DIR()+'/blog/'):-5]+'.md')
+  date,mdFilename,meta,title,image = self.postInfo(self.uri[len(self.FS_ROOT()+'/blog/'):-5]+'.md')
 %>
 <h1 class=postTitle>${title}</h1>
 <div class=postMeta>Published <span class=postDate>${date}</span>,&nbsp; by <span class=postAuthor>${meta['author']}</span></div>
