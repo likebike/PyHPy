@@ -1,36 +1,190 @@
-MAIN TITLE
-===========
+In this tutorial, we create a small website made completely of static files.  The simplicity of the project will allow us to focus on the mechanics of the MakoFW build process.
 
-asdf asdf asdf asdf
+To be honest, if your project consists only of static files, MakoFW might not seem too useful.  The real value of MakoFW will become obvious once we start generating output dynamically in the [next tutorial](todo).  Until then, this pure-static example might feel a bit contrived.
 
-Starting with a completely blank project
+Creating a Blank Project
+------------------------
+
+[In the previous tutorial](${self.URL('/blog/How_to_Install_MakoFW.html', mtime=None)}), we created a project based on the MakoFW example site.  This time, we will create a blank project:
+
+```bash
+mkdir -p ~/staticSite
+cd ~/staticSite/
+curl http://makofw.likebike.com/makofw-latest.tar.gz | tar x    # Download MakoFW
+cp makofw/Makefile.example Makefile
+mkdir input            # Just create a blank 'input' directory.
+```
+
+Adding Files
+------------
+
+To keep things simple, let's just create a couple HTML pages that link to each other:
+
+```bash
+cd ~/staticSite/
+echo 'This is the home page.  <a href="page2.html">Go to page2.</a>' >input/index.html
+echo 'This is page2.html.  <a href="/">Go to the home page.</a>' >input/page2.html
+```
+
+The Build Process
+-----------------
+
+If we build the project at this point, here's what happens:
+
+```bash
+$ cd ~/staticSite/
+$ make
+
+rsync -vaHAX --info=flist0,stats0 /home/user/staticSite/input/ /home/user/staticSite/.build
+created directory /home/user/staticSite/.build
+./
+index.html
+page2.html
+
+MAKOFW_BUILD_MODE=dev ACL_CHECK=0 AUTO_RM=1 python2.7 /home/user/staticSite/makofw/bin/makofw_build "/home/user/staticSite/.build" "/home/user/staticSite/output/dev"
+Copying Normal File: 1456307892.915 > 0
+        /home/user/staticSite/.build/index.html  -->  /home/user/staticSite/output/dev/index.html
+Creating Directory:
+        /home/user/staticSite/output/dev
+Copying Normal File: 1456307895.139 > 0
+        /home/user/staticSite/.build/page2.html  -->  /home/user/staticSite/output/dev/page2.html
+
+Built Successfully!  Output is at: /home/user/staticSite/output/dev
+```
+
+The build completed successfully, as shown by the last line ("Build Successfully").  Here's a summary of what happened:
+
+1. The `rsync` command copies `input/` to `.build/`.
+1. The `makofw_build` script goes through each file in `.build/`, and recursively performs actions based on the file type (note, all actions are *lazy* -- they only occur if something has changed):
+    * `xyz.md` (MarkDown text) is rendered to `xyz.tmpl` (Mako template).
+    * `xyz.tmpl` (Mako template) is rendered to `xyz`.
+    * Filenames beginning with [ '.', '\_' ] or ending with [ '.swp', '.pyc', '.meta' ] are ignored.
+    * All other files are copied to the output destination.
+    * The `make` command produces a development version of the project in `output/dev/`.  Once you are happy with the output, use `make prod` to produce a production version in `output/prod/`.
+
+Here's a listing of the output that was produced.  Not surprisingly, it's just a copy of our input files:
+
+```bash
+$ ls output/dev/
+index.html  page2.html
+```
+
+
+
+<%doc>
+## MOVE ME TO THE NEXT TUTORIAL.
+Note that all of the above-mentioned `rsync` and `makofw_build` actions are *lazy* -- they only occur if something has changed.  We can see this by running the `make` command again:
+
+```bash
+$ cd ~/staticSite/
+$ make
+
+rsync -vaHAX --info=flist0,stats0 /home/user/staticSite/input/ /home/user/staticSite/.build
+
+MAKOFW_BUILD_MODE=dev ACL_CHECK=0 AUTO_RM=1 python2.7 /home/user/staticSite/makofw/bin/makofw_build "/home/user/staticSite/.build" "/home/user/staticSite/output/dev"
+
+Built Successfully!  Output is at: /home/user/staticSite/output/dev
+```
+
+You can see that nothing actually changed.  This behavior becomes important once you have dynamically-generated stuff (the topic of the next tutorial).
+</%doc>
+
+
+Making Updates
 --------------
 
-asdf asdf asdf asdf
+Let's add one more file (an image) and edit one of the HTML pages:
 
-Adding a couple files
---------------
+```bash
+cd ~/staticSite/input/
+wget 'https://www.redditstatic.com/icon.png'
+echo ' <img src="icon.png" />' >>page2.html
+```
 
-asdf asdf asdf asdf
+Now let's re-build the project:
 
-Building the project (what happens, exactly)
---------------
+```bash
+$ cd ~/staticSite/
+$ make
 
-asdf asdf asdf asdf
+rsync -vaHAX --info=flist0,stats0 /home/user/staticSite/input/ /home/user/staticSite/.build
+./
+icon.png
+page2.html
 
-Adding another file and editing an existing file
---------------
+MAKOFW_BUILD_MODE=dev ACL_CHECK=0 AUTO_RM=1 python2.7 /home/user/staticSite/makofw/bin/makofw_build "/home/user/staticSite/.build" "/home/user/staticSite/output/dev"
+Copying Normal File: 1327014419.0 > 0
+        /home/user/staticSite/.build/icon.png  -->  /home/user/staticSite/output/dev/icon.png
+Copying Normal File: 1456314184.42 > 1456307895.139
+        /home/user/staticSite/.build/page2.html  -->  /home/user/staticSite/output/dev/page2.html
 
-asdf asdf asdf asdf
+Built Successfully!  Output is at: /home/user/staticSite/output/dev
+```
 
-Building the Prod version
---------------
+Here's another listing of the output:
 
-asdf asdf asdf asdf
+```bash
+$ ls output/dev/
+icon.png  index.html  page2.html
+```
 
-Uploading the result to the server
---------------
+Serving Output with the Development Web Server
+----------------------------------------------
 
-asdf asdf asdf asdf
+It is possible to view webpages directly from the filesystem, using `file://` URLs.  However, this is far from ideal, since links will usually break and resources (like images, CSS, JS, etc.) usually won't be found.  The tiny website we created in this tutorial exhibits this problem:  On `page2.html`, we link back to the home page using a URL of `"/"`.  When the page is viewed from the filesystem, this link will take us to the wrong place:
 
+<table><tr style="border:none"><td style="border:none"><img src="${self.URL('/static/blogImg/tut_static_page2_file.png')}" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="${self.URL('/static/blogImg/tut_static_home_file.png')}" width=300 /></td></tr></table>
+
+For a website to really work properly, it needs to be served from a web server with the `http://` protocol.  MakoFW provides a basic web server so you can view your project output while doing local development.  To run the server, open a new command line terminal and run this:
+
+```bash
+cd ~/staticSite/
+make devserver
+```
+
+After the server is running, our website can be viewed at [http://127.0.0.1:8000/](http://127.0.0.1:8000/).  The link on page2 works properly now:
+
+<table><tr style="border:none"><td style="border:none"><img src="${self.URL('/static/blogImg/tut_static_page2_http.png')}" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="${self.URL('/static/blogImg/tut_static_home_http.png')}" width=300 /></td></tr></table>
+
+
+Running a Production Build
+--------------------------
+
+Once you are happy with the results, build a production version of the project with the `make prod` command:
+
+```bash
+$ cd ~/staticSite/
+$ make prod
+
+rsync -vaHAX --info=flist0,stats0 /home/user/staticSite/input/ /home/user/staticSite/.build
+
+MAKOFW_BUILD_MODE=prod ACL_CHECK=1 AUTO_RM=0 python2.7 /home/user/staticSite/makofw/bin/makofw_build "/home/user/staticSite/.build" "/home/user/staticSite/output/prod"
+Copying Normal File: 1327014419.0 > 0
+        /home/user/staticSite/.build/icon.png  -->  /home/user/staticSite/output/prod/icon.png
+Creating Directory:
+        /home/user/staticSite/output/prod
+Copying Normal File: 1456320112.502 > 0
+        /home/user/staticSite/.build/index.html  -->  /home/user/staticSite/output/prod/index.html
+Copying Normal File: 1456320151.735 > 0
+        /home/user/staticSite/.build/page2.html  -->  /home/user/staticSite/output/prod/page2.html
+
+Built Successfully!  Output is at: /home/user/staticSite/output/prod
+```
+
+A production build has some differences compared to a development build:
+
+* Output is placed into `output/prod/` instead of `output/dev/`.  By having two output areas, it enables you to keep the production version stable while you make edits to the development version.
+* File ACLs are preserved in the output.  This is normally skipped during a development build because it's kind of slow.
+* Unexpected files located in the `output/prod/` directory are *not* automatically removed (they are auto-removed in a dev build).  You will receive a warning about them, and you can remove them manually (if you want to).
+
+
+Uploading the Results
+---------------------
+
+After producing a production version of your site, upload it to your webserver using a file transfer tool like `rsync` (or even FTP if you really must):
+
+```bash
+cd ~/staticSite/
+rsync -Paz output/prod/ user@host.com:path/to/htdocs/
+```
 

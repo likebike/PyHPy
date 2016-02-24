@@ -1,7 +1,7 @@
 # This is the MakoFW Project Makefile.
 # Adjust this Makefile to suit your server and project requirements.
 
-# Find the location of this Makefile:
+# Find the location of this Makefile (this method works with 'make -C', but maybe not with 'make -f'.):
 THIS_MAKEFILE=$(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 MAKEFILE_DIR=$(patsubst %/,%,$(dir $(THIS_MAKEFILE)))
 
@@ -11,56 +11,57 @@ PROJ_ROOT=${MAKEFILE_DIR}
 # The MakoFW location:
 MAKOFW_DIR=${PROJ_ROOT}/makofw
 
-# The 'input' and 'build' directories:
+# Directory locations:
 IN_DIR=${PROJ_ROOT}/input
-BUILD_DIR=${PROJ_ROOT}/build
+BUILD_DIR=${PROJ_ROOT}/.build
+OUT_DEV_DIR=${PROJ_ROOT}/output/dev
+OUT_PROD_DIR=${PROJ_ROOT}/output/prod
 
-# The publication locations:
-OUT_DEV=${PROJ_ROOT}/output/dev
-OUT_PROD=${PROJ_ROOT}/output/prod
-
-# The python binary to use:
+# The Python command to use:
 PYTHON=python2.7
 export PYTHONPATH:=${MAKOFW_DIR}/lib/python:${PYTHONPATH}
 
+# Build Options:
+ACL_CHECK=1
+AUTO_RM=0
 
-# By default, publish to the development site:
+# The port of the development HTTP server:
+WWW_PORT=8000
+
+
+# By default, build the development site without doing ACL checks, and with auto-remove enabled:
+# The first two lines are target-specific variables (http://www.gnu.org/software/make/manual/html_node/Target_002dspecific.html).
+dev-autorm: ACL_CHECK=0
+dev-autorm: AUTO_RM=1
+dev-autorm: dev
+# Build the development site:
 dev: inputToBuild
-	MAKOFW_BUILD_MODE=dev ${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${BUILD_DIR}" "${OUT_DEV}"
+	MAKOFW_BUILD_MODE=dev ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} ${PYTHON} ${MAKOFW_DIR}/bin/makofw_build "${BUILD_DIR}" "${OUT_DEV_DIR}"
 
-# Publish to the development site without doing as many ACL checks:
-fast: inputToBuild
-	MAKOFW_BUILD_MODE=dev ACL_CHECK=0 ${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${BUILD_DIR}" "${OUT_DEV}"
-
-# Publish to the production site:
+# Automatically remove unexpected files from the production output:
+prod-autorm: AUTO_RM=1
+prod-autorm: prod
+# Build the production site:
 prod: inputToBuild
-	MAKOFW_BUILD_MODE=prod ${PYTHON} ${MAKOFW_DIR}/bin/publish.py "${BUILD_DIR}" "${OUT_PROD}"
+	MAKOFW_BUILD_MODE=prod ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} ${PYTHON} ${MAKOFW_DIR}/bin/makofw_build "${BUILD_DIR}" "${OUT_PROD_DIR}"
 
-# Copy 'input' to 'build':
+# Copy 'input' to 'build' (used internally -- typically not used from the command line):
 inputToBuild:
-	rsync -va ${IN_DIR}/ ${BUILD_DIR}
+	@echo
+	rsync -vaHAX --info=flist0,stats0 ${IN_DIR}/ ${BUILD_DIR}
+	@echo
 
 # Touch some critical files that force the whole site to be rebuilt:
 touch:
 	touch ${IN_DIR}/__init__.tmpl
-
 # Remove the 'build' area:
-clean: touch
+clean:
 	rm -rf ${BUILD_DIR}
-
-
-# Automatically remove unexpected files from the output:
-# The first line is a target-specific variable (http://www.gnu.org/software/make/manual/html_node/Target_002dspecific.html).
-autorm: export AUTO_RM = 1
-autorm: dev
-# ...And the same thing for prod:
-autorm-prod: export AUTO_RM = 1
-autorm-prod: prod
-
 
 # Useful for local development and testing:
 devserver:
-	cd "${OUT_DEV}"; ${PYTHON} -m SimpleHTTPServer 8000
-
+	cd "${OUT_DEV_DIR}"; ${PYTHON} -m SimpleHTTPServer ${WWW_PORT}
+prodserver:
+	cd "${OUT_PROD_DIR}"; ${PYTHON} -m SimpleHTTPServer ${WWW_PORT}
 
 

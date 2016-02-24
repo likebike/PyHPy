@@ -35,9 +35,15 @@ def url(path, urlRoot, fsRoot=None, mtime='auto'):
         fs_path = fsRoot + path
         if not os.path.exists(fs_path):
             # Could not find the referenced file.  Is it a markdown?
+            fs_path = fsRoot + path + '.markdown'
+        if not os.path.exists(fs_path):
+            # Another markdown extension?
             fs_path = fsRoot + path + '.md'
         if not os.path.exists(fs_path):
-            # Nope, not a markdown.  How about a template?
+            # Nope, not markdown.  How about a template?
+            fs_path = fsRoot + path + '.mako'
+        if not os.path.exists(fs_path):
+            # Alternative mako template extension:
             fs_path = fsRoot + path + '.tmpl'
         if not os.path.exists(fs_path): raise ValueError('Unable to find fs_path for url: %r'%(path,))
         mtime = getmtime(fs_path)

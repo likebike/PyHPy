@@ -126,7 +126,7 @@ def makoRender(path, kwargs):
         return template.render_unicode(**kwargs)
     except:
         print >> sys.stderr, '\nThere was an error in one of the following templates:'
-        for p,t in __ALL_TEMPLATES:
+        for p,t in reversed(__ALL_TEMPLATES):
             print >> sys.stderr, '\n\n=== Template Code for %s: ==='%(p,)
             print >> sys.stderr, getTemplateCode(t)
         print >> sys.stderr

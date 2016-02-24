@@ -39,13 +39,13 @@ def symlinkHandler(data, DST_DIR, okDstFiles):
     okDstFiles.append(dstPath)
 def makoFileHandler(data, DST_DIR, okDstFiles):
     relBase, relExt = os.path.splitext(data['relPath'])
-    assert relExt == '.tmpl'
+    assert relExt in ['.tmpl', '.mako']
     dstPath = os.path.join(DST_DIR, relBase)
     makofw.sync.syncMakoTemplate(data['absPath'], dstPath)
     okDstFiles.append(dstPath)        
 def markdownFileHandler(data, DST_DIR, okDstFiles):
     base, ext = os.path.splitext(data['absPath'])
-    assert ext == '.md'
+    assert ext in ['.md', '.markdown']
     tmplPath = base+'.tmpl'
     tmplMTime = makofw.getmtime(tmplPath, noExistTime=-1)
     if data['mtime'] > tmplMTime:
@@ -87,14 +87,14 @@ def walkAndClassify(rootDir):
             _, ext = os.path.splitext(absPath)
             if isHiddenFile(os.path.basename(absPath)):
                 data['handler'] = hiddenFileHandler
-            elif ext.lower() == '.tmpl': data['handler'] = makoFileHandler
-            elif ext.lower() == '.md': data['handler'] = markdownFileHandler
+            elif ext.lower() in ['.tmpl', '.mako']: data['handler'] = makoFileHandler
+            elif ext.lower() in ['.md', '.markdown']: data['handler'] = markdownFileHandler
             elif os.path.islink(absPath): data['handler'] = symlinkHandler
             else: data['handler'] = normalFileHandler
             results[relPath] = data
     return results
     
-def publish(SRC_DIR, DST_DIR):
+def build(SRC_DIR, DST_DIR):
     okDstFiles = []
     processed, toProcess = {}, walkAndClassify(SRC_DIR)    # A simple way to support auto-generation of files/templates.  (Loop until the filesystem is stable.)
     while sorted(processed) != sorted(toProcess):
@@ -110,7 +110,7 @@ def publish(SRC_DIR, DST_DIR):
     return processed, unexpectedDstFiles
 
 def main(SRC_DIR, DST_DIR):
-    processed, unexpectedDstFiles = publish(SRC_DIR, DST_DIR)
+    processed, unexpectedDstFiles = build(SRC_DIR, DST_DIR)
     for f in unexpectedDstFiles:
         if int(os.environ.get('AUTO_RM', '0')) == 1:
             print 'Auto-Removing:',f
@@ -129,5 +129,5 @@ if __name__ == '__main__':
         
     main(_SRC_DIR, _DST_DIR)
 
-    print 'Done.  :)'
+    print '\nBuilt Successfully!  Output is at: %s\n'%(_DST_DIR,)
 

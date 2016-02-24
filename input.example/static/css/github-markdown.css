@@ -451,9 +451,10 @@
   padding-bottom: 0.2em;
   margin: 0;
   font-size: 85%;
-  background-color: rgba(0,0,0,0.06);   /* Darkened by CHRISTOPHER SEBASTIAN (0.04 --> 0.06) */
+  background-color: rgba(0,0,0,0.04);
   border-radius: 3px;
-  white-space: nowrap;   /* ADDED BY CHRISTOPHER SEBASTIAN */
+  border: 1px solid #ddd;   /* ADDED BY CHRISTOPHER SEBASTIAN */
+  white-space: nowrap;      /* ADDED BY CHRISTOPHER SEBASTIAN */
 }
 
 .markdown-body code:before,
@@ -484,6 +485,7 @@
   line-height: 1.45;
   background-color: #f0f0f0;  /* Darkened by CHRISTOPHER SEBASTIAN (#f7f7f7 --> #f0f0f0) */
   border-radius: 3px;
+  border: 1px solid #ddd;   /* ADDED BY CHRISTOPHER SEBASTIAN */
 }
 
 .markdown-body .highlight pre {
