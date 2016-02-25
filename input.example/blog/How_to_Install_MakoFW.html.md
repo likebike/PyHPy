@@ -55,7 +55,7 @@ cd ~/mysite/
 make devserver   # This will run a local HTTP server on port 8000.
 ```
 
-Once the development web server is running, you can view your site at [http://127.0.0.1:8000/](http://127.0.0.1:8000/) .
+Once the development web server is running, you can view your site at <http://127.0.0.1:8000/> .
 
 After you have confirmed that everything is working, you might want to take the opportunity to check your project into an SCM, like [Git](https://git-scm.com/).
 

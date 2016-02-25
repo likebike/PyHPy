@@ -142,7 +142,7 @@ cd ~/staticSite/
 make server
 ```
 
-After the server is running, our website can be viewed at [http://127.0.0.1:8000/](http://127.0.0.1:8000/).  The link on page2 works properly now:
+After the server is running, our website can be viewed at <http://127.0.0.1:8000/> .  The link on page2 works properly now:
 
 <table><tr style="border:none"><td style="border:none"><img src="${self.URL('/static/blogImg/tut_static_page2_http.png')}" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="${self.URL('/static/blogImg/tut_static_home_http.png')}" width=300 /></td></tr></table>
 

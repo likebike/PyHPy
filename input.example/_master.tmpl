@@ -23,8 +23,7 @@
 ##                                         convenient for inheritance of text, rather than functions.
 ##
 ##     ### Template Filenames ###
-##     globals()['_template_filename']  --  The FS path of *this* template, even if it is being
-##                                          called from an inheriting template.
+##     local.uri --  The FS path of *this* template, even if it is being called from an inheriting template.
 ##     self.uri  --  The FS path of the template that is actually being rendered.  It might be
 ##                   inheriting from the one that is currently running.
 ##
@@ -114,7 +113,6 @@
 ## These are Mako '<%def>' sections.  They override values in the resulting templates.
 ## You can override these <%def>'s in templates that inherit from this one.
 <%def name='debugPage()'><% return False %></%def>
-<%!  import os, makofw %>
 
 ## FOR FUTURE REFERENCE:
 ##
