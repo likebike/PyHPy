@@ -1,6 +1,17 @@
 import os, json, codecs, sys, subprocess
 import markdown as _markdown  # Use a different name for the module.
 
+class DoubleSpaceMarkdownExtension(_markdown.extensions.Extension):
+    def __init__(self, *args, **kwargs):
+        super(DoubleSpaceMarkdownExtension, self).__init__(*args, **kwargs)
+    def extendMarkdown(self, md, md_globals):
+        DSPACE_RE = r'  '
+        dspacePattern = DoubleSpaceMarkdownPattern(DSPACE_RE, markdown_instance=md)
+        md.inlinePatterns.add('doublespace', dspacePattern, '_end')
+class DoubleSpaceMarkdownPattern(_markdown.inlinepatterns.Pattern):
+    def handleMatch(self, m): return '%s%s%snbsp; '%(_markdown.util.STX, ord('&'), _markdown.util.ETX)
+    
+
 # A MarkDown Mako Filter.  Use like this:
 #     <%! import makofw %>
 #     <%block filter="makofw.markdown">
@@ -9,14 +20,21 @@ import markdown as _markdown  # Use a different name for the module.
 #     
 #     This is **MarkDown**!
 #     </%block>
-def markdown(string, output_format='html5', allow_anglebracket_escape=False):
-    # Angle Bracket Escapes are disabled by default because they are dangerous if you don't trust the source of the markdown.
-    if allow_anglebracket_escape: string = string.replace('\\<', 'zzzESCAPEDLEFTANGLEBRACKETzzz').replace('\\>', 'zzzESCAPEDRIGHTANGLEBRACKETzzz')
-    out = '<article class="markdown-body">\n'    # We replicate the wrapper used on GitHub for compatibility with 3rd party CSS.
-    out += _markdown.markdown(string, output_format=output_format, extensions=['markdown.extensions.fenced_code'])
-    out += '\n</article>\n'
-    out = out.replace('  ', '&nbsp; ')  # Make double-spaces visible in the web browser.
-    if allow_anglebracket_escape: out = out.replace('zzzESCAPEDLEFTANGLEBRACKETzzz', '<').replace('zzzESCAPEDRIGHTANGLEBRACKETzzz', '>')
+def markdown(string, output_format='html5'):
+    md = _markdown.Markdown(output_format=output_format, extensions=['markdown.extensions.fenced_code', DoubleSpaceMarkdownExtension()])
+
+    # # I thought I needed to be able to escape angle brackets, but it turns out that I can already
+    # # use <%! ... %> stuff directly -- i just need to add a blank line to separate it from inline content.
+    # # But since I went thru the trouble to figure out the right way to solve this problem, I'm keeping this code for reference, since it's not intuitive:
+    # if allow_anglebracket_escape:
+    #     echars = md.ESCAPED_CHARS   # Usually, ESCAPED_CHARS is actually coming from the class level.  That's why we need to use this process to set it on the instance without affecting the class data.
+    #     if '<' not in echars:
+    #         md.ESCAPED_CHARS = ['<'] + echars
+    #         assert '<' not in _markdown.Markdown.ESCAPED_CHARS  # Make sure we didn't actually modify the class data.
+
+    out  = '<article class="markdown-body">'    # We replicate the wrapper used on GitHub for compatibility with 3rd party CSS.
+    out += md.convert(string)
+    out += '</article>'
     return out
 
 

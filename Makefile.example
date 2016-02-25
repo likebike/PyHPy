@@ -62,7 +62,7 @@ prod: dev
 # Remove the 'build' area.  Also set the dev output's timestamps in the past so that everything will get re-built next time:
 clean:
 	rm -rf "${BUILD_DIR}"
-	find "${OUT_DEV_DIR}" -exec touch -t 198607060000 '{}' ';'
+	find "${OUT_DEV_DIR}" -type f -exec touch -t 198607060000 '{}' ';'
 
 # Useful for local development and testing:
 server:

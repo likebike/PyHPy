@@ -47,10 +47,11 @@ def setDOCROOT(docroot):
     assert docroot[0] == '/', 'DOCROOT must be an absolute path.'
     assert docroot[-1] != '/', 'DOCROOT should not have a trailing slash.'
     DOCROOT = docroot
+    print 'DOCROOT = %r'%(DOCROOT,)
 
 def main():    
     if len(sys.argv) != 3: raise ValueError('usage: makofw.httpd PORT DOCROOT')
-    setDOCROOT(sys.argv[2])
+    setDOCROOT(os.path.abspath(sys.argv[2]))
     SimpleHTTPServer.test(HandlerClass=MakoFWHTTPRequestHandler)
 
 if __name__ == '__main__': main()

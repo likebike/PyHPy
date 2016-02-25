@@ -114,7 +114,8 @@ The `makofw.thumb()` function makes it easy to produce thumbnail images.  The de
 ```
 
 ...and here's the output:
-\<%! import makofw %\>
+
+<%! import makofw %>
 <img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150))}" />
 <img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', height=150))}" />
 <img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150, height=150))}" />

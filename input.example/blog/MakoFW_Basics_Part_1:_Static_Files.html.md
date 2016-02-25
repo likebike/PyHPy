@@ -18,7 +18,7 @@ mkdir input            # Just create a blank 'input' directory.
 Adding Files
 ------------
 
-To keep things simple, let's just create a couple HTML pages that link to each other:
+To add files to your project, just place them into the `input/` directory.  To keep things simple, let's just create a couple HTML pages that link to each other:
 
 ```bash
 cd ~/staticSite/
@@ -90,8 +90,8 @@ You can see that nothing actually changed.  This behavior becomes important once
 </%doc>
 
 
-Making Updates
---------------
+Making an Update
+----------------
 
 Let's add one more file (an image) and edit one of the HTML pages:
 
@@ -128,8 +128,8 @@ $ ls output/dev/
 icon.png  index.html  page2.html
 ```
 
-Serving Output with the Development Web Server
-----------------------------------------------
+Using the Development Web Server
+--------------------------------
 
 It is possible to view webpages directly from the filesystem, using `file://` URLs.  However, this is far from ideal, since links will usually break and resources (like images, CSS, JS, etc.) usually won't be found.  The tiny website we created in this tutorial exhibits this problem:  On `page2.html`, we link back to the home page using a URL of `"/"`.  When the page is viewed from the filesystem, this link will take us to the wrong place:
 
@@ -139,43 +139,57 @@ For a website to really work properly, it needs to be served from a web server w
 
 ```bash
 cd ~/staticSite/
-make devserver
+make server
 ```
 
 After the server is running, our website can be viewed at [http://127.0.0.1:8000/](http://127.0.0.1:8000/).  The link on page2 works properly now:
 
 <table><tr style="border:none"><td style="border:none"><img src="${self.URL('/static/blogImg/tut_static_page2_http.png')}" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="${self.URL('/static/blogImg/tut_static_home_http.png')}" width=300 /></td></tr></table>
 
+By default, the development server binds to port `8000` and serves files from the `output/dev/` directory.  You can customize these values with the `WWW_PORT` and `WWW_DIR` variables.  For example:
+
+```bash
+cd ~/staticSite/
+make server WWW_PORT=8888 WWW_DIR=output/prod/
+```
+
 
 Running a Production Build
 --------------------------
 
-Once you are happy with the results, build a production version of the project with the `make prod` command:
+Once you are happy with the results, you can make a permanent copy of the project with the `make prod` command:
 
 ```bash
 $ cd ~/staticSite/
 $ make prod
 
-rsync -vaHAX --info=flist0,stats0 /home/user/staticSite/input/ /home/user/staticSite/.build
+... 
 
-MAKOFW_BUILD_MODE=prod ACL_CHECK=1 AUTO_RM=0 python2.7 /home/user/staticSite/makofw/bin/makofw_build "/home/user/staticSite/.build" "/home/user/staticSite/output/prod"
-Copying Normal File: 1327014419.0 > 0
-        /home/user/staticSite/.build/icon.png  -->  /home/user/staticSite/output/prod/icon.png
-Creating Directory:
-        /home/user/staticSite/output/prod
-Copying Normal File: 1456320112.502 > 0
-        /home/user/staticSite/.build/index.html  -->  /home/user/staticSite/output/prod/index.html
-Copying Normal File: 1456320151.735 > 0
-        /home/user/staticSite/.build/page2.html  -->  /home/user/staticSite/output/prod/page2.html
-
-Built Successfully!  Output is at: /home/user/staticSite/output/prod
+PROD Built Successfully!  Output is at: /home/user/staticSite/output/prod
 ```
 
-A production build has some differences compared to a development build:
+Here is what happens when you run `make prod`:
 
-* Output is placed into `output/prod/` instead of `output/dev/`.  By having two output areas, it enables you to keep the production version stable while you make edits to the development version.
-* File ACLs are preserved in the output.  This is normally skipped during a development build because it's kind of slow.
-* Unexpected files located in the `output/prod/` directory are *not* automatically removed (they are auto-removed in a dev build).  You will receive a warning about them, and you can remove them manually (if you want to).
+1. A full development build is performed and ACL file attributes are propagated to the output.  (`input/` is copied to `.build/`, then rendered to `output/dev/`, preserving file attributes between each step.)
+
+1. The `output/dev/` directory is then copied to `output/prod-$TIMESTAMP/`, where `$TIMESTAMP` is like `20160225231500`.
+
+1. The `output/prod` symlink is updated to point at the newly-created directory.
+
+The end result is an `output/` directory that looks like this (after running `make prod` several times):
+
+```bash
+$ cd ~/staticSite/
+$ ls -l output/
+drwxrwxr-x 5 user user 4096  2月 25 18:20 dev
+lrwxrwxrwx 1 user user   19  2月 25 18:02 prod -> prod-20160225180213
+drwxrwxr-x 5 user user 4096  2月 23 08:35 prod-20160223083536
+drwxrwxr-x 5 user user 4096  2月 24 14:22 prod-20160224142200
+drwxrwxr-x 5 user user 4096  2月 25 18:02 prod-20160225180213
+```
+
+As you can see, production versions are kept permanently (or until you manually remove them), and the `output/prod` symlink always points to the latest production version.  This structure allows you to easily view previous versions of your project.  For example, you can run `make server` in one terminal and `make server WWW_PORT=8001 WWW_DIR=output/prod-20160224142200` in another to compare your development site to a previous production version.
+
 
 
 Uploading the Results
