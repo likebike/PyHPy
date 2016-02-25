@@ -82,20 +82,23 @@ def getmtime(path, includeMeta=True, noExistTime=None):
 
 def thumb(fsRoot, relImgPath, relThumbPath=None, width=None, height=None):
     ''' Uses ImageMagick CLI to create a thumbnail. '''
-    if width==None and height==None: height = 100
-    if width==None and height!=None: width = height*1.618
-    if width!=None and height==None: height = width/1.618
-    width, height = int(round(width)), int(round(height))
+    crop = False
+    if width==None and height==None: height = 128
+    if width==None and height!=None: sizeStr = 'x%d'%(int(round(height)),)
+    if width!=None and height==None: sizeStr = '%d'%(int(round(width)),)
+    if width!=None and height!=None: crop, sizeStr = True, '%dx%d'%(int(round(width)), int(round(height)))
     if relThumbPath==None:
         base, ext = os.path.splitext(relImgPath)
-        relThumbPath = base+'_THUMB_%dx%d'%(width,height)+ext
+        relThumbPath = '%s_THUMB_%s%s'%(base,sizeStr,ext)
     assert fsRoot[0] == '/'  and  fsRoot[-1] != '/'
     assert relImgPath[0] == '/'  and  relImgPath[-1] != '/'
     assert relThumbPath[0] == '/'  and  relThumbPath[-1] != '/'
     absImgPath, absThumbPath = fsRoot+relImgPath, fsRoot+relThumbPath
     imgMtime, thumbMtime = getmtime(absImgPath, includeMeta=False), getmtime(absThumbPath, includeMeta=False, noExistTime=0)
     if thumbMtime < imgMtime:
-        subprocess.check_call(['convert', absImgPath, '-thumbnail', '%dx%d^'%(width, height), '-gravity', 'center', '-extent', '%dx%d'%(width, height), absThumbPath])
+        cmd = ['convert', absImgPath, '-thumbnail', '%s%s'%(sizeStr, '^' if crop else '')] + (['-gravity', 'center', '-extent', sizeStr] if crop else [])  + [absThumbPath]
+        print cmd
+        subprocess.check_call(cmd)
     return relThumbPath
 
 

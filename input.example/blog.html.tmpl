@@ -13,7 +13,7 @@ ${next.body()}
 %for i,(date,mdFilename,meta,title,image) in enumerate(self.getPosts()):
     <li class="post ${'post-useSep' if i>0 else ''}">
         <a href="${self.URL('/blog/%s'%(mdFilename[:-3],), mtime=None)}">
-            <img class="postImg roundBorder" src="${self.URL(makofw.thumb(self.FS_ROOT(), image, height=150))}" />
+            <img class="postImg roundBorder" src="${self.URL(makofw.thumb(self.FS_ROOT(), image, width=243, height=150))}" />
             <div class=postTitle>${title}</div>
             <div class=postSummary>${meta['summary']}</div>
             <div class=postMeta><span class=date>${meta['date']}</span> - by <span class=author>${meta['author']}</span></div>

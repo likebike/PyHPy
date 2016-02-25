@@ -46,7 +46,7 @@ ${next.body()}
 
 <ul class=thumbnails>
 %for p in photos:
-  <li class=thumbnail><a href="${self.URL('/photos/%s.html'%(p,), mtime=None)}"><img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/photoalbum/%s.jpeg'%(p,), height=100))}"></a></li>
+  <li class=thumbnail><a href="${self.URL('/photos/%s.html'%(p,), mtime=None)}"><img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/photoalbum/%s.jpeg'%(p,), width=162, height=100))}"></a></li>
 %endfor
 </ul>
 <div class=clearFloats></div>

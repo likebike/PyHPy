@@ -36,32 +36,30 @@ dev-autorm: AUTO_RM=1
 dev-autorm: dev
 # Build the development site:
 dev: inputToBuild
-	MAKOFW_BUILD_MODE=dev ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} ${PYTHON} ${MAKOFW_DIR}/bin/makofw_build "${BUILD_DIR}" "${OUT_DEV_DIR}"
+	MAKOFW_BUILD_MODE=dev ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} "${PYTHON}" "${MAKOFW_DIR}/bin/makofw_build" "${BUILD_DIR}" "${OUT_DEV_DIR}"
 
 # Automatically remove unexpected files from the production output:
 prod-autorm: AUTO_RM=1
 prod-autorm: prod
 # Build the production site:
 prod: inputToBuild
-	MAKOFW_BUILD_MODE=prod ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} ${PYTHON} ${MAKOFW_DIR}/bin/makofw_build "${BUILD_DIR}" "${OUT_PROD_DIR}"
+	MAKOFW_BUILD_MODE=prod ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} "${PYTHON}" "${MAKOFW_DIR}/bin/makofw_build" "${BUILD_DIR}" "${OUT_PROD_DIR}"
 
 # Copy 'input' to 'build' (used internally -- typically not used from the command line):
 inputToBuild:
 	@echo
-	rsync -vaHAX --info=flist0,stats0 ${IN_DIR}/ ${BUILD_DIR}
+	rsync -vaHAX --info=flist0,stats0 "${IN_DIR}/" "${BUILD_DIR}"
 	@echo
 
-# Touch some critical files that force the whole site to be rebuilt:
-touch:
-	touch ${IN_DIR}/__init__.tmpl
-# Remove the 'build' area:
+# Remove the 'build' area.  Also set the dev output's timestamps in the past so that everything will get re-built next time:
 clean:
-	rm -rf ${BUILD_DIR}
+	rm -rf "${BUILD_DIR}"
+	find "${OUT_DEV_DIR}" -exec touch -t 198607060000 '{}' ';'
 
 # Useful for local development and testing:
 devserver:
-	cd "${OUT_DEV_DIR}"; ${PYTHON} -m SimpleHTTPServer ${WWW_PORT}
+	cd "${OUT_DEV_DIR}"; "${PYTHON}" -m SimpleHTTPServer "${WWW_PORT}"
 prodserver:
-	cd "${OUT_PROD_DIR}"; ${PYTHON} -m SimpleHTTPServer ${WWW_PORT}
+	cd "${OUT_PROD_DIR}"; "${PYTHON}" -m SimpleHTTPServer "${WWW_PORT}"
 
 
