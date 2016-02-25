@@ -119,7 +119,7 @@ The `makofw.thumb()` function makes it easy to produce thumbnail images.  The de
 <img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', height=150))}" />
 <img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150, height=150))}" />
 
-Notice that the image is cropped to make it fit the specified sizes.  This is especially apparent in the third example.
+Notice that the image is cropped-to-fit if `width` and `height` are both specified.
 
 
 Apache Expires Headers

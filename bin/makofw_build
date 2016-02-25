@@ -129,5 +129,3 @@ if __name__ == '__main__':
         
     main(_SRC_DIR, _DST_DIR)
 
-    print '\nBuilt Successfully!  Output is at: %s\n'%(_DST_DIR,)
-

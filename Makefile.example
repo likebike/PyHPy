@@ -8,47 +8,55 @@ MAKEFILE_DIR=$(patsubst %/,%,$(dir $(THIS_MAKEFILE)))
 # We use the Makefile location to guess our project root:
 PROJ_ROOT=${MAKEFILE_DIR}
 
-# The MakoFW location:
+# The location of MakoFW:
 MAKOFW_DIR=${PROJ_ROOT}/makofw
 
 # Directory locations:
 IN_DIR=${PROJ_ROOT}/input
 BUILD_DIR=${PROJ_ROOT}/.build
-OUT_DEV_DIR=${PROJ_ROOT}/output/dev
-OUT_PROD_DIR=${PROJ_ROOT}/output/prod
-
-# The Python command to use:
-PYTHON=python2.7
-export PYTHONPATH:=${MAKOFW_DIR}/lib/python:${PYTHONPATH}
+OUT_DIR=${PROJ_ROOT}/output
+OUT_DEV_DIR=${OUT_DIR}/dev
+OUT_PROD_DIR_NAME=prod-$(shell date '+%Y%m%d%H%M%S')
+OUT_PROD_DIR=${OUT_DIR}/${OUT_PROD_DIR_NAME}
+OUT_PROD_SYMLINK=${OUT_DIR}/prod
 
 # Build Options:
 ACL_CHECK=1
 AUTO_RM=0
 
-# The port of the development HTTP server:
+# The port and docroot of the development HTTP server:
 WWW_PORT=8000
+WWW_DIR=${OUT_DEV_DIR}
+
+# Commands that might need adjustment for your system:
+PYTHON=python2.7
+COPY=rsync -vaHAX --info=flist0,stats0
+export PYTHONPATH:=${MAKOFW_DIR}/lib/python:${PYTHONPATH}
 
 
 # By default, build the development site without doing ACL checks, and with auto-remove enabled:
 # The first two lines are target-specific variables (http://www.gnu.org/software/make/manual/html_node/Target_002dspecific.html).
-dev-autorm: ACL_CHECK=0
-dev-autorm: AUTO_RM=1
-dev-autorm: dev
+dev-fast: ACL_CHECK=0
+dev-fast: AUTO_RM=1
+dev-fast: dev
+
 # Build the development site:
-dev: inputToBuild
-	MAKOFW_BUILD_MODE=dev ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} "${PYTHON}" "${MAKOFW_DIR}/bin/makofw_build" "${BUILD_DIR}" "${OUT_DEV_DIR}"
-
-# Automatically remove unexpected files from the production output:
-prod-autorm: AUTO_RM=1
-prod-autorm: prod
-# Build the production site:
-prod: inputToBuild
-	MAKOFW_BUILD_MODE=prod ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} "${PYTHON}" "${MAKOFW_DIR}/bin/makofw_build" "${BUILD_DIR}" "${OUT_PROD_DIR}"
-
-# Copy 'input' to 'build' (used internally -- typically not used from the command line):
-inputToBuild:
+dev:
 	@echo
-	rsync -vaHAX --info=flist0,stats0 "${IN_DIR}/" "${BUILD_DIR}"
+	${COPY} "${IN_DIR}/" "${BUILD_DIR}"
+	@echo
+	ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} "${PYTHON}" "${MAKOFW_DIR}/bin/makofw_build" "${BUILD_DIR}" "${OUT_DEV_DIR}"
+	@echo
+	@echo "DEV Built Successfully!  Output is at: ${OUT_DEV_DIR}"
+	@echo
+
+# Copy 'dev' to 'prod':
+prod: dev
+	${COPY} "${OUT_DEV_DIR}/" "${OUT_PROD_DIR}"
+	@echo
+	ln -sfn "${OUT_PROD_DIR_NAME}" "${OUT_PROD_SYMLINK}"
+	@echo
+	@echo "PROD Built Successfully!  Output is at: ${OUT_PROD_SYMLINK}"
 	@echo
 
 # Remove the 'build' area.  Also set the dev output's timestamps in the past so that everything will get re-built next time:
@@ -57,9 +65,7 @@ clean:
 	find "${OUT_DEV_DIR}" -exec touch -t 198607060000 '{}' ';'
 
 # Useful for local development and testing:
-devserver:
-	cd "${OUT_DEV_DIR}"; "${PYTHON}" -m SimpleHTTPServer "${WWW_PORT}"
-prodserver:
-	cd "${OUT_PROD_DIR}"; "${PYTHON}" -m SimpleHTTPServer "${WWW_PORT}"
+server:
+	"${PYTHON}" -m makofw.httpd "${WWW_PORT}" "${WWW_DIR}"
 
 
