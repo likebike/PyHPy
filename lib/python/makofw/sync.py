@@ -94,6 +94,12 @@ def syncSymlink(srcPath, dstPath):
         if os.path.exists(dstPath): os.remove(dstPath)
         os.symlink(linkto, dstPath)
 
+def syncFileOrSymlink(srcPath, dstPath):
+    if not os.path.exists(srcPath): raise ValueError('Does Not Exist: %r'%(srcPath,))
+    if os.path.islink(srcPath): return syncSymlink(srcPath, dstPath)
+    if not os.path.isfile(srcPath): raise ValueError('Not a file or symlink: %r'%(srcPath,))
+    return syncNormalFile(srcPath, dstPath)
+
 
 def syncMakoTemplate(srcPath, dstPath):
     lastModTime = makofw.getmtime(srcPath)
@@ -124,4 +130,17 @@ def syncMakoTemplate(srcPath, dstPath):
         print '\t%s  -->  %s'%(srcPath,dstPath)
         cpStats(srcPath,dstPath)
 
+
+def syncData(data, dstPath, encoding='utf-8'):
+    '''Writes the provided 'data' to 'dstPath', if necessary.'''
+    if (not os.path.exists(dstPath)) or codecs.open(dstPath, encoding=encoding).read()!=data:
+        print 'Writing Data -->  %s'%(dstPath,)
+        dstDir = os.path.dirname(dstPath)
+        if not os.path.isdir(dstDir):
+            print 'Creating Directory:'
+            print '\t%s'%(dstDir,)
+            os.makedirs(dstDir)
+        outF = codecs.open(dstPath, 'wb', encoding=encoding)
+        outF.write(data)
+        outF.close()
 

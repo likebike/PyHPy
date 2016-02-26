@@ -50,3 +50,62 @@ hr.afterPost {
     border-left: 0;
     border-radius: 7px;  /* 7 = 12/2 + 1 */
 }
+
+ul.exampleCode {
+    list-style: none;
+    padding-left: 0;
+    margin: 1em;
+    width: 50em;
+    /* Match github-markdown.css <pre>: */
+    font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    line-height: 1.45;
+    font-size: 85%;
+}
+ul.exampleCode li.exampleCode,
+ul.exampleCode li.exampleOutput {
+    border: 1px solid #888;
+    padding: 16px;
+    border-radius: 5px;
+    margin-bottom: 1em;
+}
+ul.exampleCode li.exampleCode {
+    white-space: pre;
+    background-color: #f0f0f0;
+    color: #000;
+}
+ul.exampleCode li.exampleOutput {
+    white-space: pre;
+    background-color: #585858;
+    color: #fff;
+}
+ul.exampleCode li.exampleCode div.title,
+ul.exampleCode li.exampleOutput div.title {
+    font-weight: bold;
+    text-align: center;
+}
+ul.exampleCode li.exampleCode div.title {
+    background-color: #bcbcbc;
+}
+ul.exampleCode li.exampleOutput div.title {
+    background-color: #7d7d7d;
+}
+ul.exampleCode div.text {
+    word-wrap: normal;
+    overflow: auto;
+}
+
+
+
+table.exampleCode th {
+    background-color: #666;
+    color: #ddd;
+}
+table.exampleCode td {
+    white-space: pre;
+    vertical-align: top;
+    /* Match github-markdown.css <pre>: */
+    padding: 16px;
+    font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    line-height: 1.45;
+    font-size: 85%;
+}

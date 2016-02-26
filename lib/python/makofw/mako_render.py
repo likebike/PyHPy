@@ -105,7 +105,7 @@ class ChrisTemplateLookup(object):
 
 
 
-def getTemplateCode(template): return '\n'.join(['%03d: %s'%(i+1,l) for i,l in enumerate(template._code.splitlines())])
+def getTemplateCode(template, outputEncoding='ascii'): return ('\n'.join(['%03d: %s'%(i+1,l) for i,l in enumerate(template._code.splitlines())])).encode(outputEncoding, 'backslashreplace')
 
 __ALL_TEMPLATES = []
 def getMakoTemplate(path, lookup=None):

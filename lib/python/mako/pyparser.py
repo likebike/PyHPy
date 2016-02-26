@@ -52,6 +52,10 @@ def parse(code, mode='exec', **exception_kwargs):
                 code = code.encode('ascii', 'backslashreplace')
             return compiler_parse(code, mode)
     except Exception:
+        import sys, traceback                          ##################  Added by Christopher Sebastian
+        print >> sys.stderr, '\nOriginal Exception:'   ##################  Added by Christopher Sebastian
+        traceback.print_exc()                          ##################  Added by Christopher Sebastian
+        print >> sys.stderr                            ##################  Added by Christopher Sebastian
         raise exceptions.SyntaxException(
                     "(%s) %s :\n%s" % (                ##################  Edited by Christopher Sebastian
                         compat.exception_as().__class__.__name__,

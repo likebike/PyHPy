@@ -1,15 +1,19 @@
-import os, json, codecs, sys, subprocess
+import os, json, codecs, sys, subprocess, re
 import markdown as _markdown  # Use a different name for the module.
 
 class DoubleSpaceMarkdownExtension(_markdown.extensions.Extension):
-    def __init__(self, *args, **kwargs):
-        super(DoubleSpaceMarkdownExtension, self).__init__(*args, **kwargs)
     def extendMarkdown(self, md, md_globals):
         DSPACE_RE = r'  '
         dspacePattern = DoubleSpaceMarkdownPattern(DSPACE_RE, markdown_instance=md)
         md.inlinePatterns.add('doublespace', dspacePattern, '_end')
 class DoubleSpaceMarkdownPattern(_markdown.inlinepatterns.Pattern):
     def handleMatch(self, m): return '%s%s%snbsp; '%(_markdown.util.STX, ord('&'), _markdown.util.ETX)
+
+class EqualSignHeaderMarkdownExtension(_markdown.extensions.Extension):
+    def extendMarkdown(self, md, md_globals):
+        md.parser.blockprocessors.add('equalsignheader', EqualSignHeaderProcessor(md.parser), '>setextheader')
+class EqualSignHeaderProcessor(_markdown.blockprocessors.HashHeaderProcessor):
+    RE = re.compile(r'(^|\n)(?P<level>={1,6})(?P<header>.*?)=*(\n|$)')
     
 
 # A MarkDown Mako Filter.  Use like this:
@@ -21,7 +25,7 @@ class DoubleSpaceMarkdownPattern(_markdown.inlinepatterns.Pattern):
 #     This is **MarkDown**!
 #     </%block>
 def markdown(string, output_format='html5'):
-    md = _markdown.Markdown(output_format=output_format, extensions=['markdown.extensions.fenced_code', DoubleSpaceMarkdownExtension()])
+    md = _markdown.Markdown(output_format=output_format, extensions=['markdown.extensions.fenced_code', DoubleSpaceMarkdownExtension(), EqualSignHeaderMarkdownExtension()])
 
     # # I thought I needed to be able to escape angle brackets, but it turns out that I can already
     # # use <%! ... %> stuff directly -- i just need to add a blank line to separate it from inline content.
