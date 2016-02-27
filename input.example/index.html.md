@@ -1,7 +1,7 @@
-Welcome to the MakoFW Demo Site!
-================================
+Welcome to the PyHPy Demo Site!
+===============================
 
-MakoFW is a minimalist static website generation framework, built on top of the [Mako](http://www.makotemplates.org/) templating engine.
+PyHPy is a static website generation framework, built on top of the [Python](http://python.org/)-powered [Mako](http://www.makotemplates.org/) templating engine.
 
 
 <i class="fa fa-files-o fa-lg"></i> Static is Beautiful
@@ -23,7 +23,7 @@ Static webpages have some very nice features:
 
 I chose to build this framework on top of [Mako](http://www.makotemplates.org/) for the following reasons:
 
-* Mako can produce any kind of output -- not just webpages.  Therefore, you can use MakoFW for any kind of static output generation.  (I like general solutions.)
+* Mako can produce any kind of output -- not just webpages.  Therefore, you can use PyHPy for any kind of static output generation.  (I like general solutions.)
 
 * [Powerful Template Inheritence](http://docs.makotemplates.org/en/latest/inheritance.html).  Makes it easy to create consistent, scalable websites, no matter how large your site gets.
 
@@ -32,26 +32,25 @@ I chose to build this framework on top of [Mako](http://www.makotemplates.org/) 
 * Widely Used.  Two famous users are [reddit.com](http://www.reddit.com/) and [Pylons/Pyramid](http://www.pylonsproject.org/).
 
 
-<i class="fa fa-paper-plane-o fa-lg"></i> MakoFW Makes it Easy
---------------------------------------------------------------
+<i class="fa fa-paper-plane-o fa-lg"></i> PyHPy Makes it Easy
+-------------------------------------------------------------
 
-MakoFW combines powerful tools like `rsync`, `make`, and `mako-render`, and adds a layer of convenience and integration on top.
+PyHPy combines powerful tools like `rsync`, `make`, and `mako-render`, and adds a layer of convenience and integration on top.
 
 * [MarkDown](https://en.wikipedia.org/wiki/Markdown) Integration.  Just type your content text into an `.md` file and it becomes a beautiful webpage.  Easy enough for my Mom.
 
 * Faster Load Times.  Thanks to built-in support for aggressive client-side `Expires Header` caching, your pages will approach theoretical limits of speed and responsiveness.
 
-* Improved Error Reporting.  When things go wrong, MakoFW produces very detailed and helpful error reports, allowing you to pin-point the cause of the problem with minimal effort.
+* Improved Error Reporting.  When things go wrong, PyHPy produces very detailed and helpful error reports, allowing you to pin-point the cause of the problem with minimal effort.
 
-Here's the typical process of building a site with MakoFW:
+Here's the typical process of building a site with PyHPy:
 
-1. Create content (like MarkDown), mako templates, and static files (like images) in an `input` directory.
+1. Create content (like MarkDown), Mako templates, and static files (like images) in an `input` directory.
 1. Run `make`.  Content and templates are rendered, and the results are published to an `output` directory.
-1. View the output in a web browser.
-1. GOTO 1 until you're happy with the result.
-1. Upload the `output` directory to your webserver using `FTP` or `rsync`.
+1. View the output in a web browser.  If you're not totally happy with the result, GOTO 1.
+1. Upload the `output` directory to your web server using `rsync` or `FTP`.
 
-The best way to start learning MakoFW is to read through the included `input.example` files, which produce *this* website.  You can also read the documentation articles that are included in the [demo blog](${self.URL('/blog.html', mtime=None)}).  If you have questions, send them to [Christopher Sebastian](mailto:csebastian3@gmail.com).
+The best way to start learning PyHPy is to read through the included `input.example/`, which produces *this* website.  You can also read the documentation articles that are included in the [demo blog](${self.URL('/blog.html', mtime=None)}).  If you have questions, send them to [Christopher Sebastian](mailto:csebastian3@gmail.com).
 
 **[<i class="fa fa-photo fa-lg"></i> View the Demo Photo Album](${self.URL('/photos.html', mtime=None)})**
 

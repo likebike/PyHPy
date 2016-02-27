@@ -1,7 +1,7 @@
 
 
 
-Welcome to MakoFW; a simple framework for producing static websites.
+Welcome to PyHPy; a simple framework for producing static websites.
 
 
 === Installation ===
@@ -15,7 +15,7 @@ Then, edit the Makefile and make sure that the variables at the top of the
 file make sense for your project.  In particular, you should probably edit
 these:
 
-    MAKOFW_DIR  --  The directory where the MakoFW package is.
+    PYHPY_DIR   --  The directory where the PyHPY package is.
     SRC_DIR     --  The directory where your source files and templates are.
     WWW_DEV     --  The directory that your Development site is served from.
     WWW_PROD    --  The directory that your Production site is served from.
@@ -38,7 +38,7 @@ Do your work in the SRC_DIR that you defined in the Makefile.  '*.tmpl' files
 will be rendered as Mako templates.  All other types of files will just be
 copied normally.  '.*' and '_*' files are considered to be hidden files and are
 not published... except for '.htaccess', which IS published.  Those are most of
-the rules, but to see all the rules in detail, read $MAKOFW_DIR/bin/publish.py.
+the rules, but to see all the rules in detail, read $PYHPY_DIR/bin/publish.py.
 
 Publish your work to the Development site by running 'make' in your project
 root.  Or, if you're in a hurry, you can use 'make fast', which will skip ACL

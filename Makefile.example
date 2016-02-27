@@ -1,4 +1,4 @@
-# This is the MakoFW Project Makefile.
+# This is the PyHPy Project Makefile.
 # Adjust this Makefile to suit your server and project requirements.
 
 # Find the location of this Makefile (this method works with 'make -C', but maybe not with 'make -f'.):
@@ -8,8 +8,8 @@ MAKEFILE_DIR=$(patsubst %/,%,$(dir $(THIS_MAKEFILE)))
 # We use the Makefile location to guess our project root:
 PROJ_ROOT=${MAKEFILE_DIR}
 
-# The location of MakoFW:
-MAKOFW_DIR=${PROJ_ROOT}/makofw
+# The location of PyHPy:
+PYHPY_DIR=${PROJ_ROOT}/pyhpy
 
 # Directory locations:
 IN_DIR=${PROJ_ROOT}/input
@@ -31,7 +31,7 @@ WWW_DIR=${OUT_DEV_DIR}
 # Commands that might need adjustment for your system:
 PYTHON=python2.7
 COPY=rsync -vaHAX --info=flist0,stats0
-export PYTHONPATH:=${MAKOFW_DIR}/lib/python:${PYTHONPATH}
+export PYTHONPATH:=${PYHPY_DIR}/lib/python:${PYTHONPATH}
 
 
 # By default, build the development site without doing ACL checks, and with auto-remove enabled:
@@ -45,7 +45,7 @@ dev:
 	@echo
 	${COPY} "${IN_DIR}/" "${BUILD_DIR}"
 	@echo
-	ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} "${PYTHON}" "${MAKOFW_DIR}/bin/makofw_build" "${BUILD_DIR}" "${OUT_DEV_DIR}"
+	ACL_CHECK=${ACL_CHECK} AUTO_RM=${AUTO_RM} "${PYTHON}" "${PYHPY_DIR}/bin/pyhpy_build" "${BUILD_DIR}" "${OUT_DEV_DIR}"
 	@echo
 	@echo "DEV Built Successfully!  Output is at: ${OUT_DEV_DIR}"
 	@echo
@@ -66,6 +66,6 @@ clean:
 
 # Useful for local development and testing:
 server:
-	"${PYTHON}" -m makofw.httpd "${WWW_PORT}" "${WWW_DIR}"
+	"${PYTHON}" -m pyhpy.httpd "${WWW_PORT}" "${WWW_DIR}"
 
 

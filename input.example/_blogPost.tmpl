@@ -1,5 +1,4 @@
 <%inherit file="blog.html.tmpl" />
-<%! import makofw %>
 <% 
   assert self.uri.endswith('.html.tmpl'), 'Unexpected Extension: %r'%(self.uri,)
   date,mdFilename,meta,title,image = self.postInfo(self.uri[len(self.FS_ROOT()+'/blog/'):-5]+'.md')

@@ -17,14 +17,14 @@ class EqualSignHeaderProcessor(_markdown.blockprocessors.HashHeaderProcessor):
     
 
 # A MarkDown Mako Filter.  Use like this:
-#     <%! import makofw %>
-#     <%block filter="makofw.markdown">
+#     <%! import pyhpy %>
+#     <%block filter="pyhpy.markdown">
 #     Hello
 #     -----
 #     
 #     This is **MarkDown**!
 #     </%block>
-def markdown(string, output_format='html5'):
+def markdown(string, output_format='html5', cssClass='markdown-body'):
     md = _markdown.Markdown(output_format=output_format, extensions=['markdown.extensions.fenced_code', DoubleSpaceMarkdownExtension(), EqualSignHeaderMarkdownExtension()])
 
     # # I thought I needed to be able to escape angle brackets, but it turns out that I can already
@@ -36,7 +36,7 @@ def markdown(string, output_format='html5'):
     #         md.ESCAPED_CHARS = ['<'] + echars
     #         assert '<' not in _markdown.Markdown.ESCAPED_CHARS  # Make sure we didn't actually modify the class data.
 
-    out  = '<article class="markdown-body">'    # We replicate the wrapper used on GitHub for compatibility with 3rd party CSS.
+    out  = '<article class="%s">'%(cssClass,)    # We replicate the wrapper used on GitHub for compatibility with 3rd party CSS.
     out += md.convert(string)
     out += '</article>'
     return out

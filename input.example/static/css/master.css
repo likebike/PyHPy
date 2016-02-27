@@ -21,7 +21,7 @@ div#header {
     border-radius: 10px 10px 0 0;
 }
 div#header div.vspacer {
-    height: 115px;
+    height: 155px;
 }
 div#header hr {
     margin-bottom: 0;
@@ -34,12 +34,23 @@ a#logo {
     color: #03436a;
     font-size: 362%;
 }
-a#logo i {
-    font-size: 138%;
+a#logo img {
+    margin-bottom: -23px;
+}
+a#logo div.asciiLogo {
+    font-size: 6px;
+    font-weight: 900;
+    white-space: pre;
+    font-family: monospace;
+    margin-top: -35px;
+    margin-left: -15px;
+    display: inline-block;
+    vertical-align: middle;
+    text-shadow: 0 0 1em #fff;
 }
 div#slogan {
     position: absolute;
-    top: 30px;
+    top: 35px;
     right: 30px;
     color: #f8f8f8;
     font-family: serif;
@@ -49,7 +60,7 @@ div#slogan {
 }
 ul#headerTabs {
     position: absolute;
-    top: 60px;
+    top: 85px;
     right: 30px;
     margin: 0;
 }

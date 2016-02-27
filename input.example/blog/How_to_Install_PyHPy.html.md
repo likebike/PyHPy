@@ -1,7 +1,7 @@
 <i class="fa fa-download fa-lg"></i> The Project Setup Process
 ==============================================================
 
-Unlike most software tools, MakoFW is not supposed to be installed globally on your system;  Instead, you should download a local copy of MakoFW into each new project that you create.  This ensures that your projects remain independent, and self-contained.  Here are the instructions to create a new MakoFW project:
+Unlike most software tools, PyHPy is not supposed to be installed globally on your system;  Instead, you should download a local copy of PyHPy into each new project that you create.  This ensures that your projects remain independent and self-contained.  Here are the instructions to create a new PyHPy project:
 
 Step 1:  If Necessary, Install Dependencies
 -------------------------------------------
@@ -12,7 +12,7 @@ If your system doesn't already have them, you'll need to install Python2.7, GNU 
 sudo apt-get install python2.7 make imagemagick
 ```
 
-(If there is sufficient demand, I can update MakoFW with Python3 support.)
+(If there is sufficient demand, I can update PyHPy with Python3 support.)
 
 
 Step 2:  Initialize the Project Directory
@@ -23,19 +23,19 @@ Let's pretend that we want the new project to be stored at `~/mysite/`.  In that
 ```bash
 mkdir -p ~/mysite                # Create the project directory.
 cd ~/mysite/                     # Enter the directory.
-# Download the latest MakoFW to ~/mysite/makofw/ :
-curl http://makofw.likebike.com/makofw-latest.tar.gz | tar x
+# Download the latest PyHPy to ~/mysite/pyhpy/ :
+curl http://pyhpy.likebike.com/pyhpy-latest.tar.gz | tar x
 ```
 
-At this point, our project directory has been created and MakoFW has been downloaded into the `makofw` subdirectory.  Next, let's copy the example `Makefile` and `input`:
+At this point, our project directory has been created and PyHPy has been downloaded into the `pyhpy` subdirectory.  Next, let's copy the example `Makefile` and `input`:
 
 ```bash
 cd ~/mysite/
-cp makofw/Makefile.example Makefile
-cp -r makofw/input.example input
+cp pyhpy/Makefile.example Makefile
+cp -r pyhpy/input.example input
 ```
 
-That's it.  We now have a functional MakoFW project.  In the next step, we will test it out.
+That's it.  We now have a functional PyHPy project.
 
 
 Step 3:  Test the New Project
@@ -52,7 +52,7 @@ The above command will produce an `output` directory, where the results are plac
 
 ```bash
 cd ~/mysite/
-make devserver   # This will run a local HTTP server on port 8000.
+make server   # This will run a local HTTP server on port 8000.
 ```
 
 Once the development web server is running, you can view your site at <http://127.0.0.1:8000/> .
@@ -63,17 +63,17 @@ After you have confirmed that everything is working, you might want to take the 
 <i class="fa fa-gift fa-lg"></i> Out-of-the-Box Functionality
 =============================================================
 
-MakoFW comes with an example website (the site you're reading right now), which you might want to use as a starting point for your project.
+PyHPy comes with an example website (the site you're reading right now), which you might want to use as a starting point for your project.
 
 
 MarkDown-Powered Demo Blog
 --------------------------
 
-The demo blog is generated from a directory of `.md` posts (written in the MarkDown text format), with matching `.meta` files for metadata (like Author, Summary, Post Image, and Publication Date).
+The demo blog is generated from a directory of `.md` posts (written in the MarkDown text format), with matching `.meta` files for metadata (like Author, Summary, Post Image, Publication Date, and anything else you might want to add).
 
 The demo blog generates a separate HTML page for each post, and shows a list of all the posts, sorted by reverse Publication Date.
 
-If you just want to get some articles online quickly, the included demo blog might be a good starting point -- just create your own `.md` and `.meta` files in the `/input/blog/` directory, and then run `make`.
+If you just want to get some posts online quickly, the included demo blog might be a good starting point -- just create your own `.md` and `.meta` files in the `/input/blog/` directory, and then run `make`.
 
 
 FontAwesome
@@ -105,20 +105,20 @@ I like to ride my <i class="fa fa-bicycle"></i>!
 Thumbnail Creation
 ------------------
 
-The `makofw.thumb()` function makes it easy to produce thumbnail images.  The demo blog and photo album both make frequent use of this feature.  Here are some examples of how to use it:
+The `pyhpy.thumb()` function makes it easy to produce thumbnail images.  The demo blog and photo album both make frequent use of this feature.  Here are some examples of how to use it:
 
 ```html
-<img src="${'$'}{makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150)}" />
-<img src="${'$'}{makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', height=150)}" />
-<img src="${'$'}{makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150, height=150)}" />
+<img src="${'$'}{pyhpy.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150)}" />
+<img src="${'$'}{pyhpy.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', height=150)}" />
+<img src="${'$'}{pyhpy.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150, height=150)}" />
 ```
 
 ...and here's the output:
 
-<%! import makofw %>
-<img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150))}" />
-<img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', height=150))}" />
-<img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150, height=150))}" />
+<%! import pyhpy %>
+<img src="${self.URL(pyhpy.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150))}" />
+<img src="${self.URL(pyhpy.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', height=150))}" />
+<img src="${self.URL(pyhpy.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150, height=150))}" />
 
 Notice that the image is cropped-to-fit if `width` and `height` are both specified.
 
@@ -128,12 +128,12 @@ Apache Expires Headers
 
 `Expires` headers instruct web browsers to employ their most aggressive form of client-side caching.  This caching will reduce the number of requests that are issued to the server, and will dramatically improve your site's load time and responsiveness.  However, when using aggressive caching, you need a way to notify clients when new data is available... otherwise they will continue to use their cached versions and won't notice the new stuff.
 
-The example site comes with .htaccess files that enable `Expires` headers for all requests to `/static/...` URLs.  It also provides a way to make it easy to make updates to these files: the `input/__init__.tmpl` file defines the `self.URL(path, mtime)` function.  This function is useful for generation of URLs that incorporate a website mount point and a timestamp.  For the following examples, assume that your site will be hosted at `http://xyz.com/store/...` (mount point = `"http://xyz.com/store"`):
+The example site comes with `.htaccess` files that enable `Expires` headers for all requests to `/static/...` URLs.  (**Note:**  This feature requires an Apache web server.)  The example site also provides a way to easily update cached files: `input/__init__.tmpl` defines the `self.URL(relPath, mtime)` function.  This function is useful for generation of URLs that incorporate a website mount point and a timestamp.  For the following examples, assume that your site will be hosted at `http://xyz.com/store/...` (mount point = `"http://xyz.com/store"`):
 
 <table style="font-size: 85%">
   <tr><th>Mako Template Code</th><th>Output</th></tr>
-  <tr><td><code>&lt;a href="${'$'}{self.URL('/static/css/home.css')}"&gt;...&lt;/a&gt;</code></td><td><code>&lt;a href="http://xyz.com/store/static/css/home.css?_=12345678"&gt;...&lt;/a&gt;</code><br>(The '_' value is the filesystem modification time of 'home.css'.)</td></tr>
-  <tr><td><code>&lt;a href="${'$'}{self.URL('/home.html', mtime=None)}"&gt;...&lt;/a&gt;</code></td><td><code>&lt;a href="http://xyz.com/store/home.html"&gt;...&lt;/a&gt;</code><br>Since this URL is not underneath <code>/static/</code>, Expires headers will not be used.  We can use <code>mtime=None</code> to disable the addition of a timestamp because it's a bit ugly.</td></tr>
+  <tr><td><code>&lt;a href="${'$'}{self.URL('/static/css/home.css')}"&gt;...&lt;/a&gt;</code></td><td><code>&lt;a href="http://xyz.com/store/static/css/home.css?_=1456331429.72"&gt;...&lt;/a&gt;</code><br>(The '_' value is the filesystem modification time of 'home.css'.)</td></tr>
+  <tr><td><code>&lt;a href="${'$'}{self.URL('/home.html', mtime=None)}"&gt;...&lt;/a&gt;</code></td><td><code>&lt;a href="http://xyz.com/store/home.html"&gt;...&lt;/a&gt;</code><br>Since this URL is not underneath <code>/static/</code>, Expires headers will not be used.  We can use <code>mtime=None</code> to make the URL prettier.</td></tr>
   <tr><td><code>self.URL()</code></td><td>This is a special case.  It returns the path of the template that is currently being rendered, without the mount point.  For example, <code>"/home.html.tmpl"</code>.</td></tr>
 </table>
 

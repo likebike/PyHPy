@@ -1,5 +1,5 @@
 <%inherit file="_master.tmpl" />
-<%! import os, string, makofw %>
+<%! import os, string, pyhpy %>
 <% photos = [x[:-5] for x in os.listdir(self.photosDir()) if x.endswith('.jpeg')  and  '_THUMB' not in x] %>
 
 <div id=textStuff>
@@ -31,11 +31,11 @@
               continue
       open(photo_page_path, 'w').write(page_tmpl)
 %>
-<%block filter="makofw.markdown">
-This is a MakoFW-Powered Photo Album.
+<%block filter="pyhpy.markdown">
+This is a PyHPy-Powered Photo Album.
 =====================================
 
-First, let me just say, this is *not* a very good photo album app.  Its only purpose is to be a small example of how to use MakoFW, so please don't judge it too harshly.  There are many better photo albums out there, such as [phpAlbum](http://www.phpalbum.net/).
+First, let me just say, this is *not* a very good photo album app.  Its only purpose is to be a small example of how to use PyHPy, so please don't judge it too harshly.  There are many better photo albums out there, such as [phpAlbum](http://www.phpalbum.net/).
 
 This photo album scans a directory for JPEG files, and creates a thumbnail and HTML page for each image.  Additionally, `.meta` files are used to provide image information, such as `description` and `location`.
 </%block>
@@ -46,7 +46,7 @@ ${next.body()}
 
 <ul class=thumbnails>
 %for p in photos:
-  <li class=thumbnail><a href="${self.URL('/photos/%s.html'%(p,), mtime=None)}"><img src="${self.URL(makofw.thumb(self.FS_ROOT(), '/static/photoalbum/%s.jpeg'%(p,), width=162, height=100))}"></a></li>
+  <li class=thumbnail><a href="${self.URL('/photos/%s.html'%(p,), mtime=None)}"><img src="${self.URL(pyhpy.thumb(self.FS_ROOT(), '/static/photoalbum/%s.jpeg'%(p,), width=162, height=100))}"></a></li>
 %endfor
 </ul>
 <div class=clearFloats></div>

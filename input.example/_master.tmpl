@@ -35,14 +35,14 @@
 ##     <%include file="db.json.tmpl" />
 ##     ${context.lookup.get_template('db.json.tmpl').render_unicode().strip()}
 ##
-##     ### MakoFW Provides the Following Convenience Features ###
+##     ### PyHPy Provides the Following Convenience Features ###
 ##     self.URL('/blog.html')   --  Includes a "?timeout=${FS mtime}" in the URL.
 ##     self.URL()               --  Returns the project path of the template being rendered.
 ##                                  If /a/b/buildDir/x/y/z.tmpl is being rendered,
 ##                                  self.URL() --> /x/y/z.tmpl
 ##     self.FS_ROOT()           --  Returns the FS Path of the Build directory.
-##     makofw.meta('/path/to/file.xyz')                  --  Returns metadata
-##     <%block filter="makofw.markdown">...</%block>     --  Embed MarkDown
+##     pyhpy.meta('/path/to/file.xyz')                  --  Returns metadata
+##     <%block filter="pyhpy.markdown">...</%block>     --  Embed MarkDown
 ##
 ##
 <%inherit file="__init__.tmpl" />\
@@ -60,7 +60,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
-    <title><%block name="TITLE">MakoFW Demo</%block></title>
+    <title><%block name="TITLE">PyHPy Demo</%block></title>
     <link rel="stylesheet" type="text/css" href="/static/lib/yui-3.12.0/reset_base_fonts-min.css">
     <link rel="stylesheet" type="text/css" href="/static/lib/font-awesome-4.5.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/github-markdown.css')}">
@@ -88,8 +88,30 @@
   </head>
   <body>
     <div id=header>
-      <a id=logo href="${self.URL('/index.html', mtime=None)}"><i class="fa fa-skyatlas"></i> MakoFW</a>
-      <div id=slogan>A Simple Example to Get You Started.</div>
+      <a id=logo href="${self.URL('/index.html', mtime=None)}"><div class=asciiLogo>
+                 .
+             /\ /l
+            ((.Y(!
+             \ |/
+             /  6~6,
+             \ _    +-.
+              \`-=--^-'
+               \ \ 
+              _/  \ 
+             (  .  Y
+            /"\ `--^--v--.
+           / _ `--"T~\/~\/
+          / " ~\.  !
+    _    Y      Y./'
+   Y^|   |      |~~7
+   | l   |     / ./'
+   | `L  | Y .^/~T
+   |  l  ! | |/| |
+   | .`\/' | Y | !
+    l "~   j l j_L______
+     \,___{ __"~ __ ,\_,\_
+</div> PyHPy</a>
+      <div id=slogan>PyHPy makes you sound Austrylian.</div>
       <ul id=headerTabs>
         <li class=${'selected' if self.URL() == '/index.html.tmpl' else 'unselected'}><a href="${self.URL('/index.html', mtime=None)}"}><i class="fa fa-home"></i> Home</a></li>
         <li class=${'selected' if self.URL().startswith('/photos') else 'unselected'}><a href="${self.URL('/photos.html', mtime=None)}"}><i  class="fa fa-photo"></i> Photos</a></li>
@@ -113,6 +135,8 @@
 ## These are Mako '<%def>' sections.  They override values in the resulting templates.
 ## You can override these <%def>'s in templates that inherit from this one.
 <%def name='debugPage()'><% return False %></%def>
+
+<%! import pyhpy %>
 
 ## FOR FUTURE REFERENCE:
 ##

@@ -1,8 +1,8 @@
 ## You should always use this file as the top of your inheritance chain.  It provides some convenient infrastructure and it doesn't affect output.
 ## (Note that I am always using a '\' character at the end of each line to avoid outputting extra whitespace.)
-<%! import os, makofw %>\
+<%! import os, pyhpy %>\
 ${next.body()}\
-## Here, we provide some convenience infrastructure.  We can't provide this in the 'makofw' module because we are not aware of our project when running that code.
+## Here, we provide some convenience infrastructure.  We can't provide this in the 'pyhpy' module because we are not aware of our project when running that code.
 ## We know that this __init__.tmpl file is always going to be at the top level of our project, so therefore we can know our project root.
 <%def name="FS_ROOT()"><%
     assert globals()['_template_filename'] == local.uri   ####  I am just double-checking that local.uri is what I think it is.  Will remove this soon.
@@ -23,5 +23,5 @@ ${next.body()}\
         # If you really need a web-usable URL, you can URL(URL()).
         assert self.uri.startswith(buildDir)
         return self.uri[len(buildDir):]
-    return makofw.url(path, urlRoot=self.URL_ROOT(), fsRoot=buildDir, mtime=mtime)
+    return pyhpy.url(path, urlRoot=self.URL_ROOT(), fsRoot=buildDir, mtime=mtime)
 %></%def>\

@@ -1,5 +1,5 @@
 import os, shutil, subprocess, codecs, sys
-import makofw, makofw.mako_render
+import pyhpy, pyhpy.mako_render
 
 def walk(path):
     for dirpath, dirnames, filenames in os.walk(path):
@@ -65,8 +65,8 @@ def cpData(srcPath, dstPath, touch=True):
 
 def syncNormalFile(srcPath, dstPath):
     dstModTime = 0
-    if os.path.exists(dstPath): dstModTime = makofw.getmtime(dstPath, includeMeta=False)
-    srcModTime = makofw.getmtime(srcPath, includeMeta=False)
+    if os.path.exists(dstPath): dstModTime = pyhpy.getmtime(dstPath, includeMeta=False)
+    srcModTime = pyhpy.getmtime(srcPath, includeMeta=False)
     if srcModTime > dstModTime:
         print 'Copying Normal File: %r > %r'%(srcModTime, dstModTime)
         print '\t%s  -->  %s'%(srcPath,dstPath)
@@ -102,15 +102,15 @@ def syncFileOrSymlink(srcPath, dstPath):
 
 
 def syncMakoTemplate(srcPath, dstPath):
-    lastModTime = makofw.getmtime(srcPath)
-    for dep in makofw.mako_render.getMakoTemplateDeps(srcPath):
+    lastModTime = pyhpy.getmtime(srcPath)
+    for dep in pyhpy.mako_render.getMakoTemplateDeps(srcPath):
         assert os.path.isabs(dep)
         if not os.path.exists(dep):
             print 'Dependency of %r does not exist: %r'%(srcPath, dep,)
             continue
-        lastModTime = max(lastModTime, makofw.getmtime(dep))
+        lastModTime = max(lastModTime, pyhpy.getmtime(dep))
     dstModTime = 0
-    if os.path.exists(dstPath): dstModTime = makofw.getmtime(dstPath)
+    if os.path.exists(dstPath): dstModTime = pyhpy.getmtime(dstPath)
     if lastModTime > dstModTime:
         dstDir = os.path.dirname(dstPath)
         if not os.path.isdir(dstDir):
@@ -119,7 +119,7 @@ def syncMakoTemplate(srcPath, dstPath):
             os.makedirs(dstDir)
         print 'Evaluating Mako Template:'
         print '\t%s  -->  %s'%(srcPath,dstPath)
-        result = makofw.mako_render.makoRender(srcPath, {})    #### 2013-09-28 -- I need to double-check the logic for the {} ...
+        result = pyhpy.mako_render.makoRender(srcPath, {})    #### 2013-09-28 -- I need to double-check the logic for the {} ...
         outFile = codecs.open(dstPath, 'wb', encoding='utf-8')
         outFile.write(result)
         outFile.close()

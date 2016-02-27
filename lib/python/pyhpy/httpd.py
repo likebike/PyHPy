@@ -12,7 +12,7 @@
 import sys, SimpleHTTPServer, posixpath, os.path, urllib
 
 
-class MakoFWHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class PyHPyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     # I have copy-pasted this method from SimpleHTTPServer.py, and I have modified it a tiny bit:
     def translate_path(self, path):
         """Translate a /-separated PATH to the local filename syntax.
@@ -50,9 +50,9 @@ def setDOCROOT(docroot):
     print 'DOCROOT = %r'%(DOCROOT,)
 
 def main():    
-    if len(sys.argv) != 3: raise ValueError('usage: makofw.httpd PORT DOCROOT')
+    if len(sys.argv) != 3: raise ValueError('usage: pyhpy.httpd PORT DOCROOT')
     setDOCROOT(os.path.abspath(sys.argv[2]))
-    SimpleHTTPServer.test(HandlerClass=MakoFWHTTPRequestHandler)
+    SimpleHTTPServer.test(HandlerClass=PyHPyHTTPRequestHandler)
 
 if __name__ == '__main__': main()
 
