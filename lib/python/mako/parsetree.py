@@ -30,6 +30,7 @@ class Node(object):
 
     def accept_visitor(self, visitor):
         def traverse(node):
+            if type(node) == ControlLine: return  #########################  Added by Christopher Sebastian.  ControlLine Nodes get a list of children appended to them by lexer.py's Lexer.append_node().  When codegen.py's _GenerateRenderMethod.write_toplevel() iterates over template nodes, it isn't expecting ControlLine Nodes to have children, and as a result, it ends up processing all of them twice -- Once from the ControlNode children, and then again because all nodes are always added to the Template or Tag top level.  This results in duplicate code generation.  In append_node()'s comments, it says that the reason ControlLine Nodes track their children is for loop variable detection.  I can see codegen.py's mangle_mako_loop() does indeed iterate over nodes with the LoopVariable visitor.  LoopVariable does define a visitControlLine() method, so this traverse() function won't be called for that case.  Therefore, I am *guessing* that it is safe for me to just skip ControlLines here, since they seem to cause problems in other places.
             for n in node.get_children():
                 n.accept_visitor(visitor)
 

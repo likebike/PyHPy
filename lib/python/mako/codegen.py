@@ -182,7 +182,6 @@ class _GenerateRenderMethod(object):
         inherit = []
         namespaces = {}
         module_code = []
-        seb_alreadySeenModuleCode = {}                        ############  Added by Christopher Sebastian
 
         self.compiler.pagetag = None
 
@@ -199,10 +198,6 @@ class _GenerateRenderMethod(object):
 
             def visitCode(s, node):
                 if node.ismodule:
-                    if node in seb_alreadySeenModuleCode:     ############  Added by Christopher Sebastian
-                        print >> __import__('sys').stderr, 'Skipping Duplicate Module Code:', node    ############  Added by Christopher Sebastian
-                        return                                ############  Added by Christopher Sebastian
-                    seb_alreadySeenModuleCode[node] = True    ############  Added by Christopher Sebastian
                     module_code.append(node)
 
         f = FindTopLevel()

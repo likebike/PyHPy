@@ -375,7 +375,8 @@ ${'&lt;%! ... %&gt;'}
 
 ${self.EXAMPLE_CODE([('module_exec_example.tmpl', ur'''
 ## The <%! ... %> block performs "module execution" of Python code.
-## It executes ONLY ONCE, near the top of the generated Python module.
+## It executes ONLY ONCE, when the generated Python module is loaded.
+## IT DOES NOT EXECUTE WHERE IT APPEARS IN THE TEMPLATE.
 ## <%! ... %> is typically used for two things:
 ##     * import of modules
 ##     * definition of variables/functions/classes
@@ -389,20 +390,14 @@ start
 <%  inline.append('start') %>
 <%! module.append('start') %>
 
-%if True:
-    if-True
-    <%  inline.append('if-True') %>
-    <%! module.append('if-True') %>
-%endif
-
 %if False:
-    if-False
-    <%  inline.append('if-False') %>
-    <%! module.append('if-False') %>
-%elif False:
-    elif-False
-    <%  inline.append('elif-False') %>
-    <%! module.append('elif-False') %>
+    if
+    <%  inline.append('if') %>
+    <%! module.append('if') %>
+%elif True:
+    elif
+    <%  inline.append('elif') %>
+    <%! module.append('elif') %>
 %else:
     else
     <%  inline.append('else') %>
@@ -419,35 +414,41 @@ start
     <%! module.append('for-else') %>
 %endfor
 
-## Note that Mako does not support 'else' attached to 'while'.
 %while True:
     while
     <%  inline.append('while') %>
     <%! module.append('while') %>
     <% break %>
+%else:
+    while-else
+    <%  inline.append('while-else') %>
+    <%! module.append('while-else') %>
 %endwhile
 
-## Note that Mako only supports try-except and try-finally,
-## NOT try-except-finally.
 %try:
-    try-except
-    <%  inline.append('try-except') %>
-    <%! module.append('try-except') %>
+    try
+    <%  inline.append('try') %>
+    <%! module.append('try') %>
 %except:
     except
     <%  inline.append('except') %>
     <%! module.append('except') %>
-%endtry
-
-%try:
-    try-finally
-    <%  inline.append('try-finally') %>
-    <%! module.append('try-finally') %>
+%else:
+    try-else
+    <%  inline.append('try-else') %>
+    <%! module.append('try-else') %>
 %finally:
     finally
     <%  inline.append('finally') %>
     <%! module.append('finally') %>
 %endtry
+
+%with open('/proc/loadavg') as fobj:
+    with
+    <%  inline.append('with') %>
+    <%! module.append('with') %>
+${fobj.read()}
+%endwith
 
 end
 <%  inline.append('end') %>
@@ -462,11 +463,7 @@ start
 
 
 
-    if-True
-
-
-
-    else
+    elif
 
 
 
@@ -487,23 +484,28 @@ start
 
 
 
-    try-except
+    try
 
 
-
-    try-finally
+    try-else
 
 
     finally
 
 
 
+    with
+
+
+2.53 2.28 2.08 3/1361 14670
+
+
 end
 
 
 
-inline execution = ['start', 'if-True', 'else', 'for', 'for', 'for', 'for-else', 'while', 'try-except', 'try-finally', 'finally', 'end']
-module execution = ['start', 'if-True', 'if-False', 'elif-False', 'else', 'for', 'for-else', 'while', 'try-except', 'except', 'try-finally', 'finally', 'end']
+inline execution = ['start', 'elif', 'for', 'for', 'for', 'for-else', 'while', 'try', 'try-else', 'finally', 'with', 'end']
+module execution = ['start', 'if', 'elif', 'else', 'for', 'for-else', 'while', 'while-else', 'try', 'except', 'try-else', 'finally', 'with', 'end']
 ''')}
 
 
@@ -513,7 +515,8 @@ module execution = ['start', 'if-True', 'if-False', 'elif-False', 'else', 'for',
 
 <div class=tester>
 ## The <%! ... %> block performs "module execution" of Python code.
-## It executes ONLY ONCE, near the top of the generated Python module.
+## It executes ONLY ONCE, when the generated Python module is loaded.
+## IT DOES NOT EXECUTE WHERE IT APPEARS IN THE TEMPLATE.
 ## <%! ... %> is typically used for two things:
 ##     * import of modules
 ##     * definition of variables/functions/classes
@@ -527,20 +530,14 @@ start
 <%  inline.append('start') %>
 <%! module.append('start') %>
 
-%if True:
-    if-True
-    <%  inline.append('if-True') %>
-    <%! module.append('if-True') %>
-%endif
-
 %if False:
-    if-False
-    <%  inline.append('if-False') %>
-    <%! module.append('if-False') %>
-%elif False:
-    elif-False
-    <%  inline.append('elif-False') %>
-    <%! module.append('elif-False') %>
+    if
+    <%  inline.append('if') %>
+    <%! module.append('if') %>
+%elif True:
+    elif
+    <%  inline.append('elif') %>
+    <%! module.append('elif') %>
 %else:
     else
     <%  inline.append('else') %>
@@ -600,6 +597,32 @@ end
 inline execution = ${inline}
 module execution = ${module}
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
