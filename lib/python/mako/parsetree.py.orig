@@ -99,8 +99,7 @@ class ControlLine(Node):
 
         return keyword in {
             'if': set(['else', 'elif']),
-            'try': set(['except', 'finally', 'else']),  #############  Edited by Christopher Sebastian: added 'else'
-            'while': set(['else']),                     #############  Added by Christopher Sebastian
+            'try': set(['except', 'finally']),
             'for': set(['else'])
         }.get(self.keyword, [])
 

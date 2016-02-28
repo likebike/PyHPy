@@ -48,7 +48,7 @@ def parse(code, mode='exec', **exception_kwargs):
             "(%s) %s :\n%s" % (                        ##################  Edited by Christopher Sebastian
                 compat.exception_as().__class__.__name__,
                 compat.exception_as(),
-                '\n'.join(['%03d: %s'%(i+1,l) for i,l in enumerate(code.splitlines())])   ##################  Edited by Christopher Sebastian
+                (u'\n'.join(['%03d: %s'%(i+1,l) for i,l in enumerate(code.splitlines())])).encode('ascii', 'backslashreplace')   ##################  Edited by Christopher Sebastian
             ), **exception_kwargs)
 
 

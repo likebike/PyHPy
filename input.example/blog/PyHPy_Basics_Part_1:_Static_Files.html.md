@@ -18,12 +18,13 @@ mkdir input            # Just create a blank 'input' directory.
 Adding Files
 ------------
 
-To add files to your project, just place them into the `input/` directory.  To keep things simple, let's just create a couple HTML pages that link to each other:
+To add files to your project, just place them into the `input/` directory.  To keep things simple, let's just create a couple HTML pages that link to each other, and one extra file that we'll use in a moment:
 
 ```bash
 cd ~/staticSite/
 echo 'This is the home page.  <a href="page2.html">Go to page2.</a>' >input/index.html
 echo 'This is page2.html.  <a href="/">Go to the home page.</a>' >input/page2.html
+echo 'We will delete this file soon.' >input/delme.txt
 ```
 
 The Build Process
@@ -40,6 +41,7 @@ created directory /home/user/staticSite/.build
 ./
 index.html
 page2.html
+delme.ttxt
 
 PYHPY_BUILD_MODE=dev ACL_CHECK=0 AUTO_RM=1 python2.7 /home/user/staticSite/pyhpy/bin/pyhpy_build "/home/user/staticSite/.build" "/home/user/staticSite/output/dev"
 Copying Normal File: 1456307892.915 > 0
@@ -48,6 +50,8 @@ Creating Directory:
         /home/user/staticSite/output/dev
 Copying Normal File: 1456307895.139 > 0
         /home/user/staticSite/.build/page2.html  -->  /home/user/staticSite/output/dev/page2.html
+Copying Normal File: 1456307895.139 > 0
+        /home/user/staticSite/.build/delme.txt  -->  /home/user/staticSite/output/dev/delme.txt
 
 Built Successfully!  Output is at: /home/user/staticSite/output/dev
 ```
@@ -66,7 +70,7 @@ Here's a listing of the output that was produced.  Not surprisingly, it's just a
 
 ```bash
 $ ls output/dev/
-index.html  page2.html
+delme.txt  index.html  page2.html
 ```
 
 
@@ -125,8 +129,52 @@ Here's another listing of the output:
 
 ```bash
 $ ls output/dev/
+delme.txt  icon.png  index.html  page2.html
+```
+
+
+Removing / Renaming Files and Performing a Complete Rebuild
+-----------------------------------------------------------
+
+Let's remove that `delme.txt` file and see what happens if we re-build:
+
+```bash
+$ cd ~/staticSite/
+$ rm input/delme.txt
+$ make
+
+...nothing much happens.
+
+
+```
+
+Here's another listing of the output:
+
+```bash
+$ ls output/dev/
+delme.txt  icon.png  index.html  page2.html
+```
+
+Notice that `delme.txt` is still in `output/` even though we deleted it from `input/`.  The PyHPy build process does not automatically propagate file deletions or renames.  This is a situation when we need to perform a *complete* rebuild, using the `make clean` command:
+
+```bash
+$ cd ~/staticSite/
+$ make clean
+$ make
+
+...
+
+```
+
+...Finally, the output is what we expect:
+
+```bash
+$ ls output/dev/
 icon.png  index.html  page2.html
 ```
+
+So, always remember:  if you are getting unreasonable outputs, try resetting the build with `make clean`.  This will become more important once we start using dynamically-generated content in the next tutorial.
+
 
 Using the Development Web Server
 --------------------------------

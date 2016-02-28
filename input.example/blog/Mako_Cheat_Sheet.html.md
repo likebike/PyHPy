@@ -512,6 +512,93 @@ module execution = ['start', 'if-True', 'if-False', 'elif-False', 'else', 'for',
 
 
 <div class=tester>
+## The <%! ... %> block performs "module execution" of Python code.
+## It executes ONLY ONCE, near the top of the generated Python module.
+## <%! ... %> is typically used for two things:
+##     * import of modules
+##     * definition of variables/functions/classes
+
+<%!
+    import os, pyhpy
+    inline, module = [], []
+%>
+
+start
+<%  inline.append('start') %>
+<%! module.append('start') %>
+
+%if True:
+    if-True
+    <%  inline.append('if-True') %>
+    <%! module.append('if-True') %>
+%endif
+
+%if False:
+    if-False
+    <%  inline.append('if-False') %>
+    <%! module.append('if-False') %>
+%elif False:
+    elif-False
+    <%  inline.append('elif-False') %>
+    <%! module.append('elif-False') %>
+%else:
+    else
+    <%  inline.append('else') %>
+    <%! module.append('else') %>
+%endif
+
+%for i in range(3):
+    for
+    <%  inline.append('for') %>
+    <%! module.append('for') %>
+%else:
+    for-else
+    <%  inline.append('for-else') %>
+    <%! module.append('for-else') %>
+%endfor
+
+%while True:
+    while
+    <%  inline.append('while') %>
+    <%! module.append('while') %>
+    <% break %>
+%else:
+    while-else
+    <%  inline.append('while-else') %>
+    <%! module.append('while-else') %>
+%endwhile
+
+%try:
+    try
+    <%  inline.append('try') %>
+    <%! module.append('try') %>
+%except:
+    except
+    <%  inline.append('except') %>
+    <%! module.append('except') %>
+%else:
+    try-else
+    <%  inline.append('try-else') %>
+    <%! module.append('try-else') %>
+%finally:
+    finally
+    <%  inline.append('finally') %>
+    <%! module.append('finally') %>
+%endtry
+
+%with open('/proc/loadavg') as fobj:
+    with
+    <%  inline.append('with') %>
+    <%! module.append('with') %>
+${fobj.read()}
+%endwith
+
+end
+<%  inline.append('end') %>
+<%! module.append('end') %>
+
+inline execution = ${inline}
+module execution = ${module}
 </div>
 
 

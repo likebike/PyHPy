@@ -684,7 +684,7 @@ def _compile_text(template, text, filename):
         code = compile(source, cid, 'exec')                        ########## Indented by Christopher Sebastian
     except:                                                        ########## Added by Christopher Sebastian
         print >> sys.stderr, '\n\n%s:\n%s'%(cid, '-'*(len(cid)+1)) ########## Added by Christopher Sebastian
-        print >> sys.stderr, '\n'.join(['%03d: %s'%(i+1,l) for i,l in enumerate(source.splitlines())])   #########  Added by Christopher Sebastian
+        print >> sys.stderr, (u'\n'.join(['%03d: %s'%(i+1,l) for i,l in enumerate(source.splitlines())])).encode('ascii', 'backslashreplace')   #########  Added by Christopher Sebastian
         raise                                                      ########## Added by Christopher Sebastian
 
     # this exec() works for 2.4->3.3.
