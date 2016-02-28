@@ -25,11 +25,11 @@ I chose to build this framework on top of [Mako](http://www.makotemplates.org/) 
 
 * Mako can produce any kind of output -- not just webpages.  Therefore, you can use PyHPy for any kind of static output generation.  (I like general solutions.)
 
-* [Powerful Template Inheritence](http://docs.makotemplates.org/en/latest/inheritance.html).  Makes it easy to create consistent, scalable websites, no matter how large your site gets.
+* Mako's [powerful template inheritence](http://docs.makotemplates.org/en/latest/inheritance.html) makes it easy to create consistent, scalable websites, no matter how large your site gets.
 
 * Small Feature Set.  Helps you to learn it quickly.
 
-* Widely Used.  Two famous users are [reddit.com](http://www.reddit.com/) and [Pylons/Pyramid](http://www.pylonsproject.org/).
+* Widely Used.  Two famous users are [reddit.com](https://github.com/reddit/reddit/) and [Pylons/Pyramid](http://www.pylonsproject.org/).
 
 
 <i class="fa fa-paper-plane-o fa-lg"></i> PyHPy Makes it Easy
@@ -39,9 +39,9 @@ PyHPy combines powerful tools like `rsync`, `make`, and `mako-render`, and adds 
 
 * [MarkDown](https://en.wikipedia.org/wiki/Markdown) Integration.  Just type your content text into an `.md` file and it becomes a beautiful webpage.  Easy enough for my Mom.
 
-* Faster Load Times.  Thanks to built-in support for aggressive client-side `Expires Header` caching, your pages will approach theoretical limits of speed and responsiveness.
-
 * Improved Error Reporting.  When things go wrong, PyHPy produces very detailed and helpful error reports, allowing you to pin-point the cause of the problem with minimal effort.
+
+* TODO: I need to write more details that are specific to PyHPy.  Get rid of the Expires Header and FontAwesome stuff -- anybody can do that.  I need to answer the question: does PyHPy actually solve a real problem?  Why would I use it over Blogofile?  ...Or Pelican?  Or Jekyll?  Can I integrate with GitHub Pages?  Do I plan to support ReStructuredText?  Do I have easy ability to use themes from elsewhere?  No.  ...I guess PyHPy is supposed to be a good *general* solution to static output generation, and therefore doesn't have the ability to focus on any of those particular goals.  Need to demonstrate awesome, *realistic* use cases that the other systems just can't do.
 
 Here's the typical process of building a site with PyHPy:
 

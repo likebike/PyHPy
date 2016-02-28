@@ -17,7 +17,7 @@
 <i class="fa fa-graduation-cap fa-lg"></i> Learning Mako by Example
 =============================================================
 
-[Mako](http://www.makotemplates.org/) is a powerful (and fast) templating language, built on top of [Python](https://www.python.org/).
+[Mako](http://www.makotemplates.org/) is a powerful (and fast) templating language, built on top of [Python](https://www.python.org/).  Mako is written by [Mike Bayer](http://techspot.zzzeek.org/).  [The development repository is on GitHub.](https://github.com/zzzeek/mako)
 
 This page teaches Mako's most essential features through a series of examples.  If you have questions about anything, or if you want to learn about other cool Mako features that are not covered here, refer to the [official Mako docs](http://docs.makotemplates.org/en/latest/).
 
@@ -497,7 +497,7 @@ start
     with
 
 
-2.53 2.28 2.08 3/1361 14670
+0.24 0.42 0.38 3/1344 15682
 
 
 end
@@ -658,4 +658,5 @@ ${self.EXAMPLE_CODE([('', ur''' ''')], output=ur''' ''')}
     * NOT SURE IF THIS IS THE RIGHT PAGE FOR THIS: Sane search paths.
     * NOT SURE IF THIS IS THE RIGHT PAGE FOR THIS: error reporting
     * IN MARKDOWN CHEAT SHEET:  Mention double-space and equalSignHeader extensions
+* Mention the featues we didn't cover.  %block.  %page.  %namespace...
 
