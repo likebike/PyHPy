@@ -60,8 +60,8 @@ The build completed successfully, as shown by the last line ("Build Successfully
 
 1. The `rsync` command copies `input/` to `.build/`.
 1. The `pyhpy_build` script goes through each file in `.build/`, and recursively performs actions based on the file type (note, all actions are *lazy* -- they only occur if something has changed):
-    * `xyz.md` (MarkDown text) is rendered to `xyz.tmpl` (Mako template).
-    * `xyz.tmpl` (Mako template) is rendered to `xyz`.
+    * `xyz.md` (MarkDown text) is rendered to `xyz.mako` (Mako template).
+    * `xyz.mako` (Mako template) is rendered to `xyz`.
     * Filenames beginning with [ '.', '\_' ] or ending with [ '.swp', '.pyc', '.meta' ] are ignored.
     * All other files are copied to the output destination.
     * The `make` command produces a development version of the project in `output/dev/`.  Once you are happy with the output, use `make prod` to produce a production version in `output/prod/`.

@@ -1,4 +1,5 @@
 
+NOTE!  This readme is *comepletely* out of date.  I need to re-write it.
 
 
 Welcome to PyHPy; a simple framework for producing static websites.

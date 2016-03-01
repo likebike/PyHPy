@@ -1,6 +1,6 @@
-<%inherit file="blog.html.tmpl" />
+<%inherit file="blog.html.mako" />
 <% 
-  assert self.uri.endswith('.html.tmpl'), 'Unexpected Extension: %r'%(self.uri,)
+  assert self.uri.endswith('.html.mako'), 'Unexpected Extension: %r'%(self.uri,)
   date,mdFilename,meta,title,image = self.postInfo(self.uri[len(self.FS_ROOT()+'/blog/'):-5]+'.md')
 %>
 <h1 class=postTitle>${title}</h1>

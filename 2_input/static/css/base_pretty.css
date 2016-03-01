@@ -38,6 +38,7 @@ a#logo img {
     margin-bottom: -23px;
 }
 a#logo div.asciiLogo {
+    color: #000;
     font-size: 6px;
     font-weight: 900;
     white-space: pre;

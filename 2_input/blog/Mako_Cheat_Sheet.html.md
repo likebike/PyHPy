@@ -26,7 +26,7 @@ Text and Unicode
 ----------------
 
 ${self.EXAMPLE_CODE([
-('text_example.tmpl', ur'''
+('text_example.mako', ur'''
 Everything in this example is just text, so it goes directly to the output.
 
 Unicode is fully supported:  我喜欢看喜羊羊与灰太狼。
@@ -65,7 +65,7 @@ def whatAboutCode(a,b,c):
 
 Comments and <${'%'}text>
 --------------------
-${self.EXAMPLE_CODE([('comment_example.tmpl', ur'''
+${self.EXAMPLE_CODE([('comment_example.mako', ur'''
 Mako has two types of comments:
 
 ## A line comment starts with two '#' characters.
@@ -137,7 +137,7 @@ ${"""You'll learn what these other features are supposed to do later.
 Escapes
 -------
 
-${self.EXAMPLE_CODE([('escape_example.tmpl', ur'''
+${self.EXAMPLE_CODE([('escape_example.mako', ur'''
 Mako only has two character escapes:
 
   * backslash+newline  -->  ""  (empty string)
@@ -216,7 +216,7 @@ The following escapes do NOT work:
 ${'${...}'}
 -----------
 
-${self.EXAMPLE_CODE([('eval_example.tmpl',ur'''
+${self.EXAMPLE_CODE([('eval_example.mako',ur'''
 ## ${...} performs an evaluation and puts the result in its place.
 ## The "..." can be any Python expression.
 
@@ -261,7 +261,7 @@ Does ${...} use __str__ or __repr__?  It uses __str__.
 Flow Controls
 -------------
 
-${self.EXAMPLE_CODE([('flow_example.tmpl', ur'''
+${self.EXAMPLE_CODE([('flow_example.mako', ur'''
 ## All Python flow controls are supported:
 ##     if/elif/else, for, while, try/except, etc.
 ## You always need to use "%end..." to mark the end of blocks.
@@ -322,7 +322,7 @@ output=ur'''
 ${'&lt;% ... %&gt;'}
 --------------
 
-${self.EXAMPLE_CODE([('inline_exec_example.tmpl', ur'''
+${self.EXAMPLE_CODE([('inline_exec_example.mako', ur'''
 ## The <% ... %> block performs "inline execution" of Python code.
 <%
     # This is normal Python code.
@@ -373,7 +373,7 @@ TOTAL = 45
 ${'&lt;%! ... %&gt;'}
 ---------------
 
-${self.EXAMPLE_CODE([('module_exec_example.tmpl', ur'''
+${self.EXAMPLE_CODE([('module_exec_example.mako', ur'''
 ## The <%! ... %> block performs "module execution" of Python code.
 ## It executes ONLY ONCE, when the generated Python module is loaded.
 ## IT DOES NOT EXECUTE WHERE IT APPEARS IN THE TEMPLATE.
@@ -595,7 +595,7 @@ end
 <%! module.append('end') %>
 
 inline execution = ${inline}
-module execution = ${module}
+module execution = ${module()}
 </div>
 
 
@@ -652,7 +652,7 @@ ${self.EXAMPLE_CODE([('', ur''' ''')], output=ur''' ''')}
 * Better understanding of 'self', 'local', 'next', 'parent', 'UNDEFINED', and 'context'
 * How to debug when things go wrong
 * PyHPy features
-    * (provided in the __init__.tmpl file of the example project): self.URL(), self.FS_ROOT()
+    * (provided in the _base.mako file of the example project): self.URL(), self.FS_ROOT()
     * dependencies   (## DEP)  (MIGHT WANT TO CHANGE SYNTAX?)
     * meta
     * NOT SURE IF THIS IS THE RIGHT PAGE FOR THIS: Sane search paths.

@@ -1,7 +1,7 @@
-<%inherit file="_master.tmpl" />
+<%inherit file="_base_pretty.mako" />
 <%! import os, pyhpy %>
 
-%if self.URL()=='/blog.html.tmpl':
+%if self.URL()=='/blog.html.mako':
 
 %else:
 ${next.body()}

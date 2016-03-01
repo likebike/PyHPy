@@ -3,9 +3,8 @@
 <%! import os, pyhpy %>\
 ${next.body()}\
 ## Here, we provide some convenience infrastructure.  We can't provide this in the 'pyhpy' module because we are not aware of our project when running that code.
-## We know that this __init__.tmpl file is always going to be at the top level of our project, so therefore we can know our project root.
+## We know that this _base.mako file is always going to be at the top level of our project, so therefore we can know our project root.
 <%def name="FS_ROOT()"><%
-    assert globals()['_template_filename'] == local.uri   ####  I am just double-checking that local.uri is what I think it is.  Will remove this soon.
     return os.path.dirname(local.uri)
 %></%def>\
 <%def name="URL_ROOT()"><%

@@ -1,4 +1,4 @@
-<%inherit file="photos.html.tmpl" />
+<%inherit file="photos.html.mako" />
 <%! import os, pyhpy %>
 <div id=bigPhotoArea>
   <a id=prev class=navLink href="${self.URL('/photos/%s.html'%(self.PREV_PHOTO(),), mtime=None)}"><i class="fa fa-arrow-left"></i>&nbsp;Previous</a>

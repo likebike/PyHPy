@@ -56,7 +56,7 @@ def getMakoTemplateDeps(tmplPath, allDeps=None, recursive=True):
                     path = os.path.join(os.path.dirname(tmplPath), path)
                 deps.append(path)
     except UnicodeDecodeError:
-        # This often happens when trying to open a binary file, such as a JPEG (which gets included as a dependency as some other template).
+        # This often happens when trying to open a binary file, such as a JPEG (which gets included as a dependency of some other template).
         pass
     metaDeps = pyhpy.meta(tmplPath).get('extra_deps', [])
     if isinstance(metaDeps, basestring): raise ValueError("META 'extra_deps' needs to be a list, not a string!")

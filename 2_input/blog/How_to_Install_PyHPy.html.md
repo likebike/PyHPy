@@ -128,13 +128,13 @@ Apache Expires Headers
 
 `Expires` headers instruct web browsers to employ their most aggressive form of client-side caching.  This caching will reduce the number of requests that are issued to the server, and will dramatically improve your site's load time and responsiveness.  However, when using aggressive caching, you need a way to notify clients when new data is available... otherwise they will continue to use their cached versions and won't notice the new stuff.
 
-The example site comes with `.htaccess` files that enable `Expires` headers for all requests to `/static/...` URLs.  (**Note:**  This feature requires an Apache web server.)  The example site also provides a way to easily update cached files: `input/__init__.tmpl` defines the `self.URL(relPath, mtime)` function.  This function is useful for generation of URLs that incorporate a website mount point and a timestamp.  For the following examples, assume that your site will be hosted at `http://xyz.com/store/...` (mount point = `"http://xyz.com/store"`):
+The example site comes with `.htaccess` files that enable `Expires` headers for all requests to `/static/...` URLs.  (**Note:**  This feature requires an Apache web server.)  The example site also provides a way to easily update cached files: `input/_base.mako` defines the `self.URL(relPath, mtime)` function.  This function is useful for generation of URLs that incorporate a website mount point and a timestamp.  For the following examples, assume that your site will be hosted at `http://xyz.com/store/...` (mount point = `"http://xyz.com/store"`):
 
 <table style="font-size: 85%">
   <tr><th>Mako Template Code</th><th>Output</th></tr>
   <tr><td><code>&lt;a href="${'$'}{self.URL('/static/css/home.css')}"&gt;...&lt;/a&gt;</code></td><td><code>&lt;a href="http://xyz.com/store/static/css/home.css?_=1456331429.72"&gt;...&lt;/a&gt;</code><br>(The '_' value is the filesystem modification time of 'home.css'.)</td></tr>
   <tr><td><code>&lt;a href="${'$'}{self.URL('/home.html', mtime=None)}"&gt;...&lt;/a&gt;</code></td><td><code>&lt;a href="http://xyz.com/store/home.html"&gt;...&lt;/a&gt;</code><br>Since this URL is not underneath <code>/static/</code>, Expires headers will not be used.  We can use <code>mtime=None</code> to make the URL prettier.</td></tr>
-  <tr><td><code>self.URL()</code></td><td>This is a special case.  It returns the path of the template that is currently being rendered, without the mount point.  For example, <code>"/home.html.tmpl"</code>.</td></tr>
+  <tr><td><code>self.URL()</code></td><td>This is a special case.  It returns the path of the template that is currently being rendered, without the mount point.  For example, <code>"/home.html.mako"</code>.</td></tr>
 </table>
 
 The first example in the above table shows how how easy it is to generate URLs that include the filesystem modification time.  This timestamp helps clients to know when new data is available.  Therefore, you can achieve the best of both worlds: aggressive client-side caching, with convenient ability to publish data updates.

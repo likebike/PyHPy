@@ -1,8 +1,10 @@
 ## Lines like this one that begin with '##' are Mako comments.
 ##
-## This is the master template.  You probably don't want to use this directly.
+## I NEED TO RE-DO THESE COMMENTS.  THEY ARE A BIT OUT-DATED.
+##
+## This template defines the site's visual structure.  You probably don't want to use this directly.
 ## Instead, you should probably inherit from it by using
-## <%inherit file="./master.tmpl"/> in another template.  You can then override
+## <%inherit file="./_base_pretty.mako"/> in another template.  You can then override
 ## whatever you want by using '<%def>' sections.
 ##
 ## Here is the Mako website and docs: http://www.makotemplates.org/
@@ -32,20 +34,20 @@
 ##     next.body()  --  Refers to the 'body()' of the "next" template in the inheritance chain.
 ##
 ##     ### Using one template from another ###
-##     <%include file="db.json.tmpl" />
-##     ${context.lookup.get_template('db.json.tmpl').render_unicode().strip()}
+##     <%include file="db.json.mako" />
+##     ${context.lookup.get_template('db.json.mako').render_unicode().strip()}
 ##
 ##     ### PyHPy Provides the Following Convenience Features ###
 ##     self.URL('/blog.html')   --  Includes a "?timeout=${FS mtime}" in the URL.
 ##     self.URL()               --  Returns the project path of the template being rendered.
-##                                  If /a/b/buildDir/x/y/z.tmpl is being rendered,
-##                                  self.URL() --> /x/y/z.tmpl
+##                                  If /a/b/buildDir/x/y/z.mako is being rendered,
+##                                  self.URL() --> /x/y/z.mako
 ##     self.FS_ROOT()           --  Returns the FS Path of the Build directory.
 ##     pyhpy.meta('/path/to/file.xyz')                  --  Returns metadata
 ##     <%block filter="pyhpy.markdown">...</%block>     --  Embed MarkDown
 ##
 ##
-<%inherit file="__init__.tmpl" />\
+<%inherit file="_base.mako" />\
 ##
 ## This DOCTYPE specifies that our page is HTML 5:
 <!DOCTYPE html>
@@ -64,7 +66,7 @@
     <link rel="stylesheet" type="text/css" href="/static/lib/yui-3.12.0/reset_base_fonts-min.css">
     <link rel="stylesheet" type="text/css" href="/static/lib/font-awesome-4.5.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/github-markdown.css')}">
-    <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/master.css')}">
+    <link rel="stylesheet" type="text/css" href="${self.URL('/static/css/base_pretty.css')}">
     <%block name="PAGE_CSS"></%block>
     <script type="text/javascript" src="/static/lib/jquery-1.10.2/jquery.js"></script>
     <script type="text/javascript" src="/static/lib/underscore-1.5.2/underscore.js"></script>
@@ -83,7 +85,7 @@
         }
       </script>
     %endif
-    <script type="text/javascript" src="${self.URL('/static/js/master.js')}"></script>
+    <script type="text/javascript" src="${self.URL('/static/js/base_pretty.js')}"></script>
     <%block name="PAGE_JS"></%block>
   </head>
   <body>
@@ -113,7 +115,7 @@
 </div> PyHPy</a>
       <div id=slogan>PyHPy makes you sound Austrylian.</div>
       <ul id=headerTabs>
-        <li class=${'selected' if self.URL() == '/index.html.tmpl' else 'unselected'}><a href="${self.URL('/index.html', mtime=None)}"}><i class="fa fa-home"></i> Home</a></li>
+        <li class=${'selected' if self.URL() == '/index.html.mako' else 'unselected'}><a href="${self.URL('/index.html', mtime=None)}"}><i class="fa fa-home"></i> Home</a></li>
         <li class=${'selected' if self.URL().startswith('/photos') else 'unselected'}><a href="${self.URL('/photos.html', mtime=None)}"}><i  class="fa fa-photo"></i> Photos</a></li>
         <li class=${'selected' if self.URL().startswith('/blog') else 'unselected'}><a href="${self.URL('/blog.html', mtime=None)}"}><i class="fa fa-newspaper-o"></i> Blog</a></li>
       </ul>
