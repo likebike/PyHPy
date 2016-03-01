@@ -6,7 +6,7 @@
 #
 # Written by Christopher Sebastian, 2011-11-04.  Redesigned 2016-03-01.
 
-import os, sys, json, codecs, fnmatch
+import os, sys, fnmatch, re, subprocess
 import pyhpy.sync
 
 ## NOT_SKIP_GLOBS=['.htaccess*', '.htpasswd*']  # Hidden files that we actually want to process.
@@ -80,22 +80,22 @@ import pyhpy.sync
 ##     assert newData['relPath'][0] != os.sep
 ##     makoFileHandler(newData, DST_DIR, okDstFiles)
 
-def classify(SCRIPTS_DIR, projRelPath):
-    filename = os.path.split(projRelPath)[1].lower()
+def classify(SCRIPTS_DIR, ProjRelPath):
+    projRelPath = ProjRelPath.lower()
+    filename = os.path.split(projRelPath)[1]
     for handler in sorted(os.listdir(os.path.join(SCRIPTS_DIR,'types'))):
-        # 'handler' is something like "30 *.mako".
-        assert handler[0] in '0123456789'
-        assert handler[1] in '0123456789'
-        assert handler[2] == ' '
-        pattern = handler[3:]   # 'pattern' is something like "*.mako".
-        if fnmatch.fnmatchcase(filename, pattern): return os.path.join(SCRIPTS_DIR,'types',handler)
+        match = re.match(r'^\d+-(.+?)=(.+)$', handler)   # match items like "30-filename=*.mako".
+        if not match: continue
+        valName, pattern = match.groups()
+        assert valName in ['filename', 'path'], 'Invalid value name: %r'%(handler,)
+        if fnmatch.fnmatchcase({'filename':filename, 'path':projRelPath}[valName], pattern): return os.path.realpath(os.path.join(SCRIPTS_DIR,'types',handler))
     raise ValueError('Unable to find handler for %r'%(projRelPath,))
 
 def walkAndClassify(SCRIPTS_DIR, rootDir):
     results = {}
     for dirpath, dirnames, filenames, symlinks in pyhpy.sync.walk(rootDir):
         def projRelPath(f):
-            absPath = os.path.join(dirpath, filename)
+            absPath = os.path.join(dirpath, f)
             assert absPath.startswith(rootDir)
             relPath = absPath[len(rootDir):]  # Path relative to rootDir.  /path/to/root/a/b/c becomes a/b/c
             assert relPath[0] == os.sep
@@ -103,7 +103,10 @@ def walkAndClassify(SCRIPTS_DIR, rootDir):
             assert relPath
             return relPath
         for dirname in list(dirnames):
-            if os.path.basename(classify(SCRIPTS_DIR, projRelPath(dirname))) == '00 SKIP': dirnames.remove(dirname)
+            handler = classify(SCRIPTS_DIR, projRelPath(dirname))
+            if os.path.basename(handler).endswith('SKIP'):
+                results[projRelPath(dirname)] = handler  # Even though we know we're going to skip this, call the SKIP handler anyway so that the user isn't confused when debugging.
+                dirnames.remove(dirname)
         for filename in (filenames+symlinks): results[projRelPath(filename)] = classify(SCRIPTS_DIR, projRelPath(filename))
     return results
     
@@ -114,7 +117,14 @@ def build(SCRIPTS_DIR, SRC_DIR, DST_DIR):
         if sorted(processed) == sorted(toProcess): break
         for projRelPath,handler in sorted(toProcess.items()):
             if projRelPath in processed: continue   # Only process items once.
-            print 'Processing:', projRelPath, handler
+            retcode, cmd = 1, [handler, SRC_DIR, DST_DIR, projRelPath]
+            try: retcode = subprocess.call(cmd, cwd=SRC_DIR)
+            except: pass
+            if retcode != 0:
+                print >> sys.stderr, '\nBuild Failed!'
+                print >> sys.stderr, 'There was an error while running this command: %s\n'%(' '.join(map(repr,cmd)),)
+                sys.exit(retcode)
+                
         processed = toProcess
     return processed
 

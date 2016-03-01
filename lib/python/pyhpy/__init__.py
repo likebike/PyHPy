@@ -113,7 +113,6 @@ def thumb(fsRoot, relImgPath, relThumbPath=None, width=None, height=None):
     imgMtime, thumbMtime = getmtime(absImgPath, includeMeta=False), getmtime(absThumbPath, includeMeta=False, noExistTime=0)
     if thumbMtime < imgMtime:
         cmd = ['convert', absImgPath, '-thumbnail', '%s%s'%(sizeStr, '^' if crop else '')] + (['-gravity', 'center', '-extent', sizeStr] if crop else [])  + [absThumbPath]
-        print cmd
         subprocess.check_call(cmd)
     return relThumbPath
 

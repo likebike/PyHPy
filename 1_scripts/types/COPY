@@ -1,0 +1,12 @@
+#!/bin/bash -eu
+
+# Example command-line args:  /home/user/mysite/3_build  /home/user/mysite/4_output/dev  static/css/home.css
+IN_DIR=$1
+OUT_DIR=$2
+REL_PATH=$3
+TARGET="$OUT_DIR/$REL_PATH"
+TARGET_DIR=$(dirname "$TARGET")
+
+mkdir -p "$TARGET_DIR"
+cp --preserve=all "$IN_DIR/$REL_PATH" "$TARGET"
+

@@ -49,8 +49,8 @@ def cmdline(argv=None):
             _exit()
     else:
         filename = options.input
-        if not isfile(filename):
-            raise SystemExit("error: can't find %s" % filename)
+        # if not isfile(filename):                                     ##############  Commented by Christopher Sebastian
+        #     raise SystemExit("error: can't find %s" % filename)      ##############  Commented by Christopher Sebastian
         lookup_dirs = options.template_dir or [dirname(filename)]
         lookup = TemplateLookup(lookup_dirs, module_directory=options.module_dir, input_encoding='utf-8')       ##############  Edited by Christopher Sebastian
         try:
@@ -60,7 +60,7 @@ def cmdline(argv=None):
 
     kw = dict([varsplit(var) for var in options.var])
     try:
-        print(template.render(**kw))
+        sys.stdout.write(template.render_unicode(**kw).encode('utf-8'))             ##############  Edited by Christopher Sebastian
     except:
         _exit()
 

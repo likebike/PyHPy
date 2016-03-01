@@ -1,5 +1,5 @@
 import os, shutil, subprocess, codecs, sys
-import pyhpy, pyhpy.mako_render
+import pyhpy
 
 def walk(path):
     for dirpath, dirnames, filenames in os.walk(path):

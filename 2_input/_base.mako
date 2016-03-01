@@ -5,7 +5,7 @@ ${next.body()}\
 ## Here, we provide some convenience infrastructure.  We can't provide this in the 'pyhpy' module because we are not aware of our project when running that code.
 ## We know that this _base.mako file is always going to be at the top level of our project, so therefore we can know our project root.
 <%def name="FS_ROOT()"><%
-    return os.path.dirname(local.uri)
+    return os.path.dirname(local.attr._template_filename)
 %></%def>\
 <%def name="URL_ROOT()"><%
     # Customize the return value of this function to match your webapp mount point.
@@ -20,7 +20,7 @@ ${next.body()}\
         # Make it easy to figure out which page is being rendered.
         # Just produce the URL to the template that is being rendered, WITHOUT THE URL-ROOT.
         # If you really need a web-usable URL, you can URL(URL()).
-        assert self.uri.startswith(buildDir)
-        return self.uri[len(buildDir):]
+        assert self.attr._template_filename.startswith(buildDir)
+        return self.attr._template_filename[len(buildDir):]
     return pyhpy.url(path, urlRoot=self.URL_ROOT(), fsRoot=buildDir, mtime=mtime)
 %></%def>\
