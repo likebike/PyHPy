@@ -41,19 +41,42 @@ def markdown(string, output_format='html5', cssClass='markdown-body'):
     out += '</article>'
     return out
 
-
-def url(path, urlRoot, fsRoot=None, mtime='auto'):
+_fsRoot = None
+def FS_ROOT():
+    # Cache the result, since we don't expect the project root to change dynamically.
+    global _fsRoot
+    if _fsRoot == None:
+        # Examine the call stack to derive the fsRoot from Mako module-level variables:
+        import inspect
+        level, frame = 0, inspect.currentframe()
+        while frame:
+            # print >> sys.stderr, 'Level', level
+            if '_template_uri' in frame.f_globals:
+                # print >> sys.stderr, '    _template_uri:', frame.f_globals['_template_uri']
+                # print >> sys.stderr, '    _template_filename:', frame.f_globals['_template_filename']
+                assert frame.f_globals['_template_filename'].endswith(frame.f_globals['_template_uri']), '%r does not end with %r'%(frame.f_globals['_template_filename'], frame.f_globals['_template_uri'])
+                fsRoot = frame.f_globals['_template_filename'][:-len(frame.f_globals['_template_uri'])]
+                assert fsRoot[0] == '/'  and  fsRoot[-1] != '/', 'Non-absolute fsRoot: %r'%(fsRoot,)
+                _fsRoot = fsRoot
+                break
+            level, frame = level+1, frame.f_back
+        else: raise ValueError('Unable to auto-detect project root!')
+    return _fsRoot
+def url(path, urlRoot=None, fsRoot=None, mtime='auto'):
     # This function makes it easy to serve static files that are aggressively cached
     # on the client side, without making life difficult on the server side.  Whenever
     # an update to the file occurs, the timestamp will also update, resulting in a
     # new URL, which the client will fetch.
 
+    if urlRoot == None: urlRoot = os.environ.get('URL_ROOT', '')
+
     assert path[0] == '/'
+    assert not path.startswith('//'), 'Sloppy path: %r'%(path,)
     assert not urlRoot.endswith('/')
-    assert not fsRoot.endswith('/')
     U = urlRoot + path
 
     if mtime == 'auto':
+        if fsRoot == None: fsRoot = FS_ROOT()
         fs_path = fsRoot + path
         if not os.path.exists(fs_path):
             # Could not find the referenced file.  Is it a markdown?
@@ -96,7 +119,7 @@ def getmtime(path, includeMeta=True, noExistTime=None):
     return mtime
 
 
-def thumb(fsRoot, relImgPath, relThumbPath=None, width=None, height=None):
+def thumb(relImgPath, relThumbPath=None, fsRoot=None, width=None, height=None):
     ''' Uses ImageMagick CLI to create a thumbnail. '''
     crop = False
     if width==None and height==None: height = 128
@@ -106,7 +129,7 @@ def thumb(fsRoot, relImgPath, relThumbPath=None, width=None, height=None):
     if relThumbPath==None:
         base, ext = os.path.splitext(relImgPath)
         relThumbPath = '%s_THUMB_%s%s'%(base,sizeStr,ext)
-    assert fsRoot[0] == '/'  and  fsRoot[-1] != '/'
+    if fsRoot==None: fsRoot = FS_ROOT()
     assert relImgPath[0] == '/'  and  relImgPath[-1] != '/'
     assert relThumbPath[0] == '/'  and  relThumbPath[-1] != '/'
     absImgPath, absThumbPath = fsRoot+relImgPath, fsRoot+relThumbPath

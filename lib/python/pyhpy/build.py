@@ -80,10 +80,15 @@ import pyhpy.sync
 ##     assert newData['relPath'][0] != os.sep
 ##     makoFileHandler(newData, DST_DIR, okDstFiles)
 
+_handlers = {}
+def HANDLERS(SCRIPTS_DIR):
+    global _handlers
+    if SCRIPTS_DIR not in _handlers: _handlers[SCRIPTS_DIR] = sorted(os.listdir(os.path.join(SCRIPTS_DIR,'types')))
+    return _handlers[SCRIPTS_DIR]
 def classify(SCRIPTS_DIR, ProjRelPath):
     projRelPath = ProjRelPath.lower()
     filename = os.path.split(projRelPath)[1]
-    for handler in sorted(os.listdir(os.path.join(SCRIPTS_DIR,'types'))):
+    for handler in HANDLERS(SCRIPTS_DIR):
         match = re.match(r'^\d+-(.+?)=(.+)$', handler)   # match items like "30-filename=*.mako".
         if not match: continue
         valName, pattern = match.groups()
@@ -104,7 +109,7 @@ def walkAndClassify(SCRIPTS_DIR, rootDir):
             return relPath
         for dirname in list(dirnames):
             handler = classify(SCRIPTS_DIR, projRelPath(dirname))
-            if os.path.basename(handler).endswith('SKIP'):
+            if os.path.basename(handler) == 'SKIP':
                 results[projRelPath(dirname)] = handler  # Even though we know we're going to skip this, call the SKIP handler anyway so that the user isn't confused when debugging.
                 dirnames.remove(dirname)
         for filename in (filenames+symlinks): results[projRelPath(filename)] = classify(SCRIPTS_DIR, projRelPath(filename))

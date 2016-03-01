@@ -57,8 +57,8 @@ def cpStats(srcPath, dstPath, touch=True):
 def cpData(srcPath, dstPath, touch=True):
     dstDir = os.path.dirname(dstPath)
     if not os.path.isdir(dstDir):
-        print 'Creating Directory:'
-        print '\t%s'%(dstDir,)
+        #print 'Creating Directory:'
+        #print '\t%s'%(dstDir,)
         os.makedirs(dstDir)
     shutil.copy2(srcPath,dstPath) # Copy data, permissions, modtime.
     if touch: os.utime(dstPath, None) # set the modtime to now.
@@ -68,13 +68,13 @@ def syncNormalFile(srcPath, dstPath):
     if os.path.exists(dstPath): dstModTime = pyhpy.getmtime(dstPath, includeMeta=False)
     srcModTime = pyhpy.getmtime(srcPath, includeMeta=False)
     if srcModTime > dstModTime:
-        print 'Copying Normal File: %r > %r'%(srcModTime, dstModTime)
-        print '\t%s  -->  %s'%(srcPath,dstPath)
+        #print 'Copying Normal File: %r > %r'%(srcModTime, dstModTime)
+        #print '\t%s  -->  %s'%(srcPath,dstPath)
         cpData(srcPath, dstPath)
         cpStats(srcPath, dstPath, touch=False)
     if getStats(srcPath) != getStats(dstPath):
-        print 'Copying Filesystem Metadata:'
-        print '\t%s  -->  %s'%(srcPath,dstPath)
+        #print 'Copying Filesystem Metadata:'
+        #print '\t%s  -->  %s'%(srcPath,dstPath)
         cpStats(srcPath, dstPath, touch=False)
 
 
@@ -86,11 +86,11 @@ def syncSymlink(srcPath, dstPath):
     if needToCreate:
         dstDir = os.path.dirname(dstPath)
         if not os.path.isdir(dstDir):
-            print 'Creating Directory:'
-            print '\t%s'%(dstDir,)
+            #print 'Creating Directory:'
+            #print '\t%s'%(dstDir,)
             os.makedirs(dstDir)
-        print 'Creating Symlink:'
-        print '\t%s  -->  %s'%(dstPath,linkto)
+        #print 'Creating Symlink:'
+        #print '\t%s  -->  %s'%(dstPath,linkto)
         if os.path.exists(dstPath): os.remove(dstPath)
         os.symlink(linkto, dstPath)
 
@@ -106,7 +106,7 @@ def syncMakoTemplate(srcPath, dstPath):
     for dep in pyhpy.mako_render.getMakoTemplateDeps(srcPath):
         assert os.path.isabs(dep)
         if not os.path.exists(dep):
-            print 'Dependency of %r does not exist: %r'%(srcPath, dep,)
+            #print 'Dependency of %r does not exist: %r'%(srcPath, dep,)
             continue
         lastModTime = max(lastModTime, pyhpy.getmtime(dep))
     dstModTime = 0
@@ -114,11 +114,11 @@ def syncMakoTemplate(srcPath, dstPath):
     if lastModTime > dstModTime:
         dstDir = os.path.dirname(dstPath)
         if not os.path.isdir(dstDir):
-            print 'Creating Directory:'
-            print '\t%s'%(dstDir,)
+            #print 'Creating Directory:'
+            #print '\t%s'%(dstDir,)
             os.makedirs(dstDir)
-        print 'Evaluating Mako Template:'
-        print '\t%s  -->  %s'%(srcPath,dstPath)
+        #print 'Evaluating Mako Template:'
+        #print '\t%s  -->  %s'%(srcPath,dstPath)
         result = pyhpy.mako_render.makoRender(srcPath, {})    #### 2013-09-28 -- I need to double-check the logic for the {} ...
         outFile = codecs.open(dstPath, 'wb', encoding='utf-8')
         outFile.write(result)
@@ -126,19 +126,19 @@ def syncMakoTemplate(srcPath, dstPath):
         cpStats(srcPath,dstPath)
     if getStats(srcPath, includeSize=False) != \
        getStats(dstPath, includeSize=False):
-        print 'Copying Filesystem Metadata:'
-        print '\t%s  -->  %s'%(srcPath,dstPath)
+        #print 'Copying Filesystem Metadata:'
+        #print '\t%s  -->  %s'%(srcPath,dstPath)
         cpStats(srcPath,dstPath)
 
 
 def syncData(data, dstPath, encoding='utf-8'):
     '''Writes the provided 'data' to 'dstPath', if necessary.'''
     if (not os.path.exists(dstPath)) or codecs.open(dstPath, encoding=encoding).read()!=data:
-        print 'Writing Data -->  %s'%(dstPath,)
+        #print 'Writing Data -->  %s'%(dstPath,)
         dstDir = os.path.dirname(dstPath)
         if not os.path.isdir(dstDir):
-            print 'Creating Directory:'
-            print '\t%s'%(dstDir,)
+            #print 'Creating Directory:'
+            #print '\t%s'%(dstDir,)
             os.makedirs(dstDir)
         outF = codecs.open(dstPath, 'wb', encoding=encoding)
         outF.write(data)

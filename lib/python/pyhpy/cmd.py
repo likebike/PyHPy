@@ -62,6 +62,9 @@ def cmdline(argv=None):
     try:
         sys.stdout.write(template.render_unicode(**kw).encode('utf-8'))             ##############  Edited by Christopher Sebastian
     except:
+        print >> sys.stderr, '\n\nHere is the Raw Python Stack Trace:\n\n'          ##############  Added by Christopher Sebastian
+        import traceback; traceback.print_exc()                                     ##############  Added by Christopher Sebastian
+        print >> sys.stderr, '\n\nHere is the Pretty Mako Stack Trace:'             ##############  Added by Christopher Sebastian
         _exit()
 
 
