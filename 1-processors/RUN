@@ -1,0 +1,6 @@
+#!/bin/bash -eu
+
+TARGET="$PYHPY_IN_DIR/$PYHPY_REL_PATH"
+chmod u+x "$TARGET"   # Automatically do this for the user.
+exec "$TARGET"
+

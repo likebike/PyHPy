@@ -1,0 +1,5 @@
+#!/bin/bash -eu
+
+PHOTOS_DIR="$PYHPY_IN_DIR/static/photoalbum"
+echo '{"photosDir":"'$PHOTOS_DIR'", "photos":"'$(ls "$PHOTOS_DIR"/*.jpeg)'"}' >"$PYHPY_IN_DIR/photos.html.mako.meta"
+

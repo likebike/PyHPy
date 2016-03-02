@@ -19,7 +19,7 @@ PROJ_ROOT=${MAKEFILE_DIR}
 PYHPY_DIR=${MAKEFILE_DIR}
 
 # Directory locations:
-SCRIPTS_DIR=${PROJ_ROOT}/1-scripts
+PROCS_DIR=${PROJ_ROOT}/1-processors
 IN_NAME=2-input
 IN_DIR=${PROJ_ROOT}/${IN_NAME}
 BUILD_NAME=3-build
@@ -34,28 +34,32 @@ OUT_PROD_DIR=${PROJ_ROOT}/${OUT_PROD_NAME}
 OUT_PROD_SYMLINK_NAME=${OUT_DIR_NAME}/prod
 OUT_PROD_SYMLINK=${PROJ_ROOT}/${OUT_PROD_SYMLINK_NAME}
 
-
 # The port and docroot of the development HTTP server:
 WWW_PORT=8000
 WWW_DIR=${OUT_DEV_DIR}
+
+# Tell 'make' that our targets aren't really files:
+.PHONY: dev prod clean server
 
 # Build the development site:
 # We use 'find' instead of 'rm -rf' to preserve existing directory structure.
 # This is less confusing for users who rebuild a project while viewing
 # outputs -- they don't end up in a detached filesystem node.
-dev: clean
+dev:
 	@echo Copying ${IN_NAME} '-->' ${BUILD_NAME}
 	@rsync -aHAX "${IN_DIR}/" "${BUILD_DIR}"
 	@echo Building ${BUILD_NAME} '-->' ${OUT_DEV_NAME}
-	@"${PYHPY_DIR}/bin/build" "${SCRIPTS_DIR}" "${BUILD_DIR}" "${OUT_DEV_DIR}"
+	@"${PYHPY_DIR}/bin/build" "${PROCS_DIR}" "${BUILD_DIR}" "${OUT_DEV_DIR}"
 	@echo
 	@echo "DEV Built Successfully!  Output is at: ${OUT_DEV_DIR}"
 	@echo
 
 # Copy 'dev' to 'prod':
 prod: dev
-	rsync -aHAX "${OUT_DEV_DIR}/" "${OUT_PROD_DIR}"
-	ln -sfn "${OUT_PROD_DIR_NAME}" "${OUT_PROD_SYMLINK}"
+	@echo Copying ${OUT_DEV_NAME} '-->' ${OUT_PROD_NAME}
+	@rsync -aHAX "${OUT_DEV_DIR}/" "${OUT_PROD_DIR}"
+	@echo Updating ${OUT_PROD_SYMLINK_NAME} symlink
+	@ln -sfn "${PROD_NAME}" "${OUT_PROD_SYMLINK}"
 	@echo
 	@echo "PROD Built Successfully!  Output is at: ${OUT_PROD_SYMLINK}"
 	@echo

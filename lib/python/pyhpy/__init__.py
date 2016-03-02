@@ -47,13 +47,11 @@ def FS_ROOT():
     global _fsRoot
     if _fsRoot == None:
         # Examine the call stack to derive the fsRoot from Mako module-level variables:
+        # (I could have also examined the 'local.uri/local.filename' variables, but that would be a tiny bit more difficult.)
         import inspect
         level, frame = 0, inspect.currentframe()
         while frame:
-            # print >> sys.stderr, 'Level', level
             if '_template_uri' in frame.f_globals:
-                # print >> sys.stderr, '    _template_uri:', frame.f_globals['_template_uri']
-                # print >> sys.stderr, '    _template_filename:', frame.f_globals['_template_filename']
                 assert frame.f_globals['_template_filename'].endswith(frame.f_globals['_template_uri']), '%r does not end with %r'%(frame.f_globals['_template_filename'], frame.f_globals['_template_uri'])
                 fsRoot = frame.f_globals['_template_filename'][:-len(frame.f_globals['_template_uri'])]
                 assert fsRoot[0] == '/'  and  fsRoot[-1] != '/', 'Non-absolute fsRoot: %r'%(fsRoot,)
@@ -95,10 +93,7 @@ def url(path, urlRoot=None, fsRoot=None, mtime='auto'):
 
 
 def meta(fsPath):
-    metaVals = {
-        'extra_deps':[],
-        'inherit':None,    # Used by MarkDown files.
-    }
+    metaVals = {}
     dfltMetaPath = os.path.join(os.path.dirname(fsPath), '__default__.meta')
     if os.path.exists(dfltMetaPath): metaVals.update(json.load(codecs.open(dfltMetaPath, encoding='utf-8')))
     metaPath = fsPath+'.meta'
