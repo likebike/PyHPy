@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+# The Router can be written in any language.  It just needs to print the result to stdout.
+
+import os, sys, json
+from fnmatch import fnmatch
+
+relPath = os.environ['PYHPY_REL_PATH']
+filename = os.path.basename(relPath)
+
+def end(string):
+    print(string)
+    sys.exit()
+
+if fnmatch(filename, '.htaccess*'): end('COPY')
+if fnmatch(filename, '.htpasswd*'): end('COPY')
+if fnmatch(relPath,  '*/font-awesome-*/*.scss'): end('COPY')   # FontAwesome contains some .scss files that begin with '_'.
+if fnmatch(filename, '*.mako.py'):  end('SKIP')    # Mako-generated module
+if fnmatch(filename, '*.meta'):     end('SKIP')
+if fnmatch(filename, '*.pyc'):      end('SKIP')
+if fnmatch(filename, '*.swp'):      end('SKIP')
+if fnmatch(filename, '*~'):         end('SKIP')
+if fnmatch(filename, '.*'):         end('SKIP')
+if fnmatch(filename, '_*'):         end('SKIP')
+if fnmatch(filename, '*.mako'):     end('MAKO')
+if fnmatch(filename, '*.markdown'): end('MARKDOWN')
+if fnmatch(filename, '*.md'):       end('MARKDOWN')
+if fnmatch(filename, '*.run'):      end('RUN')
+if fnmatch(filename, '*'):          end('COPY')    # Default processor
+

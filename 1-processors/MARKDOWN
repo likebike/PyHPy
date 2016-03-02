@@ -17,11 +17,11 @@ import pyhpy.sync
 
 
 def markdownToMako(IN_DIR, REL_PATH):
-    mdPath = os.path.join(IN_DIR, REL_PATH)
+    mdPath = IN_DIR + REL_PATH
     base, ext = os.path.splitext(REL_PATH)
     assert base  and  ext.lower() in ['.md', '.markdown']
     reldir, filebase = os.path.split(base)
-    childTmplPath = os.path.join(IN_DIR, base+'.mako')
+    childTmplPath = IN_DIR + base+'.mako'
 
     # Step 1: Meta
     # If our x.md file has a x.md.meta, copy it to x.mako.meta so that our template code can always assume that the meta is available from pyhpy.meta(self.uri):
@@ -31,7 +31,7 @@ def markdownToMako(IN_DIR, REL_PATH):
     # Step 2: The Parent Template:
     parentTmplFilename = '_mdParent_'+filebase+'.mako'
     parentTmplRelPath = os.path.join(reldir, parentTmplFilename)
-    parentTmplPath = os.path.join(IN_DIR, parentTmplRelPath)
+    parentTmplPath = IN_DIR + parentTmplRelPath
     pTmpl = u'## This file is auto-generated from %r;  Changes will be lost.\n'%(mdPath,)
     meta = pyhpy.meta(mdPath)
     if meta.get('template', None): pTmpl += u'<%%inherit file="%s" />\\\n'%(meta['template'],)
@@ -41,7 +41,7 @@ def markdownToMako(IN_DIR, REL_PATH):
 
     # Step 3: The Child Template:
     cTmpl = u'## This file is auto-generated from %r;  Changes will be lost.\n'%(mdPath,)
-    cTmpl += u'<%%inherit file="/%s" />\\\n'%(parentTmplRelPath,)
+    cTmpl += u'<%%inherit file="%s" />\\\n'%(parentTmplRelPath,)
     cTmpl += codecs.open(mdPath, encoding='utf-8').read()
     pyhpy.sync.syncData(cTmpl, childTmplPath)
 
