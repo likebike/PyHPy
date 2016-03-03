@@ -19,12 +19,11 @@ PROJ_ROOT=${MAKEFILE_DIR}
 PYHPY_DIR=${MAKEFILE_DIR}
 
 # Directory locations:
-PROCS_DIR=${PROJ_ROOT}/1-processors
-IN_NAME=2-input
+IN_NAME=1-input
 IN_DIR=${PROJ_ROOT}/${IN_NAME}
-BUILD_NAME=3-build
+BUILD_NAME=2-build
 BUILD_DIR=${PROJ_ROOT}/${BUILD_NAME}
-OUT_DIR_NAME=4-output
+OUT_DIR_NAME=3-output
 DEV_NAME=dev
 OUT_DEV_NAME=${OUT_DIR_NAME}/${DEV_NAME}
 OUT_DEV_DIR=${PROJ_ROOT}/${OUT_DEV_NAME}
@@ -49,7 +48,7 @@ dev:
 	@echo Copying ${IN_NAME} '-->' ${BUILD_NAME}
 	@rsync -aHAX "${IN_DIR}/" "${BUILD_DIR}"
 	@echo Building ${BUILD_NAME} '-->' ${OUT_DEV_NAME}
-	@"${PYHPY_DIR}/bin/build" "${PROCS_DIR}" "${BUILD_DIR}" "${OUT_DEV_DIR}"
+	@"${PYHPY_DIR}/bin/myke" "${BUILD_DIR}" "${OUT_DEV_DIR}"
 	@echo
 	@echo "DEV Built Successfully!  Output is at: ${OUT_DEV_DIR}"
 	@echo

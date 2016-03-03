@@ -1,21 +1,6 @@
 import os, shutil, subprocess, codecs, sys
 import pyhpy
 
-def walk(path):
-    for dirpath, dirnames, filenames in os.walk(path):
-        symlinks = []
-        for i,filename in reversed(list(enumerate(filenames))):
-            absPath = os.path.join(dirpath, filename)
-            if os.path.islink(absPath):
-                symlinks.append(filename)
-                filenames.pop(i)
-        for i,dirname in reversed(list(enumerate(dirnames))):
-            absPath = os.path.join(dirpath, dirname)
-            if os.path.islink(absPath):
-                symlinks.append(dirname)
-                dirnames.pop(i)
-        dirnames.sort(); filenames.sort(); symlinks.sort();  # So the real references can be returned.
-        yield dirpath, dirnames, filenames, symlinks
 
 
 def getACL(path):

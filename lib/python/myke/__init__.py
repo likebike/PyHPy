@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 
-# This script publishes the input directory to the output directory in an intelligent
-# way.  Copies file data & permissions & ACLs, evaluates Mako templates, ignores
-# hidden files.
-#
-# Written by Christopher Sebastian, 2011-11-04.  Redesigned 2016-03-01.
+# Created by Christopher Sebastian, 2016-03-01
 
 import os, sys, fnmatch, re, subprocess, json, string, atexit
 import pyhpy.sync, pyhpy.fabricate
@@ -18,8 +14,11 @@ def childEnv(IN_DIR, projRelPath, OUT_DIR):
     env['PYTHON'] = sys.executable
     # Also, make sure that the Python running this script is first on $PATH:
     # This way, scripts can use the same Python with "#!/usr/bin/env python".
-    pyDir = os.path.dirname(sys.executable)
-    env['PATH'] = pyDir+':'+os.environ['PATH']
+    pathPieces = [os.path.dirname(sys.executable)]
+    if 'PATH' in os.environ: 
+        for p in os.environ['PATH'].split(os.pathsep):
+            if p not in pathPieces: pathPieces.append(p)
+    env['PATH'] = os.pathsep.join(pathPieces)
     return env
 
 routesname = '/.pyhpy_routes'
@@ -44,7 +43,6 @@ def classify(PROCS_DIR, IN_DIR, projRelPath, OUT_DIR):
         path = os.path.join(PROCS_DIR, result)
         if os.path.exists(path): _routesCache[key] = [path]
         else:
-            print 'ASSUME A COMMAND:', result, path
             # Assume it's a command in a JSON list of strings.  Perform some template substitution.
             try:
                 cmd = json.loads(result)
@@ -52,6 +50,24 @@ def classify(PROCS_DIR, IN_DIR, projRelPath, OUT_DIR):
                 _routesCache[key] = map(str, cmd)
             except: raise ValueError('Error while processing %r -- Invalid Router output: %r'%(projRelPath, result))
     return _routesCache[key]
+
+
+def walk(path):
+    for dirpath, dirnames, filenames in os.walk(path):
+        symlinks = []
+        for i,filename in reversed(list(enumerate(filenames))):
+            absPath = os.path.join(dirpath, filename)
+            if os.path.islink(absPath):
+                symlinks.append(filename)
+                filenames.pop(i)
+        for i,dirname in reversed(list(enumerate(dirnames))):
+            absPath = os.path.join(dirpath, dirname)
+            if os.path.islink(absPath):
+                symlinks.append(dirname)
+                dirnames.pop(i)
+        dirnames.sort(); filenames.sort(); symlinks.sort();  # So the real references can be returned.
+        yield dirpath, dirnames, filenames, symlinks
+
 
 def walkAndClassify(PROCS_DIR, rootDir, OUT_DIR):
     results = {}
@@ -78,7 +94,6 @@ def build(PROCS_DIR, IN_DIR, OUT_DIR):
         for projRelPath,cmd in sorted(toProcess.items()):
             if projRelPath in [depsname, routesname]: continue    # Skip our build-tracking files.
             if projRelPath in processed: continue   # Only process items once.
-            if len(cmd) == 1: cmd = cmd + [IN_DIR, projRelPath, OUT_DIR]  # Don't use += to avoid modification.
             try: builder.run(cmd, cwd=IN_DIR, env=childEnv(IN_DIR, projRelPath, OUT_DIR))
             except:
                 print >> sys.stderr, '\nBuild Failed!'
