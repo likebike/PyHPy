@@ -1,8 +1,9 @@
-# This is the PyHPy Project Makefile.
+# This is a PyHPy Project Makefile.
 
 ########  BASIC SETTINGS  (Adjust these.)  ########
 
-# If you are creating a blog, located at http://example.com/blog/... , then URL_ROOT would be "/blog" or "http://example.com/blog".
+# For example, if you are creating a site located at http://example.com/blog/... ,
+# then URL_ROOT would be "/blog" or "http://example.com/blog".
 # The default assumes that your site is located at http://example.com/...
 export URL_ROOT=
 
@@ -17,11 +18,17 @@ MAKEFILE_DIR=$(patsubst %/,%,$(dir $(THIS_MAKEFILE)))
 # We use the Makefile location to guess our project root and PyHPy location:
 PROJ_ROOT=${MAKEFILE_DIR}
 PYHPY_DIR=${MAKEFILE_DIR}
+MUCK_DIR=${PYHPY_DIR}/muck
+
+# I assume that PATH is always set, so I prepend to it the easy way.
+# But PYTHONPATH might not be set.  Don't use a ':' unless we need to:
+export PATH:=${MUCK_DIR}/bin:${PATH}
+export PYTHONPATH:=${PYHPY_DIR}/lib$(shell echo $${PYTHONPATH:+:$${PYTHONPATH:-}})
 
 # Directory locations:
 IN_NAME=1-input
 IN_DIR=${PROJ_ROOT}/${IN_NAME}
-BUILD_NAME=2-build
+BUILD_NAME=2-buildarea
 BUILD_DIR=${PROJ_ROOT}/${BUILD_NAME}
 OUT_DIR_NAME=3-output
 DEV_NAME=dev
@@ -48,7 +55,7 @@ dev:
 	@echo Copying ${IN_NAME} '-->' ${BUILD_NAME}
 	@rsync -aHAX "${IN_DIR}/" "${BUILD_DIR}"
 	@echo Building ${BUILD_NAME} '-->' ${OUT_DEV_NAME}
-	@"${PYHPY_DIR}/bin/myke" "${BUILD_DIR}" "${OUT_DEV_DIR}"
+	@muck "${BUILD_DIR}" "${OUT_DEV_DIR}"
 	@echo
 	@echo "DEV Built Successfully!  Output is at: ${OUT_DEV_DIR}"
 	@echo

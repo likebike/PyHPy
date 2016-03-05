@@ -1,6 +1,8 @@
 <%inherit file="/_base_pretty.mako" />
-<%! import os, string, pyhpy %>
-<% photos = [x[:-5] for x in os.listdir(self.photosDir()) if x.endswith('.jpeg')  and  '_THUMB' not in x] %>
+<%! import os, string, pyhpy, muck %>
+<%
+muck.markDirListAsDep(self.photosDir())
+photos = [x[:-5] for x in os.listdir(self.photosDir()) if x.endswith('.jpeg')  and  '_THUMB' not in x] %>
 
 <div id=textStuff>
 %if self.uri==local.uri:
@@ -48,4 +50,5 @@ ${next.body()}
   <link rel="stylesheet" type="text/css" href="${pyhpy.url('/static/css/photos.css')}">
 </%block>
 <%def name="photosDir()"><% return os.path.join(pyhpy.FS_ROOT(), 'static', 'photoalbum') %></%def>
+
 

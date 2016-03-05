@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+
+# Muckfiles can be written in any language.  They just need to print shell commands to stdout.
+#
+# Muck provides a few environment variables as inputs:
+#
+#     MUCK_IN_ROOT   -- The input root directory.  Example:  /path/to/proj/in
+#     MUCK_OUT_ROOT  -- The output root directory. Example:  /path/to/proj/out
+#     MUCK_REL_PATH  -- The file to process, relative to the MUCK_IN_ROOT.  Ex: a/b.c
+#
+# Muckfiles should be "functional";  For the same set of inputs,
+# they should always produce the same set of outputs (shell commands).
+
+import os, sys
+from fnmatch import fnmatch
+
+relPath = os.environ['MUCK_REL_PATH']
+filename = os.path.basename(relPath)
+#  Pre-calculate a few paths to make our command recipes simpler:
+# (We could also calculate these things inside of the command recipes, using bash.)
+inRoot, outRoot = os.environ['MUCK_IN_ROOT'], os.environ['MUCK_OUT_ROOT']
+inFile = os.path.join(inRoot, os.environ['MUCK_REL_PATH'])
+outFile = os.path.join(outRoot, os.environ['MUCK_REL_PATH'])
+outDir = os.path.dirname(outFile)
+
+def end(string=None):
+    if string: print(string)
+    sys.exit()
+
+def SKIP(): end()
+
+def COPY(): end('''
+{ set +x; } 2>/dev/null  # Silently disable tracing
+mkdir -p %(outDir)r
+set -x                   # Re-enable tracing
+cp --preserve=all %(inFile)r %(outFile)r
+'''%globals())
+    
+def MAKO():
+    noext, ext = os.path.splitext(relPath)   # Chop off the .mako extension.
+    assert ext == '.mako'
+    values = {'noext':noext}; values.update(globals())
+    end('''
+{ set +x; } 2>/dev/null  # Silently disable tracing
+mkdir -p %(outDir)r
+set -x                   # Re-enable tracing
+python -m pyhpy.cmd --template-dir=%(inRoot)r --module-dir=%(inRoot)r /%(relPath)r >%(noext)r
+'''%values)
+
+def MARKDOWN(): end('../bin/MARKDOWN')
+
+def RUN(): end('''
+chmod u+x %(inFile)r   # Automatically make the file executable.
+exec %(inFile)r
+'''%globals())
+
+    
+
+if fnmatch(filename, '.htaccess*'): COPY()
+if fnmatch(filename, '.htpasswd*'): COPY()
+if fnmatch(relPath,  '*/font-awesome-*/*.scss'): COPY()   # FontAwesome contains some .scss files that begin with '_'.
+if fnmatch(filename, '*.mako.py'):  SKIP()    # Mako-generated module
+if fnmatch(filename, '*.meta'):     SKIP()
+if fnmatch(filename, '*.pyc'):      SKIP()
+if fnmatch(filename, '*.swp'):      SKIP()
+if fnmatch(filename, '*~'):         SKIP()
+if fnmatch(filename, '.*'):         SKIP()
+if fnmatch(filename, '_*'):         SKIP()
+if fnmatch(filename, '*.mako'):     MAKO()
+if fnmatch(filename, '*.markdown'): MARKDOWN()
+if fnmatch(filename, '*.md'):       MARKDOWN()
+if fnmatch(filename, '*.run'):      RUN()
+if fnmatch(filename, '*'):          COPY()    # Default processor
+

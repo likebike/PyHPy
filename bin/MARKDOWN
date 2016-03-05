@@ -6,7 +6,7 @@ import pyhpy.sync
 
 # I need to use a slightly convoluted method to produce nice results:
 # We are given an x.md file.
-# First, we generate an _mdParent_x.mako, which inherits from meta['template'] and also applies a markdown filter to the child template's body.
+# First, we generate an _mdParent_x.mako, which inherits from meta['template'] and also applies a markdown filter to its child template's body.
 # Next, x.md file gets turned into x.mako, which inherits from _mdParent_x.mako.
 # This enables us to use standard Mako operations (like <%def> that behave as expected) inside of x.md.
 #
@@ -16,12 +16,12 @@ import pyhpy.sync
 
 
 
-def markdownToMako(IN_DIR, REL_PATH):
-    mdPath = IN_DIR + REL_PATH
+def markdownToMako(IN_ROOT, REL_PATH):
+    mdPath = os.path.join(IN_ROOT, REL_PATH)
     base, ext = os.path.splitext(REL_PATH)
     assert base  and  ext.lower() in ['.md', '.markdown']
     reldir, filebase = os.path.split(base)
-    childTmplPath = IN_DIR + base+'.mako'
+    childTmplPath = os.path.join(IN_ROOT, base+'.mako')
 
     # Step 1: Meta
     # If our x.md file has a x.md.meta, copy it to x.mako.meta so that our template code can always assume that the meta is available from pyhpy.meta(self.uri):
@@ -31,7 +31,7 @@ def markdownToMako(IN_DIR, REL_PATH):
     # Step 2: The Parent Template:
     parentTmplFilename = '_mdParent_'+filebase+'.mako'
     parentTmplRelPath = os.path.join(reldir, parentTmplFilename)
-    parentTmplPath = IN_DIR + parentTmplRelPath
+    parentTmplPath = os.path.join(IN_ROOT, parentTmplRelPath)
     pTmpl = u'## This file is auto-generated from %r;  Changes will be lost.\n'%(mdPath,)
     meta = pyhpy.meta(mdPath)
     if meta.get('template', None): pTmpl += u'<%%inherit file="%s" />\\\n'%(meta['template'],)
@@ -41,13 +41,13 @@ def markdownToMako(IN_DIR, REL_PATH):
 
     # Step 3: The Child Template:
     cTmpl = u'## This file is auto-generated from %r;  Changes will be lost.\n'%(mdPath,)
-    cTmpl += u'<%%inherit file="%s" />\\\n'%(parentTmplRelPath,)
+    cTmpl += u'<%%inherit file="/%s" />\\\n'%(parentTmplRelPath,)
     cTmpl += codecs.open(mdPath, encoding='utf-8').read()
     pyhpy.sync.syncData(cTmpl, childTmplPath)
 
 
 if __name__ == '__main__':
-    markdownToMako(os.environ['PYHPY_IN_DIR'], os.environ['PYHPY_REL_PATH'])
+    markdownToMako(os.environ['MUCK_IN_ROOT'], os.environ['MUCK_REL_PATH'])
 
 
 
