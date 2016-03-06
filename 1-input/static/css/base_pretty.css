@@ -1,3 +1,18 @@
+/* Google Fonts is so good! */
+/* http://wordmark.it/ is also good for viewing fonts that are on your system. */
+@font-face {
+  font-family: 'Patua One';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Patua One'), local('PatuaOne-Regular'), url(Patua_One.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+h1.pretty {
+    font-family: 'Patua One';
+    font-weight: normal;
+}
+
 a {
     color: #00e;
     text-decoration: none;
@@ -6,19 +21,13 @@ a:visited {
     color: #00e;
 }
 
-html {
-    background-color: #213554;
-}
 body {
-    width:90%;
-    margin-left: 5%;
-    min-width: 725px;
+    width: 850px;
+    margin: auto;
 }
 div#header {
     margin-top: 3em;
     position: relative;
-    background-color: #ffa940;
-    border-radius: 10px 10px 0 0;
 }
 div#header div.vspacer {
     height: 155px;
@@ -31,7 +40,6 @@ a#logo {
     position: absolute;
     top: 30px;
     left: 30px;
-    color: #03436a;
     font-size: 362%;
 }
 a#logo img {
@@ -39,25 +47,35 @@ a#logo img {
 }
 a#logo div.asciiLogo {
     color: #000;
+    font-family: monospace;
     font-size: 6px;
     font-weight: 900;
     white-space: pre;
-    font-family: monospace;
     margin-top: -35px;
     margin-left: -15px;
     display: inline-block;
     vertical-align: middle;
-    text-shadow: 0 0 1em #fff;
+}
+a#logo div.name {
+    position: absolute;
+    top: -10px;
+    left: 90px;
+    color: #a3312d;
+    font-family: 'Patua One';
+    font-weight: normal;
+    font-size: 72px;
+}
+a#logo div.name span.y {
+    font-size: 56px;
 }
 div#slogan {
     position: absolute;
-    top: 35px;
-    right: 30px;
-    color: #f8f8f8;
-    font-family: serif;
-    font-weight: bold;
+    top: 110px;
+    left: 100px;;
+    color: #A74340;
+    font-family: 'Patua One';
     font-size: 162%;
-    text-shadow: 0px 0px 8px #888;
+    text-shadow: 0px 0px 8px #ccc;
 }
 ul#headerTabs {
     position: absolute;

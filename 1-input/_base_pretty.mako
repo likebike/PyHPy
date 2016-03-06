@@ -116,8 +116,8 @@
    | .`\/' | Y | !
     l "~   j l j_L______
      \,___{ __"~ __ ,\_,\_
-</div> PyHPy</a>
-      <div id=slogan>PyHPy makes you sound Austrylian.</div>
+</div> <div class=name>P<span class=y>y</span>HP<span class=y>y</span></div></a>
+      <div id=slogan>makes you sound Austrylian</div>
       <ul id=headerTabs>
         <li class=${'selected' if self.uri == '/index.html.mako' else 'unselected'}><a href="${pyhpy.url('/index.html', mtime=None)}"}><i class="fa fa-home"></i> Home</a></li>
         <li class=${'selected' if self.uri.startswith('/photos') else 'unselected'}><a href="${pyhpy.url('/photos.html', mtime=None)}"}><i  class="fa fa-photo"></i> Photos</a></li>
