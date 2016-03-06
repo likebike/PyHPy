@@ -25,15 +25,16 @@ body {
     width: 850px;
     margin: auto;
 }
-div#header {
+section#header {
     margin-top: 3em;
     position: relative;
 }
-div#header div.vspacer {
+section#header div.vspacer {
     height: 155px;
 }
-div#header hr {
+section#header hr {
     margin-bottom: 0;
+    border: 5px solid #e5e4de;
 }
 a#logo {
     display: block;
@@ -46,19 +47,20 @@ a#logo img {
     margin-bottom: -23px;
 }
 a#logo div.asciiLogo {
-    color: #000;
-    font-family: monospace;
-    font-size: 6px;
-    font-weight: 900;
-    white-space: pre;
-    margin-top: -35px;
-    margin-left: -15px;
     display: inline-block;
+    white-space: pre;
+    font-family: monospace;
+    font-weight: 900;
+    font-size: 8px;
+    line-height: 1.0em;
+    margin-top: -50px;
+    margin-left: -40px;
     vertical-align: middle;
+    color: #000;
 }
 a#logo div.name {
     position: absolute;
-    top: -10px;
+    top:  0px;
     left: 90px;
     color: #a3312d;
     font-family: 'Patua One';
@@ -70,7 +72,7 @@ a#logo div.name span.y {
 }
 div#slogan {
     position: absolute;
-    top: 110px;
+    top: 113px;
     left: 100px;;
     color: #999;
     font-family: 'Patua One';
@@ -78,7 +80,7 @@ div#slogan {
 }
 ul#headerTabs {
     position: absolute;
-    top: 85px;
+    top: 101px;  /* Line up tab text and slogan baselines. */
     right: 30px;
     margin: 0;
 }
@@ -93,33 +95,42 @@ ul#headerTabs li {
     border-radius: 10px;
 }
 ul#headerTabs li.selected {
-    background-color: #ff7700;
+    /* background-color: #ff7700; /* Nice Orange */
+    background-color: #a3312d;
 }
 ul#headerTabs li a {
-    color: #ccc;
+    color: #e5e4de;
     text-shadow: 0 0 5px #333;
 }
 ul#headerTabs li.selected a {
     color: #fff;
 }
-div#content {
+section#content {
     background-color: #fff;
     padding-top: 3em;
     padding-bottom: 3em;
     padding-left: 2em;
     padding-right: 2em;
 }
-div#footer {
+section#footer {
     margin-bottom: 3em;
     text-align: center;
-    background-color: #D09043;
-    color: #213554;
+    background-color: #e5e4de;
+    color: #a3312d;
     border-radius: 0 0 10px 10px;
 }
-div#footer hr {
+section#footer hr {
     margin-top: 0;
 }
 
 div.clearFloats {
     clear: both;
 }
+
+
+article.markdown-body {
+    font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #444;
+}
+
+

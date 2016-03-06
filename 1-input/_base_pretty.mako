@@ -93,7 +93,7 @@
     <%block name="PAGE_JS"></%block>
   </head>
   <body>
-    <div id=header>
+    <section id=header>
       <a id=logo href="${pyhpy.url('/index.html', mtime=None)}"><div class=asciiLogo>
                  .
              /\ /l
@@ -125,15 +125,15 @@
       </ul>
       <div class=vspacer></div>
       <hr>
-    </div>
-    <div id=content>
+    </section>
+    <section id=content>
       ## Render the inheriting template:
       ${next.body()}
-    </div>
-    <div id=footer>
+    </section>
+    <section id=footer>
       <hr>
       ©2016 你好世界
-    </div>
+    </section>
   </body>
 </html>
 
