@@ -72,10 +72,9 @@ div#slogan {
     position: absolute;
     top: 110px;
     left: 100px;;
-    color: #A74340;
+    color: #999;
     font-family: 'Patua One';
     font-size: 162%;
-    text-shadow: 0px 0px 8px #ccc;
 }
 ul#headerTabs {
     position: absolute;

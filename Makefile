@@ -28,8 +28,7 @@ export PYTHONPATH:=${PYHPY_DIR}/lib$(shell echo $${PYTHONPATH:+:$${PYTHONPATH:-}
 # Directory locations:
 IN_NAME=1-input
 IN_DIR=${PROJ_ROOT}/${IN_NAME}
-COPY_NAME=.1-input-copy
-COPY_DIR=${PROJ_ROOT}/${COPY_NAME}
+LIST_FILE=${PROJ_ROOT}/.${IN_NAME}.list
 BUILD_NAME=2-buildarea
 BUILD_DIR=${PROJ_ROOT}/${BUILD_NAME}
 OUT_DIR_NAME=3-output
@@ -52,7 +51,7 @@ WWW_DIR=${OUT_DEV_DIR}
 # Build the development site:
 dev:
 	@echo "Syncing: ${IN_NAME} --> ${BUILD_NAME}"
-	@mucksync "${IN_DIR}" "${BUILD_DIR}" "${COPY_DIR}"
+	@mucksync "${IN_DIR}" "${BUILD_DIR}" "${LIST_FILE}"
 	@echo "Building: ${BUILD_NAME} --> ${OUT_DEV_NAME}"
 	@muck "${BUILD_DIR}" "${OUT_DEV_DIR}"
 	@echo
@@ -75,7 +74,7 @@ prod: dev
 # outputs -- they don't end up in a detached filesystem node.
 clean:
 	@echo "Cleaning: ${BUILD_NAME} and ${OUT_DEV_NAME}"
-	-@rm -r "${COPY_DIR}"
+	-@rm "${LIST_FILE}"
 	-@find "${BUILD_DIR}" -not -type d -delete
 	-@find "${OUT_DEV_DIR}" -not -type d -delete
 
