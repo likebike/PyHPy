@@ -1,4 +1,5 @@
 *.swp
 *.pyc
+/.1-input-copy/
 /2-buildarea/
 /muck

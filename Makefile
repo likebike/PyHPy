@@ -28,6 +28,8 @@ export PYTHONPATH:=${PYHPY_DIR}/lib$(shell echo $${PYTHONPATH:+:$${PYTHONPATH:-}
 # Directory locations:
 IN_NAME=1-input
 IN_DIR=${PROJ_ROOT}/${IN_NAME}
+COPY_NAME=.1-input-copy
+COPY_DIR=${PROJ_ROOT}/${COPY_NAME}
 BUILD_NAME=2-buildarea
 BUILD_DIR=${PROJ_ROOT}/${BUILD_NAME}
 OUT_DIR_NAME=3-output
@@ -48,13 +50,10 @@ WWW_DIR=${OUT_DEV_DIR}
 .PHONY: dev prod clean server
 
 # Build the development site:
-# We use 'find' instead of 'rm -rf' to preserve existing directory structure.
-# This is less confusing for users who rebuild a project while viewing
-# outputs -- they don't end up in a detached filesystem node.
 dev:
-	@echo Copying ${IN_NAME} '-->' ${BUILD_NAME}
-	@rsync -aHAX "${IN_DIR}/" "${BUILD_DIR}"
-	@echo Building ${BUILD_NAME} '-->' ${OUT_DEV_NAME}
+	@echo "Syncing: ${IN_NAME} --> ${BUILD_NAME}"
+	@mucksync "${IN_DIR}" "${BUILD_DIR}" "${COPY_DIR}"
+	@echo "Building: ${BUILD_NAME} --> ${OUT_DEV_NAME}"
 	@muck "${BUILD_DIR}" "${OUT_DEV_DIR}"
 	@echo
 	@echo "DEV Built Successfully!  Output is at: ${OUT_DEV_DIR}"
@@ -62,17 +61,21 @@ dev:
 
 # Copy 'dev' to 'prod':
 prod: dev
-	@echo Copying ${OUT_DEV_NAME} '-->' ${OUT_PROD_NAME}
+	@echo "Copying: ${OUT_DEV_NAME} --> ${OUT_PROD_NAME}"
 	@rsync -aHAX "${OUT_DEV_DIR}/" "${OUT_PROD_DIR}"
-	@echo Updating ${OUT_PROD_SYMLINK_NAME} symlink
+	@echo "Updating Symlink: ${OUT_PROD_SYMLINK_NAME}"
 	@ln -sfn "${PROD_NAME}" "${OUT_PROD_SYMLINK}"
 	@echo
 	@echo "PROD Built Successfully!  Output is at: ${OUT_PROD_SYMLINK}"
 	@echo
 
 # Remove everything from the Build and Dev directories:
+# We use 'find' instead of 'rm -r' to preserve existing directory structure.
+# This is less confusing for users who rebuild a project while viewing
+# outputs -- they don't end up in a detached filesystem node.
 clean:
-	@echo Cleaning ${BUILD_NAME} and ${OUT_DEV_NAME}
+	@echo "Cleaning: ${BUILD_NAME} and ${OUT_DEV_NAME}"
+	-@rm -r "${COPY_DIR}"
 	-@find "${BUILD_DIR}" -not -type d -delete
 	-@find "${OUT_DEV_DIR}" -not -type d -delete
 

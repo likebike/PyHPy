@@ -27,7 +27,9 @@ def end(string=None):
     if string: print(string)
     sys.exit()
 
-def SKIP(): end()
+def SKIP(): end('''
+{ set +x; echo Skipping: %(relPath)s; } 2>/dev/null
+'''%globals())
 
 def COPY(): end('''
 { set +x; } 2>/dev/null  # Silently disable tracing
@@ -37,7 +39,7 @@ cp --preserve=all %(inFile)r %(outFile)r
 '''%globals())
     
 def MAKO():
-    noext, ext = os.path.splitext(relPath)   # Chop off the .mako extension.
+    noext, ext = os.path.splitext(relPath)    # Chop off the .mako extension.
     assert ext == '.mako'
     values = {'noext':noext}; values.update(globals())
     end('''
@@ -49,16 +51,11 @@ python -m pyhpy.cmd --template-dir=%(inRoot)r --module-dir=%(inRoot)r /%(relPath
 
 def MARKDOWN(): end('../bin/MARKDOWN')
 
-def RUN(): end('''
-chmod u+x %(inFile)r   # Automatically make the file executable.
-exec %(inFile)r
-'''%globals())
 
-    
 
 if fnmatch(filename, '.htaccess*'): COPY()
 if fnmatch(filename, '.htpasswd*'): COPY()
-if fnmatch(relPath,  '*/font-awesome-*/*.scss'): COPY()   # FontAwesome contains some .scss files that begin with '_'.
+if fnmatch(relPath,  '*/font-awesome-*/*.scss'): COPY()   # FontAwesome contains some .scss files that begin with '_'.  Need to explicitly handle them here so they don't get skipped by the '_*' rule below.
 if fnmatch(filename, '*.mako.py'):  SKIP()    # Mako-generated module
 if fnmatch(filename, '*.meta'):     SKIP()
 if fnmatch(filename, '*.pyc'):      SKIP()
@@ -69,6 +66,14 @@ if fnmatch(filename, '_*'):         SKIP()
 if fnmatch(filename, '*.mako'):     MAKO()
 if fnmatch(filename, '*.markdown'): MARKDOWN()
 if fnmatch(filename, '*.md'):       MARKDOWN()
-if fnmatch(filename, '*.run'):      RUN()
 if fnmatch(filename, '*'):          COPY()    # Default processor
 
+
+
+#######  This is a cool idea, but I have not had a need for it yet:
+# def RUN(): end('''
+# chmod u+x %(inFile)r   # Automatically make the file executable.
+# exec %(inFile)r
+# '''%globals())
+
+    

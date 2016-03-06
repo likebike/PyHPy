@@ -1,7 +1,0 @@
-#!/bin/bash -eu
-
-PHOTOS_DIR="$MUCK_IN_ROOT/static/photoalbum"
-cat <<EOF >"$MUCK_IN_ROOT/photos.html.mako.meta"
-{"photosDir":"$PHOTOS_DIR", "photos":"$(ls "$PHOTOS_DIR"/*.jpeg)"}
-EOF
-
