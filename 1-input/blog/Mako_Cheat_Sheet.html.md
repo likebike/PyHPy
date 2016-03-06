@@ -17,9 +17,17 @@
 <i class="fa fa-graduation-cap fa-lg"></i> Learning Mako by Example
 =============================================================
 
-[Mako](http://www.makotemplates.org/) is a powerful (and fast) templating language, built on top of [Python](https://www.python.org/).  Mako is written by [Mike Bayer](http://techspot.zzzeek.org/).  [The development repository is on GitHub.](https://github.com/zzzeek/mako)
+[Mako](http://www.makotemplates.org/) is a powerful templating language built on top of [Python](https://www.python.org/).  Mako is written by [Mike Bayer](http://techspot.zzzeek.org/).  [The development repository is on GitHub.](https://github.com/zzzeek/mako)
 
 This page teaches Mako's most essential features through a series of examples.  If you have questions about anything, or if you want to learn about other cool Mako features that are not covered here, refer to the [official Mako docs](http://docs.makotemplates.org/en/latest/).
+
+=== Why Mako? ===
+
+I need to explain why I chose Mako, rather than Jinja2, Cheetah, Django Templates, or others.
+
+* Very powerful, general.  Can produce any kind of output.
+
+* Small feature set.  Easy to teach it to my wife.
 
 
 Text and Unicode

@@ -83,6 +83,12 @@
         }
       </script>
     %endif
+    ## Un-comment for syntax highlighting:
+    ##<link rel="stylesheet" type="text/css" href="/static/lib/highlightJS/styles/default.css">
+    ##<script type="text/javascript" src="/static/lib/highlightJS/highlight.pack.js"></script>
+    ##<script type="text/javascript">
+    ##    hljs.initHighlightingOnLoad();
+    ##</script>
     <script type="text/javascript" src="${pyhpy.url('/static/js/base_pretty.js')}"></script>
     <%block name="PAGE_JS"></%block>
   </head>

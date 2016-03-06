@@ -53,20 +53,20 @@ def MARKDOWN(): end('../bin/MARKDOWN')
 
 
 
-if fnmatch(filename, '.htaccess*'): COPY()
-if fnmatch(filename, '.htpasswd*'): COPY()
-if fnmatch(relPath,  '*/font-awesome-*/*.scss'): COPY()   # FontAwesome contains some .scss files that begin with '_'.  Need to explicitly handle them here so they don't get skipped by the '_*' rule below.
-if fnmatch(filename, '*.mako.py'):  SKIP()    # Mako-generated module
-if fnmatch(filename, '*.meta'):     SKIP()
-if fnmatch(filename, '*.pyc'):      SKIP()
-if fnmatch(filename, '*.swp'):      SKIP()
-if fnmatch(filename, '*~'):         SKIP()
-if fnmatch(filename, '.*'):         SKIP()
-if fnmatch(filename, '_*'):         SKIP()
-if fnmatch(filename, '*.mako'):     MAKO()
-if fnmatch(filename, '*.markdown'): MARKDOWN()
-if fnmatch(filename, '*.md'):       MARKDOWN()
-if fnmatch(filename, '*'):          COPY()    # Default processor
+if fnmatch(filename, '.htaccess'):    COPY()  # We want to copy these dot-files.
+if fnmatch(filename, '.htpasswd'):    COPY()
+if fnmatch(relPath,  'static/lib/*'): COPY()  # Don't process 3rd-party libs.
+if fnmatch(filename, '*.meta'):       SKIP()
+if fnmatch(filename, '*.pyc'):        SKIP()
+if fnmatch(filename, '*.mako.py'):    SKIP()  # Mako-generated module
+if fnmatch(filename, '*.swp'):        SKIP()
+if fnmatch(filename, '*~'):           SKIP()
+if fnmatch(filename, '.*'):           SKIP()
+if fnmatch(filename, '_*'):           SKIP()
+if fnmatch(filename, '*.mako'):       MAKO()
+if fnmatch(filename, '*.markdown'):   MARKDOWN()
+if fnmatch(filename, '*.md'):         MARKDOWN()
+if fnmatch(filename, '*'):            COPY()  # Default processor
 
 
 

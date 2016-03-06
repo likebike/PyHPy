@@ -4,6 +4,8 @@ Welcome to the PyHPy Demo Site!
 
 TODO:
 
+* Re-do this home-page.  It's terrible.
+
 * "Show this page source"
 
 * Copy Clay style -- beautiful, and home page explains everything perfectly.
