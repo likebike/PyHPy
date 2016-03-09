@@ -1,5 +1,6 @@
 /* Google Fonts is so good! */
 /* http://wordmark.it/ is also good for viewing fonts that are on your system. */
+/*
 @font-face {
   font-family: 'Patua One';
   font-style: normal;
@@ -7,9 +8,17 @@
   src: local('Patua One'), local('PatuaOne-Regular'), url(Patua_One.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
+*/
+@font-face {
+  font-family: 'Acme';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Acme'), local('Acme-Regular'), url(Acme.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
 
 h1.pretty {
-    font-family: 'Patua One';
+    font-family: 'Acme', sans-serif;
     font-weight: normal;
 }
 
@@ -26,7 +35,7 @@ body {
     margin: auto;
 }
 section#header {
-    margin-top: 3em;
+    margin-top: 1em;
     position: relative;
 }
 section#header div.vspacer {
@@ -52,18 +61,22 @@ a#logo div.asciiLogo {
     font-family: monospace;
     font-weight: 900;
     font-size: 8px;
-    line-height: 1.0em;
+    line-height: 1.2em;
     margin-top: -50px;
-    margin-left: -40px;
+    margin-left: -25px;
     vertical-align: middle;
     color: #000;
+}
+a#logo div.asciiLogo.vcompressed {
+    line-height: 1.1em;
+    font-size: 7.5px;
 }
 a#logo div.name {
     position: absolute;
     top:  0px;
     left: 90px;
     color: #a3312d;
-    font-family: 'Patua One';
+    font-family: 'Acme', sans-serif;
     font-weight: normal;
     font-size: 72px;
 }
@@ -75,7 +88,7 @@ div#slogan {
     top: 113px;
     left: 100px;;
     color: #999;
-    font-family: 'Patua One';
+    font-family: 'Acme', sans-serif;
     font-size: 162%;
 }
 ul#headerTabs {

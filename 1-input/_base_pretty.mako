@@ -94,34 +94,36 @@
   </head>
   <body>
     <section id=header>
-      <a id=logo href="${pyhpy.url('/index.html', mtime=None)}"><div class=asciiLogo>
-                 .
-             /\ /l
-            ((.Y(!
-             \ |/
-             /  6~6,
-             \ _    +-.
-              \`-=--^-'
-               \ \ 
-              _/  \ 
-             (  .  Y
-            /"\ `--^--v--.
-           / _ `--"T~\/~\/
-          / " ~\.  !
-    _    Y      Y./'
-   Y^|   |      |~~7
-   | l   |     / ./'
-   | `L  | Y .^/~T
-   |  l  ! | |/| |
-   | .`\/' | Y | !
-    l "~   j l j_L______
-     \,___{ __"~ __ ,\_,\_
-</div> <div class=name>P<span class=y>y</span>HP<span class=y>y</span></div></a>
-      <div id=slogan>makes you sound Austrylian</div>
+      <a id=logo href="<%block name="LOGO_URL">${pyhpy.url('/index.html', mtime=None)}</%block>"><%block name="LOGO_IMAGE"><div class="asciiLogo vcompressed"><%text>
+              .
+          /\ /l
+         ((.Y(!
+          \ |/
+          /  6~6,
+          \ _    +-.
+           \`-=--^-'
+            \ \ 
+           _/  \ 
+          (  .  Y
+         /"\ `--^--v--.
+        / _ `--"T~\/~\/
+       / " ~\.  !
+ _    Y      Y./'
+Y^|   |      |~~7
+| l   |     / ./'
+| `L  | Y .^/~T
+|  l  ! | |/| |
+| .`\/' | Y | !
+ l "~   j l j_L______
+  \,___{ __"~ __ ,\_,\_
+</%text></div></%block> <%block name="LOGO_NAME"><div class=name>P<span class=y>y</span>HP<span class=y>y</span></div></%block></a>
+      <%block name="LOGO_SLOGAN"><div id=slogan>makes you sound Austrylian</div></%block>
       <ul id=headerTabs>
+        <%block name="HEADER_TABS">
         <li class=${'selected' if self.uri == '/index.html.mako' else 'unselected'}><a href="${pyhpy.url('/index.html', mtime=None)}"}><i class="fa fa-home"></i> Home</a></li>
         <li class=${'selected' if self.uri.startswith('/photos') else 'unselected'}><a href="${pyhpy.url('/photos.html', mtime=None)}"}><i  class="fa fa-photo"></i> Photos</a></li>
         <li class=${'selected' if self.uri.startswith('/blog') else 'unselected'}><a href="${pyhpy.url('/blog.html', mtime=None)}"}><i class="fa fa-newspaper-o"></i> Blog</a></li>
+        </%block>
       </ul>
       <div class=vspacer></div>
       <hr>
