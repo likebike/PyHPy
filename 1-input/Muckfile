@@ -19,43 +19,55 @@ filename = os.path.basename(relPath)
 #  Pre-calculate a few paths to make our command recipes simpler:
 # (We could also calculate these things inside of the command recipes, using bash.)
 inRoot, outRoot = os.environ['MUCK_IN_ROOT'], os.environ['MUCK_OUT_ROOT']
-inFile = os.path.join(inRoot, os.environ['MUCK_REL_PATH'])
-outFile = os.path.join(outRoot, os.environ['MUCK_REL_PATH'])
-outDir = os.path.dirname(outFile)
+inPath = os.path.join(inRoot, os.environ['MUCK_REL_PATH'])
+outPath = os.path.join(outRoot, os.environ['MUCK_REL_PATH'])
+outDir = os.path.dirname(outPath)
 
 def end(string=None):
     if string: print(string)
     sys.exit()
 
-def SKIP(): end('''
-{ set +x; echo Skipping: %(relPath)s; } 2>/dev/null
-'''%globals())
-
-def COPY(): end('''
+def mk_outdir(): print('''
 { set +x; } 2>/dev/null  # Silently disable tracing
 mkdir -p %(outDir)r
 set -x                   # Re-enable tracing
-cp --preserve=all %(inFile)r %(outFile)r
 '''%globals())
+
+def SKIP(verbose=False):
+    if verbose: print >>sys.stderr, 'Skipping:', relPath
+    sys.exit()
+
+def ENTER_SUBDIR(): end('''
+{ set +x; } 2>/dev/null  # Silently disable tracing
+true                     # The command doesn't actually matter, as long as it succeeds.
+echo RUNNING $MUCK_REL_PATH
+find . >/dev/null
+''')
+
+def COPY():
+    mk_outdir()
+    end('cp --preserve=all %(inPath)r %(outPath)r'%globals())
+
+def RSYNC():
+    mk_outdir()
+    end('rsync -aHAX --delete %(inPath)r/ %(outPath)r/'%globals())
     
 def MAKO():
     noext, ext = os.path.splitext(relPath)    # Chop off the .mako extension.
     assert ext == '.mako'
     values = {'noext':noext}; values.update(globals())
-    end('''
-{ set +x; } 2>/dev/null  # Silently disable tracing
-mkdir -p %(outDir)r
-set -x                   # Re-enable tracing
-python -m pyhpy.cmd --template-dir=%(inRoot)r --module-dir=%(inRoot)r /%(relPath)r >%(noext)r
-'''%values)
+    mk_outdir()
+    end('python -m pyhpy.cmd --template-dir=%(inRoot)r --module-dir=%(inRoot)r /%(relPath)r >%(noext)r'%values)
 
 def MARKDOWN(): end('../bin/MARKDOWN')
 
 
 
+if relPath == 'static/lib':           RSYNC() # Copy 3rd-party libs all at once.
+if relPath.startswith('static/lib/'): SKIP()  # Don't recurse into 3rd-party libs.
+if os.path.isdir(relPath):            ENTER_SUBDIR()
 if fnmatch(filename, '.htaccess'):    COPY()  # We want to copy these dot-files.
 if fnmatch(filename, '.htpasswd'):    COPY()
-if fnmatch(relPath,  'static/lib/*'): COPY()  # Don't process 3rd-party libs.
 if fnmatch(filename, '*.meta'):       SKIP()
 if fnmatch(filename, '*.pyc'):        SKIP()
 if fnmatch(filename, '*.mako.py'):    SKIP()  # Mako-generated module
@@ -70,10 +82,15 @@ if fnmatch(filename, '*'):            COPY()  # Default processor
 
 
 
+
+# if fnmatch(relPath,  'static/lib'):   RSYNC()           # Don't process 3rd-party libs.   Recursion model processes this after those.  Need to re-think???
+# if fnmatch(relPath,  'static/lib/*'): SKIP(silent=True) # Don't process 3rd-party libs.
+
+
 #######  This is a cool idea, but I have not had a need for it yet:
 # def RUN(): end('''
-# chmod u+x %(inFile)r   # Automatically make the file executable.
-# exec %(inFile)r
+# chmod u+x %(inPath)r   # Automatically make the file executable.
+# exec %(inPath)r
 # '''%globals())
 
     

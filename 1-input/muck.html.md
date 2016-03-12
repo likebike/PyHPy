@@ -5,7 +5,7 @@
 </%block>
 <%block name="LOGO_URL">${pyhpy.url('/muck.html', mtime=None)}</%block>
 <%block name="LOGO_NAME"><div class=name>Muck</div></%block>
-<%block name="LOGO_SLOGAN"><div id=slogan>turns pieces into things</div></%block>
+<%block name="LOGO_SLOGAN"><div id=slogan>loves jigsaw puzzles &amp; IKEA furniture</div></%block>
 <%block name="LOGO_IMAGE"><div class=asciiLogo><%text>
             ____ 
            /\  __\_ 
@@ -32,7 +32,7 @@
 
 
 
-Muck is a general-purpose build tool, sort of like [Make](https://www.gnu.org/software/make/), but with a different design philosophy:  Make is "top-down" (you specify what you want to build, and Make figures out what pieces are required), Muck is "bottom-up" (you specify the available pieces, and Muck figures out what can be built).  The Muck model enables automatic discovery of dependencies, and also enables you to write Muckfiles in *any* programming language.
+Muck is a general-purpose build tool, sort of like [Make](https://www.gnu.org/software/make/), but with a different design philosophy:  Make is "top-down" (you specify what you want to build, and Make gathers the necessary pieces), Muck is "bottom-up" (you specify the available pieces, and Muck assembles them).  The Muck model enables automatic discovery of dependencies, and also enables you to write Muckfiles in *any* programming language.
 
 === An Example ===
 

@@ -2,5 +2,6 @@
   "template":"/_blogPost.mako",
   "summary":"This post needs a summary.",
   "author" :"Christopher Sebastian",
-  "image"  :"/static/blogImg/default.jpg"
+  "image"  :"/static/blogImg/default.jpg",
+  "date"   :"2016"
 }
