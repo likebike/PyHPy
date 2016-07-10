@@ -17,8 +17,8 @@ MAKEFILE_DIR=$(patsubst %/,%,$(dir $(THIS_MAKEFILE)))
 
 # We use the Makefile location to guess our project root and PyHPy location:
 PROJ_ROOT=${MAKEFILE_DIR}
-PYHPY_DIR=${MAKEFILE_DIR}
-MUCK_DIR=${PYHPY_DIR}/muck
+PYHPY_DIR=${MAKEFILE_DIR}/pyhpy
+MUCK_DIR=${MAKEFILE_DIR}/muck
 
 # I assume that PATH is always set, so I prepend to it the easy way.
 # But PYTHONPATH might not be set.  Don't use a ':' unless we need to:
