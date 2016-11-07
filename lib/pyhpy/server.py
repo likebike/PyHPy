@@ -9,7 +9,7 @@
 # at /a/b/x .  Python's default SimpleHTTPServer remains attached to the original directory that it is started in, even after
 # it gets moved.
 
-import sys, SimpleHTTPServer, posixpath, os.path, urllib
+import sys, SimpleHTTPServer, posixpath, os.path, urllib, subprocess
 
 
 class PyHPyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
@@ -39,6 +39,33 @@ class PyHPyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if trailing_slash:
             path += '/'
         return path
+
+    # I have added content auto-detection for files with no extension:
+    def guess_type(self, path):
+        """Guess the type of a file.
+
+        Argument is a PATH (a filename).
+
+        Return value is a string of the form type/subtype,
+        usable for a MIME Content-type header.
+
+        The default implementation looks the file's extension
+        up in the table self.extensions_map, using application/octet-stream
+        as a default; however it would be permissible (if
+        slow) to look inside the data to make a better guess.
+
+        """
+
+        base, ext = posixpath.splitext(path)
+        if not ext: return subprocess.check_output(['/usr/bin/file', '-biL', path]).strip()   #####################  ADDED BY CHRISTOPHER SEBASTIAN
+        if ext in self.extensions_map:
+            return self.extensions_map[ext]
+        ext = ext.lower()
+        if ext in self.extensions_map:
+            return self.extensions_map[ext]
+        else:
+            return self.extensions_map['']
+
 
 DOCROOT=None   # This must be set.
 def setDOCROOT(docroot):
