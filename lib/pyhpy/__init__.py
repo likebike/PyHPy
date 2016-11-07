@@ -52,8 +52,9 @@ def FS_ROOT():
         level, frame = 0, inspect.currentframe()
         while frame:
             if '_template_uri' in frame.f_globals:
-                assert frame.f_globals['_template_filename'].endswith(frame.f_globals['_template_uri']), '%r does not end with %r'%(frame.f_globals['_template_filename'], frame.f_globals['_template_uri'])
-                fsRoot = frame.f_globals['_template_filename'][:-len(frame.f_globals['_template_uri'])]
+                normTmplFname, normTmplURI = os.path.normpath(frame.f_globals['_template_filename']), os.path.normpath(frame.f_globals['_template_uri'])   # In case there are some ".." or other similar elements in a path.
+                assert normTmplFname.endswith(normTmplURI), '%r does not end with %r'%(frame.f_globals['_template_filename'], frame.f_globals['_template_uri'])
+                fsRoot = normTmplFname[:-len(normTmplURI)]
                 assert fsRoot[0] == '/'  and  fsRoot[-1] != '/', 'Non-absolute fsRoot: %r'%(fsRoot,)
                 _fsRoot = fsRoot
                 break
