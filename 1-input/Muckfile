@@ -20,6 +20,7 @@ filename = os.path.basename(relPath)
 # (We could also calculate these things inside of the command recipes, using bash.)
 inRoot, outRoot = os.environ['MUCK_IN_ROOT'], os.environ['MUCK_OUT_ROOT']
 inPath = os.path.join(inRoot, os.environ['MUCK_REL_PATH'])
+inDir = os.path.dirname(inPath)
 outPath = os.path.join(outRoot, os.environ['MUCK_REL_PATH'])
 outDir = os.path.dirname(outPath)
 
@@ -61,6 +62,12 @@ def MAKO():
 
 def MARKDOWN(): end('../bin/MARKDOWN')
 
+def RUN(): end('''
+cat %(inPath)r >/dev/null  # Force 'inPath' to be a Muck dependency, so things get re-called if the file changes.  For some reason, the below 'chmod' and 'exec' do not cause a dependency.
+chmod u+x %(inPath)r       # Automatically make the file executable.
+cd %(inDir)r
+exec %(inPath)r
+'''%globals())
 
 
 if relPath == 'static/lib':           RSYNC() # Copy 3rd-party libs all at once.
@@ -80,17 +87,3 @@ if fnmatch(filename, '*.markdown'):   MARKDOWN()
 if fnmatch(filename, '*.md'):         MARKDOWN()
 if fnmatch(filename, '*'):            COPY()  # Default processor
 
-
-
-
-# if fnmatch(relPath,  'static/lib'):   RSYNC()           # Don't process 3rd-party libs.   Recursion model processes this after those.  Need to re-think???
-# if fnmatch(relPath,  'static/lib/*'): SKIP(silent=True) # Don't process 3rd-party libs.
-
-
-#######  This is a cool idea, but I have not had a need for it yet:
-# def RUN(): end('''
-# chmod u+x %(inPath)r   # Automatically make the file executable.
-# exec %(inPath)r
-# '''%globals())
-
-    

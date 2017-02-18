@@ -10,7 +10,7 @@
         return reversed(sorted([postInfo('/blog/'+x) for x in muck.listdir(os.path.join(pyhpy.FS_ROOT(), 'blog')) if x.endswith('.html.md')]))
 %>
 
-%if self.uri==local.uri: ## Is this is the blog homepage?
+%if self.uri==local.uri: ## Is this the blog homepage?
 
 %else:
 ## This is a blog post.    
