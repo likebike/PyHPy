@@ -78,7 +78,7 @@ if fnmatch(filename, '.*'):           SKIP()  # I put this after the isdir() so 
 
 
 # A simple way to enabled building of specific items (for improved development iteration time):
-for pat in os.environ.get('MUCK_REL_PATH_STARTSWITH', '').split('|'):
+for pat in os.environ.get('MUCK_REL_PATH_STARTSWITH', '').split('|'):   # If the env var is not set, the resulting 'pat' will be '', which matches everything.
     if relPath.startswith(pat): break
 else: SKIP(True)
 
