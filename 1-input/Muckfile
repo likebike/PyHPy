@@ -50,6 +50,7 @@ def COPY():
     end('cp --preserve=all %(inPath)r %(outPath)r'%globals())
 
 def RSYNC():
+    # Note that you probably don't want to use 'rsync' from within 'muck' because 'muck' ends up duplicating all the same work, in a very inefficient way, resulting in terrible performance.  You probably just want to run 'rsync' from a top-level Makefile, and skipping the filesystem hierarchy in 'muck'...
     mk_outdir()
     end('rsync -aHAX --delete %(inPath)r/ %(outPath)r/'%globals())
     
@@ -71,20 +72,20 @@ exec %(inPath)r
 
 
 if relPath == 'static/lib':           RSYNC() # Copy 3rd-party libs all at once.
-if relPath.startswith('static/lib/'): SKIP()  # Don't recurse into 3rd-party libs.
+if relPath.startswith('static/lib'):  SKIP()  # Don't recurse into 3rd-party libs.  They can contain crazy things.
 if fnmatch(filename, '_*'):           SKIP()
 if os.path.isdir(relPath):            ENTER_SUBDIR()
-if fnmatch(filename, '.*'):           SKIP()  # I put this after the isdir() so I don't need to make special exceptions for '.'
+if fnmatch(filename, '.htaccess'):    COPY()  # We want to copy these dot-files.
+if fnmatch(filename, '.htpasswd'):    COPY()
 
 
 # A simple way to enabled building of specific items (for improved development iteration time):
-for pat in os.environ.get('MUCK_REL_PATH_STARTSWITH', '').split('|'):   # If the env var is not set, the resulting 'pat' will be '', which matches everything.
+for pat in os.environ.get('MUCK_REL_PATH_PREFIXES', '').split('|'):   # If the env var is not set, the resulting 'pat' will be '', which matches everything.
     if relPath.startswith(pat): break
 else: SKIP(True)
 
 
-if fnmatch(filename, '.htaccess'):    COPY()  # We want to copy these dot-files.
-if fnmatch(filename, '.htpasswd'):    COPY()
+if fnmatch(filename, '.*'):           SKIP()  # I put this after the isdir() so I don't need to make special exceptions for '.'
 if fnmatch(filename, '*.meta'):       SKIP()
 if fnmatch(filename, '*.pyc'):        SKIP()
 if fnmatch(filename, '*.mako.py'):    SKIP()  # Mako-generated module
