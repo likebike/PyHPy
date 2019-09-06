@@ -1,0 +1,8 @@
+#!/bin/bash -eu
+
+TARGET="$PYHPY_OUT_DIR/$PYHPY_REL_PATH"
+TARGET_DIR=$(dirname "$TARGET")
+
+mkdir -p "$TARGET_DIR"
+cp --preserve=all "$PYHPY_IN_DIR/$PYHPY_REL_PATH" "$TARGET"
+

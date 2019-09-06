@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+
+# Muckfiles can be written in any language.  They just need to print shell commands to stdout.
+#
+# Muck provides a few environment variables as inputs:
+#
+#     MUCK_IN_ROOT   -- The input root directory.  Example:  /path/to/proj/in
+#     MUCK_OUT_ROOT  -- The output root directory. Example:  /path/to/proj/out
+#     MUCK_REL_PATH  -- The file to process, relative to the MUCK_IN_ROOT.  Ex: a/b.c
+#
+# Muckfiles should be "functional";  For the same set of inputs,
+# they should always produce the same set of outputs (shell commands).
+
+import os, sys
+from fnmatch import fnmatch
+
+relPath = os.environ['MUCK_REL_PATH']
+filename = os.path.basename(relPath)
+#  Pre-calculate a few paths to make our command recipes simpler:
+# (We could also calculate these things inside of the command recipes, using bash.)
+inRoot, outRoot = os.environ['MUCK_IN_ROOT'], os.environ['MUCK_OUT_ROOT']
+inPath = os.path.join(inRoot, os.environ['MUCK_REL_PATH'])
+inDir = os.path.dirname(inPath)
+outPath = os.path.join(outRoot, os.environ['MUCK_REL_PATH'])
+outDir = os.path.dirname(outPath)
+
+def end(string=None):
+    if string: print(string)
+    sys.exit()
+
+def mk_outdir(): print('''
+{ set +x; } 2>/dev/null  # Silently disable tracing
+mkdir -p %(outDir)r
+set -x                   # Re-enable tracing
+'''%globals())
+
+def SKIP(verbose=False):
+    if verbose: print >>sys.stderr, 'Skipping:', relPath
+    sys.exit()
+
+def ENTER_SUBDIR(): end('''
+{ set +x; } 2>/dev/null  # Silently disable tracing
+true                     # The command doesn't actually matter, as long as it succeeds.
+echo DIR DONE: $MUCK_REL_PATH/
+find . >/dev/null
+''')
+
+def COPY():
+    mk_outdir()
+    end('cp --preserve=all %(inPath)r %(outPath)r'%globals())
+
+def RSYNC():
+    # Note that you probably don't want to use 'rsync' from within 'muck' because 'muck' ends up duplicating all the same work, in a very inefficient way, resulting in terrible performance.  You probably just want to run 'rsync' from a top-level Makefile, and skipping the filesystem hierarchy in 'muck'...
+    mk_outdir()
+    end('rsync -aHAX --delete %(inPath)r/ %(outPath)r/'%globals())
+    
+def MAKO():
+    noext, ext = os.path.splitext(relPath)    # Chop off the .mako extension.
+    assert ext == '.mako'
+    values = {'noext':noext}; values.update(globals())
+    mk_outdir()
+    end('python -m pyhpy.cmd --template-dir=%(inRoot)r --module-dir=%(inRoot)r /%(relPath)r >%(noext)r'%values)
+
+def MARKDOWN(): end('../bin/MARKDOWN')
+
+def RUN(): end('''
+cat %(inPath)r >/dev/null  # Force 'inPath' to be a Muck dependency, so things get re-called if the file changes.  For some reason, the below 'chmod' and 'exec' do not cause a dependency.
+chmod u+x %(inPath)r       # Automatically make the file executable.
+cd %(inDir)r
+exec %(inPath)r
+'''%globals())
+
+
+if relPath == 'static/lib':           RSYNC() # Copy 3rd-party libs all at once.
+if relPath.startswith('static/lib'):  SKIP()  # Don't recurse into 3rd-party libs.  They can contain crazy things.
+if fnmatch(filename, '_*'):           SKIP()
+if os.path.isdir(relPath):            ENTER_SUBDIR()
+if fnmatch(filename, '.htaccess'):    COPY()  # We want to copy these dot-files.
+if fnmatch(filename, '.htpasswd'):    COPY()
+
+
+# A simple way to enabled building of specific items (for improved development iteration time):
+for pat in os.environ.get('MUCK_REL_PATH_PREFIXES', '').split('|'):   # If the env var is not set, the resulting 'pat' will be '', which matches everything.
+    if relPath.startswith(pat): break
+else: SKIP(True)
+
+
+if fnmatch(filename, '.*'):           SKIP()  # I put this after the isdir() so I don't need to make special exceptions for '.'
+if fnmatch(filename, '*.meta'):       SKIP()
+if fnmatch(filename, '*.pyc'):        SKIP()
+if fnmatch(filename, '*.mako.py'):    SKIP()  # Mako-generated module
+if fnmatch(filename, '*.swp'):        SKIP()
+if fnmatch(filename, '*~'):           SKIP()
+if fnmatch(filename, '*.mako'):       MAKO()
+if fnmatch(filename, '*.markdown'):   MARKDOWN()
+if fnmatch(filename, '*.md'):         MARKDOWN()
+if fnmatch(filename, '*.run'):        RUN()
+if fnmatch(filename, '*'):            COPY()  # Default processor
+
