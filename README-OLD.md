@@ -16,7 +16,7 @@ Then, edit the Makefile and make sure that the variables at the top of the
 file make sense for your project.  In particular, you should probably edit
 these:
 
-    PYHPY_DIR   --  The directory where the PyHPY package is.
+    PYHPY_DIR   --  The directory where the PyHPy package is.
     SRC_DIR     --  The directory where your source files and templates are.
     WWW_DEV     --  The directory that your Development site is served from.
     WWW_PROD    --  The directory that your Production site is served from.
@@ -254,7 +254,7 @@ permissions, ACL, and sometimes the modification time (depending on file type))
 So that's how stuff gets from the ~/src/www area to the ~/www area.
 
 There's one more area that needs some explanation: ~/src/www/d.  This contains
-a bunch of synlinks that all point to ~/www/bigfiles.  A new randomly-named
+a bunch of symlinks that all point to ~/www/bigfiles.  A new randomly-named
 symlink is created daily (and the site is regenerated using this new symlink
 in the download URLs), and any symlinks older than a month are deleted.  This
 allows us to have auto-expiring download links so people don't leech off us
