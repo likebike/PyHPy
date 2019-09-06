@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>  <html class="no-js ie ie6 ie-lte9 ie-lte8 ie-lte7 ie-lte6" lang=en> <![endif]-->
+<!--[if IE 7]>     <html class="no-js ie ie7 ie-lte9 ie-lte8 ie-lte7" lang=en> <![endif]-->
+<!--[if IE 8]>     <html class="no-js ie ie8 ie-lte9 ie-lte8" lang=en> <![endif]-->
+<!--[if IE 9]>     <html class="no-js ie ie9 ie-lte9" lang=en> <![endif]-->
+<!--[if gt IE 9]>  <html class="no-js ie ie-gt9" lang=en> <![endif]-->
+<!--[if !IE]><!--> <html class="no-js not-ie" lang=en> <!--<![endif]-->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+    <title>PyHPy Demo</title>
+    <link rel="stylesheet" type="text/css" href="/static/lib/yui-3.12.0/reset_base_fonts-min.css">
+    <link rel="stylesheet" type="text/css" href="/static/lib/font-awesome-4.5.0/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/github-markdown.css?_=1567788970.21">
+    <link rel="stylesheet" type="text/css" href="/static/css/base_pretty.css?_=1567788970.21">
+    
+  <link rel="stylesheet" type="text/css" href="/static/css/blog.css?_=1567788970.21">
+
+    <script type="text/javascript" src="/static/lib/jquery-1.10.2/jquery.js"></script>
+    <script type="text/javascript" src="/static/lib/underscore-1.5.2/underscore.js"></script>
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script>
+    <script type="text/javascript" src="/static/js/base_pretty.js?_=1567788970.21"></script>
+    
+  </head>
+  <body>
+    <section id=header>
+      <a id=logo href="/index.html"><div class="asciiLogo vcompressed">
+              .
+          /\ /l
+         ((.Y(!
+          \ |/
+          /  6~6,
+          \ _    +-.
+           \`-=--^-'
+            \ \ 
+           _/  \ 
+          (  .  Y
+         /"\ `--^--v--.
+        / _ `--"T~\/~\/
+       / " ~\.  !
+ _    Y      Y./'
+Y^|   |      |~~7
+| l   |     / ./'
+| `L  | Y .^/~T
+|  l  ! | |/| |
+| .`\/' | Y | !
+ l "~   j l j_L______
+  \,___{ __"~ __ ,\_,\_
+</div> <div class=name>P<span class=y>y</span>HP<span class=y>y</span></div></a>
+      <div id=slogan>makes you sound Austrylian</div>
+      <ul id=headerTabs>
+        
+        <li class=unselected><a href="/index.html"}><i class="fa fa-home"></i> Home</a></li>
+        <li class=unselected><a href="/photos.html"}><i  class="fa fa-photo"></i> Photos</a></li>
+        <li class=selected><a href="/blog.html"}><i class="fa fa-newspaper-o"></i> Blog</a></li>
+        
+      </ul>
+      <div class=vspacer></div>
+      <hr>
+    </section>
+    <section id=content>
+      
+
+
+
+
+<h1 class=postTitle>How to Install PyHPy</h1>
+<div class=postMeta>Published <span class=postDate>2016-02-20</span>,&nbsp; by <span class=postAuthor>Christopher Sebastian</span></div>
+<img class="postMainImg roundBorder" src="/static/blogImg/download-wide.png" />
+<article class="markdown-body"><h1><i class="fa fa-download fa-lg"></i> The Project Setup Process</h1>
+<p>Unlike most software tools, PyHPy is not supposed to be installed globally on your system;&nbsp; Instead, you should download a local copy of PyHPy into each new project that you create.&nbsp; This ensures that your projects remain independent and self-contained.&nbsp; Here are the instructions to create a new PyHPy project:</p>
+<h2>Step 1:&nbsp; If Necessary, Install Dependencies</h2>
+<p>If your system doesn't already have them, you'll need to install Python2.7, GNU Make, and ImageMagick:</p>
+<pre><code class="bash">sudo apt-get install python2.7 make imagemagick
+</code></pre>
+
+<p>(If there is sufficient demand, I can update PyHPy with Python3 support.)</p>
+<h2>Step 2:&nbsp; Initialize the Project Directory</h2>
+<p>Let's pretend that we want the new project to be stored at <code>~/mysite/</code>.&nbsp; In that case, you'd run:</p>
+<pre><code class="bash">mkdir -p ~/mysite                # Create the project directory.
+cd ~/mysite/                     # Enter the directory.
+# Download the latest PyHPy to ~/mysite/pyhpy/ :
+curl http://pyhpy.likebike.com/pyhpy-latest.tar.gz | tar x
+</code></pre>
+
+<p>At this point, our project directory has been created and PyHPy has been downloaded into the <code>pyhpy</code> subdirectory.&nbsp; Next, let's copy the example <code>Makefile</code> and <code>input</code>:</p>
+<pre><code class="bash">cd ~/mysite/
+cp pyhpy/Makefile.example Makefile
+cp -r pyhpy/input.example input
+</code></pre>
+
+<p>That's it.&nbsp; We now have a functional PyHPy project.</p>
+<h2>Step 3:&nbsp; Test the New Project</h2>
+<p>Use the <code>make</code> command to build the project:</p>
+<pre><code class="bash">cd ~/mysite/
+make
+</code></pre>
+
+<p>The above command will produce an <code>output</code> directory, where the results are placed.&nbsp; For your convenience, a simple web server is included to help you view the results:</p>
+<pre><code class="bash">cd ~/mysite/
+make server   # This will run a local HTTP server on port 8000.
+</code></pre>
+
+<p>Once the development web server is running, you can view your site at <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a> .</p>
+<p>After you have confirmed that everything is working, you might want to take the opportunity to check your project into an SCM, like <a href="https://git-scm.com/">Git</a>.</p>
+<h1><i class="fa fa-gift fa-lg"></i> Out-of-the-Box Functionality</h1>
+<p>PyHPy comes with an example website (the site you're reading right now), which you might want to use as a starting point for your project.</p>
+<h2>MarkDown-Powered Demo Blog</h2>
+<p>The demo blog is generated from a directory of <code>.md</code> posts (written in the MarkDown text format), with matching <code>.meta</code> files for metadata (like Author, Summary, Post Image, Publication Date, and anything else you might want to add).</p>
+<p>The demo blog generates a separate HTML page for each post, and shows a list of all the posts, sorted by reverse Publication Date.</p>
+<p>If you just want to get some posts online quickly, the included demo blog might be a good starting point -- just create your own <code>.md</code> and <code>.meta</code> files in the <code>/input/blog/</code> directory, and then run <code>make</code>.</p>
+<h2>FontAwesome</h2>
+<p>The example site uses <a href="http://fontawesome.io/">FontAwesome</a>, which provides more than 600 vector graphic icons.&nbsp; <a href="http://fontawesome.io/icons/">View the complete set of icons here</a>.&nbsp; Here are a few examples:</p>
+<p><i class="fa fa-3x fa-bicycle"></i> &nbsp;
+<i class="fa fa-3x fa-fort-awesome"></i> &nbsp;
+<i class="fa fa-3x fa-birthday-cake"></i> &nbsp;
+<i class="fa fa-3x fa-cubes"></i> &nbsp;
+<i class="fa fa-3x fa-envelope-o"></i> &nbsp;
+<i class="fa fa-3x fa-heartbeat"></i> &nbsp;
+<i class="fa fa-3x fa-line-chart"></i> &nbsp;
+<i class="fa fa-3x fa-signal"></i> &nbsp;
+<i class="fa fa-3x fa-wrench"></i> &nbsp;
+<i class="fa fa-3x fa-thumbs-o-down"></i> &nbsp;
+<i class="fa fa-3x fa-cog fa-spin"></i> &nbsp;</p>
+<p>It's easy to use a FontAwesome icon on your site;&nbsp; Just include the <code>fa-*</code> CSS classes on your elements.&nbsp; The <code>&lt;i&gt;</code> tag is often used for this purpose.&nbsp; For example:</p>
+<pre><code class="html">I like to ride my &lt;i class=&quot;fa fa-bicycle&quot;&gt;&lt;/i&gt;!
+</code></pre>
+
+<p>...would produce this output:&nbsp; I like to ride my <i class="fa fa-bicycle"></i>!</p>
+<h2>Thumbnail Creation</h2>
+<p>The <code>pyhpy.thumb()</code> function makes it easy to produce thumbnail images.&nbsp; The demo blog and photo album both make frequent use of this feature.&nbsp; Here are some examples of how to use it:</p>
+<pre><code class="html">&lt;img src=&quot;${pyhpy.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150)}&quot; /&gt;
+&lt;img src=&quot;${pyhpy.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', height=150)}&quot; /&gt;
+&lt;img src=&quot;${pyhpy.thumb(self.FS_ROOT(), '/static/blogImg/default.jpg', width=150, height=150)}&quot; /&gt;
+</code></pre>
+
+<p>...and here's the output:</p>
+<p><img src="/static/blogImg/default_THUMB_150.jpg?_=1567794976.14" />
+<img src="/static/blogImg/default_THUMB_x150.jpg?_=1567794976.22" />
+<img src="/static/blogImg/default_THUMB_150x150.jpg?_=1567794976.31" /></p>
+<p>Notice that the image is cropped-to-fit if <code>width</code> and <code>height</code> are both specified.</p>
+<h2>Apache Expires Headers</h2>
+<p><code>Expires</code> headers instruct web browsers to employ their most aggressive form of client-side caching.&nbsp; This caching will reduce the number of requests that are issued to the server, and will dramatically improve your site's load time and responsiveness.&nbsp; However, when using aggressive caching, you need a way to notify clients when new data is available... otherwise they will continue to use their cached versions and won't notice the new stuff.</p>
+<p>The example site comes with <code>.htaccess</code> files that enable <code>Expires</code> headers for all requests to <code>/static/...</code> URLs.&nbsp; (<strong>Note:</strong>&nbsp; This feature requires an Apache web server.)&nbsp; The <code>pyhpy</code> module defines the <code>pyhpy.url(relPath, mtime)</code> function.&nbsp; This function is useful for generation of URLs that incorporate a website mount point and a timestamp.&nbsp; For the following examples, assume that your site will be hosted at <code>http://xyz.com/store/...</code> (mount point = <code>"http://xyz.com/store"</code>):</p>
+<table style="font-size: 85%">
+  <tr><th>Mako Template Code</th><th>Output</th></tr>
+  <tr><td><code>&lt;a href="${pyhpy.url('/static/css/home.css')}"&gt;...&lt;/a&gt;</code></td><td><code>&lt;a href="http://xyz.com/store/static/css/home.css?_=1456331429.72"&gt;...&lt;/a&gt;</code><br>(The '_' value is the filesystem modification time of 'home.css'.)</td></tr>
+  <tr><td><code>&lt;a href="${pyhpy.url('/home.html', mtime=None)}"&gt;...&lt;/a&gt;</code></td><td><code>&lt;a href="http://xyz.com/store/home.html"&gt;...&lt;/a&gt;</code><br>Since this URL is not underneath <code>/static/</code>, Expires headers will not be used.  We can use <code>mtime=None</code> to make the URL prettier.</td></tr>
+  <tr><td><code>pyhpy.url()</code></td><td>This is a special case.  It returns the path of the template that is currently being rendered, without the mount point.  For example, <code>"/home.html.mako"</code>.</td></tr>
+</table>
+
+<p>The first example in the above table shows how how easy it is to generate URLs that include the filesystem modification time.&nbsp; This timestamp helps clients to know when new data is available.&nbsp; Therefore, you can achieve the best of both worlds: aggressive client-side caching, with convenient ability to publish data updates.</p></article>
+
+<hr class=afterPost />
+<h1>Related Blog Posts:</h1>
+
+<ul class=posts>
+    <li class="post ">
+        <a href="/blog/How_to_Install_PyHPy.html">
+            <img class="postImg roundBorder" src="/static/blogImg/download-wide_THUMB_243x150.png?_=1567794971.38" />
+            <div class=postTitle>How to Install PyHPy</div>
+            <div class=postSummary>Learn how to create a new PyHPy project.  Also shows how to install PyHPy's several dependencies.</div>
+            <div class=postMeta><span class=date>2016-02-20</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/PyHPy_Basics_Part_1:_Static_Files.html">
+            <img class="postImg roundBorder" src="/static/blogImg/files-wide_THUMB_243x150.png?_=1567794971.44" />
+            <div class=postTitle>PyHPy Basics Part 1: Static Files</div>
+            <div class=postSummary>Static files are the most basic building blocks of any project.  In this tutorial, we will create a website purely from static files and PyHPy.</div>
+            <div class=postMeta><span class=date>2016-02-19</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/PyHPy_Basics_Part_2:_Mako_Templates.html">
+            <img class="postImg roundBorder" src="/static/blogImg/blueprint-wide_THUMB_243x150.png?_=1567794971.49" />
+            <div class=postTitle>PyHPy Basics Part 2: Mako Templates</div>
+            <div class=postSummary>In this tutorial, we introduce the use of Mako templates in a website project.  Mako templates enable dynamic generation of output, which can help you build sites that would be too much work to make by hand.</div>
+            <div class=postMeta><span class=date>2016-02-18</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/PyHPy_Basics_Part_3:_MarkDown_Content.html">
+            <img class="postImg roundBorder" src="/static/blogImg/content_THUMB_243x150.jpg?_=1567794971.58" />
+            <div class=postTitle>PyHPy Basics Part 3: MarkDown Content</div>
+            <div class=postSummary>In this tutorial, we show you how your project can incorporate MarkDown text files -- the fastest, easiest, most portable way to create website content.</div>
+            <div class=postMeta><span class=date>2016-02-17</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/Mako_Cheat_Sheet.html">
+            <img class="postImg roundBorder" src="/static/blogImg/makoLogo_THUMB_243x150.png?_=1567794971.61" />
+            <div class=postTitle>Mako Cheat Sheet</div>
+            <div class=postSummary>Mako has a lot of really good documentation.  Here's a summary that shows you how to use the most important Mako features, so you can get started quickly.</div>
+            <div class=postMeta><span class=date>2016-01-31</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/MarkDown_Cheat_Sheet.html">
+            <img class="postImg roundBorder" src="/static/blogImg/markdown_THUMB_243x150.gif?_=1567794971.72" />
+            <div class=postTitle>MarkDown Cheat Sheet</div>
+            <div class=postSummary>A quick summary of MarkDown formatting syntax.</div>
+            <div class=postMeta><span class=date>2016-01-30</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+</ul>
+
+
+
+    </section>
+    <section id=footer>
+      <hr>
+      ©2016 你好世界
+    </section>
+  </body>
+</html>
+
+
+
+
+
+
+

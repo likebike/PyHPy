@@ -1,8 +1,0 @@
-#!/bin/bash -eu
-
-TARGET="${PYHPY_OUT_DIR}${PYHPY_REL_PATH%.mako}"   # Chop off the .mako extension.
-TARGET_DIR=$(dirname "$TARGET")
-
-mkdir -p "$TARGET_DIR"
-python -m pyhpy.cmd --template-dir="$PYHPY_IN_DIR" --module-dir="$PYHPY_IN_DIR" "$PYHPY_REL_PATH" >"$TARGET"
-

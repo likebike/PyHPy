@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>  <html class="no-js ie ie6 ie-lte9 ie-lte8 ie-lte7 ie-lte6" lang=en> <![endif]-->
+<!--[if IE 7]>     <html class="no-js ie ie7 ie-lte9 ie-lte8 ie-lte7" lang=en> <![endif]-->
+<!--[if IE 8]>     <html class="no-js ie ie8 ie-lte9 ie-lte8" lang=en> <![endif]-->
+<!--[if IE 9]>     <html class="no-js ie ie9 ie-lte9" lang=en> <![endif]-->
+<!--[if gt IE 9]>  <html class="no-js ie ie-gt9" lang=en> <![endif]-->
+<!--[if !IE]><!--> <html class="no-js not-ie" lang=en> <!--<![endif]-->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+    <title>PyHPy Demo</title>
+    <link rel="stylesheet" type="text/css" href="/static/lib/yui-3.12.0/reset_base_fonts-min.css">
+    <link rel="stylesheet" type="text/css" href="/static/lib/font-awesome-4.5.0/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/github-markdown.css?_=1567788970.21">
+    <link rel="stylesheet" type="text/css" href="/static/css/base_pretty.css?_=1567788970.21">
+    
+  <link rel="stylesheet" type="text/css" href="/static/css/blog.css?_=1567788970.21">
+
+    <script type="text/javascript" src="/static/lib/jquery-1.10.2/jquery.js"></script>
+    <script type="text/javascript" src="/static/lib/underscore-1.5.2/underscore.js"></script>
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script>
+    <script type="text/javascript" src="/static/js/base_pretty.js?_=1567788970.21"></script>
+    
+  </head>
+  <body>
+    <section id=header>
+      <a id=logo href="/index.html"><div class="asciiLogo vcompressed">
+              .
+          /\ /l
+         ((.Y(!
+          \ |/
+          /  6~6,
+          \ _    +-.
+           \`-=--^-'
+            \ \ 
+           _/  \ 
+          (  .  Y
+         /"\ `--^--v--.
+        / _ `--"T~\/~\/
+       / " ~\.  !
+ _    Y      Y./'
+Y^|   |      |~~7
+| l   |     / ./'
+| `L  | Y .^/~T
+|  l  ! | |/| |
+| .`\/' | Y | !
+ l "~   j l j_L______
+  \,___{ __"~ __ ,\_,\_
+</div> <div class=name>P<span class=y>y</span>HP<span class=y>y</span></div></a>
+      <div id=slogan>makes you sound Austrylian</div>
+      <ul id=headerTabs>
+        
+        <li class=unselected><a href="/index.html"}><i class="fa fa-home"></i> Home</a></li>
+        <li class=unselected><a href="/photos.html"}><i  class="fa fa-photo"></i> Photos</a></li>
+        <li class=selected><a href="/blog.html"}><i class="fa fa-newspaper-o"></i> Blog</a></li>
+        
+      </ul>
+      <div class=vspacer></div>
+      <hr>
+    </section>
+    <section id=content>
+      
+
+
+
+
+<h1 class=postTitle>PyHPy Basics Part 1: Static Files</h1>
+<div class=postMeta>Published <span class=postDate>2016-02-19</span>,&nbsp; by <span class=postAuthor>Christopher Sebastian</span></div>
+<img class="postMainImg roundBorder" src="/static/blogImg/files-wide.png" />
+<article class="markdown-body"><p>In this tutorial, we create a small website made completely of static files.&nbsp; The simplicity of the project will allow us to focus on the mechanics of the PyHPy build process.</p>
+<p>To be honest, if your project consists only of static files, PyHPy might not seem too useful.&nbsp; The real value of PyHPy will become obvious once we start generating output dynamically in the <a href="todo">next tutorial</a>.&nbsp; Until then, this pure-static example might feel a bit contrived.</p>
+<h2>Creating a Blank Project</h2>
+<p><a href="/blog/How_to_Install_PyHPy.html">In the previous tutorial</a>, we created a project based on the PyHPy example site.&nbsp; This time, we will create a blank project:</p>
+<pre><code class="bash">mkdir -p ~/staticSite
+cd ~/staticSite/
+curl http://pyhpy.likebike.com/pyhpy-latest.tar.gz | tar x    # Download PyHPy
+cp pyhpy/Makefile.example Makefile
+mkdir input            # Just create a blank 'input' directory.
+</code></pre>
+
+<h2>Adding Files</h2>
+<p>To add files to your project, just place them into the <code>input/</code> directory.&nbsp; To keep things simple, let's just create a couple HTML pages that link to each other, and one extra file that we'll use in a moment:</p>
+<pre><code class="bash">cd ~/staticSite/
+echo 'This is the home page.  &lt;a href=&quot;page2.html&quot;&gt;Go to page2.&lt;/a&gt;' &gt;input/index.html
+echo 'This is page2.html.  &lt;a href=&quot;/&quot;&gt;Go to the home page.&lt;/a&gt;' &gt;input/page2.html
+echo 'We will delete this file soon.' &gt;input/delme.txt
+</code></pre>
+
+<h2>The Build Process</h2>
+<p>If we build the project at this point, here's what happens:</p>
+<pre><code class="bash">$ cd ~/staticSite/
+$ make
+
+rsync -vaHAX --info=flist0,stats0 /home/user/staticSite/input/ /home/user/staticSite/.build
+created directory /home/user/staticSite/.build
+./
+index.html
+page2.html
+delme.ttxt
+
+PYHPY_BUILD_MODE=dev ACL_CHECK=0 AUTO_RM=1 python2.7 /home/user/staticSite/pyhpy/bin/pyhpy_build &quot;/home/user/staticSite/.build&quot; &quot;/home/user/staticSite/output/dev&quot;
+Copying Normal File: 1456307892.915 &gt; 0
+        /home/user/staticSite/.build/index.html  --&gt;  /home/user/staticSite/output/dev/index.html
+Creating Directory:
+        /home/user/staticSite/output/dev
+Copying Normal File: 1456307895.139 &gt; 0
+        /home/user/staticSite/.build/page2.html  --&gt;  /home/user/staticSite/output/dev/page2.html
+Copying Normal File: 1456307895.139 &gt; 0
+        /home/user/staticSite/.build/delme.txt  --&gt;  /home/user/staticSite/output/dev/delme.txt
+
+Built Successfully!  Output is at: /home/user/staticSite/output/dev
+</code></pre>
+
+<p>The build completed successfully, as shown by the last line ("Build Successfully").&nbsp; Here's a summary of what happened:</p>
+<ol>
+<li>The <code>rsync</code> command copies <code>input/</code> to <code>.build/</code>.</li>
+<li>The <code>pyhpy_build</code> script goes through each file in <code>.build/</code>, and recursively performs actions based on the file type (note, all actions are <em>lazy</em> -- they only occur if something has changed):<ul>
+<li><code>xyz.md</code> (MarkDown text) is rendered to <code>xyz.mako</code> (Mako template).</li>
+<li><code>xyz.mako</code> (Mako template) is rendered to <code>xyz</code>.</li>
+<li>Filenames beginning with [ '.', '_' ] or ending with [ '.swp', '.pyc', '.meta' ] are ignored.</li>
+<li>All other files are copied to the output destination.</li>
+<li>The <code>make</code> command produces a development version of the project in <code>output/dev/</code>.&nbsp; Once you are happy with the output, use <code>make prod</code> to produce a production version in <code>output/prod/</code>.</li>
+</ul>
+</li>
+</ol>
+<p>Here's a listing of the output that was produced.&nbsp; Not surprisingly, it's just a copy of our input files:</p>
+<pre><code class="bash">$ ls output/dev/
+delme.txt  index.html  page2.html
+</code></pre>
+
+<h2>Making an Update</h2>
+<p>Let's add one more file (an image) and edit one of the HTML pages:</p>
+<pre><code class="bash">cd ~/staticSite/input/
+wget 'https://www.redditstatic.com/icon.png'
+echo ' &lt;img src=&quot;icon.png&quot; /&gt;' &gt;&gt;page2.html
+</code></pre>
+
+<p>Now let's re-build the project:</p>
+<pre><code class="bash">$ cd ~/staticSite/
+$ make
+
+rsync -vaHAX --info=flist0,stats0 /home/user/staticSite/input/ /home/user/staticSite/.build
+./
+icon.png
+page2.html
+
+PYHPY_BUILD_MODE=dev ACL_CHECK=0 AUTO_RM=1 python2.7 /home/user/staticSite/pyhpy/bin/pyhpy_build &quot;/home/user/staticSite/.build&quot; &quot;/home/user/staticSite/output/dev&quot;
+Copying Normal File: 1327014419.0 &gt; 0
+        /home/user/staticSite/.build/icon.png  --&gt;  /home/user/staticSite/output/dev/icon.png
+Copying Normal File: 1456314184.42 &gt; 1456307895.139
+        /home/user/staticSite/.build/page2.html  --&gt;  /home/user/staticSite/output/dev/page2.html
+
+Built Successfully!  Output is at: /home/user/staticSite/output/dev
+</code></pre>
+
+<p>Here's another listing of the output:</p>
+<pre><code class="bash">$ ls output/dev/
+delme.txt  icon.png  index.html  page2.html
+</code></pre>
+
+<h2>Removing / Renaming Files and Performing a Complete Rebuild</h2>
+<p>Let's remove that <code>delme.txt</code> file and see what happens if we re-build:</p>
+<pre><code class="bash">$ cd ~/staticSite/
+$ rm input/delme.txt
+$ make
+
+...nothing much happens.
+
+
+</code></pre>
+
+<p>Here's another listing of the output:</p>
+<pre><code class="bash">$ ls output/dev/
+delme.txt  icon.png  index.html  page2.html
+</code></pre>
+
+<p>Notice that <code>delme.txt</code> is still in <code>output/</code> even though we deleted it from <code>input/</code>.&nbsp; The PyHPy build process does not automatically propagate file deletions or renames.&nbsp; This is a situation when we need to perform a <em>complete</em> rebuild, using the <code>make clean</code> command:</p>
+<pre><code class="bash">$ cd ~/staticSite/
+$ make clean
+$ make
+
+...
+
+</code></pre>
+
+<p>...Finally, the output is what we expect:</p>
+<pre><code class="bash">$ ls output/dev/
+icon.png  index.html  page2.html
+</code></pre>
+
+<p>So, always remember:&nbsp; if you are getting unreasonable outputs, try resetting the build with <code>make clean</code>.&nbsp; This will become more important once we start using dynamically-generated content in the next tutorial.</p>
+<h2>Using the Development Web Server</h2>
+<p>It is possible to view webpages directly from the filesystem, using <code>file://</code> URLs.&nbsp; However, this is far from ideal, since links will usually break and resources (like images, CSS, JS, etc.) usually won't be found.&nbsp; The tiny website we created in this tutorial exhibits this problem:&nbsp; On <code>page2.html</code>, we link back to the home page using a URL of <code>"/"</code>.&nbsp; When the page is viewed from the filesystem, this link will take us to the wrong place:</p>
+<table><tr style="border:none"><td style="border:none"><img src="/static/blogImg/tut_static_page2_file.png?_=1567788970.21" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="/static/blogImg/tut_static_home_file.png?_=1567788970.21" width=300 /></td></tr></table>
+
+<p>For a website to really work properly, it needs to be served from a web server with the <code>http://</code> protocol.&nbsp; PyHPy provides a basic web server so you can view your project output while doing local development.&nbsp; To run the server, open a new command line terminal and run this:</p>
+<pre><code class="bash">cd ~/staticSite/
+make server
+</code></pre>
+
+<p>After the server is running, our website can be viewed at <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a> .&nbsp; The link on page2 works properly now:</p>
+<table><tr style="border:none"><td style="border:none"><img src="/static/blogImg/tut_static_page2_http.png?_=1567788970.21" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="/static/blogImg/tut_static_home_http.png?_=1567788970.21" width=300 /></td></tr></table>
+
+<p>By default, the development server binds to port <code>8000</code> and serves files from the <code>output/dev/</code> directory.&nbsp; You can customize these values with the <code>WWW_PORT</code> and <code>WWW_DIR</code> variables.&nbsp; For example:</p>
+<pre><code class="bash">cd ~/staticSite/
+make server WWW_PORT=8888 WWW_DIR=output/prod/
+</code></pre>
+
+<h2>Running a Production Build</h2>
+<p>Once you are happy with the results, you can make a permanent copy of the project with the <code>make prod</code> command:</p>
+<pre><code class="bash">$ cd ~/staticSite/
+$ make prod
+
+... 
+
+PROD Built Successfully!  Output is at: /home/user/staticSite/output/prod
+</code></pre>
+
+<p>Here is what happens when you run <code>make prod</code>:</p>
+<ol>
+<li>
+<p>A full development build is performed and ACL file attributes are propagated to the output.&nbsp; (<code>input/</code> is copied to <code>.build/</code>, then rendered to <code>output/dev/</code>, preserving file attributes between each step.)</p>
+</li>
+<li>
+<p>The <code>output/dev/</code> directory is then copied to <code>output/prod-$TIMESTAMP/</code>, where <code>$TIMESTAMP</code> is like <code>20160225231500</code>.</p>
+</li>
+<li>
+<p>The <code>output/prod</code> symlink is updated to point at the newly-created directory.</p>
+</li>
+</ol>
+<p>The end result is an <code>output/</code> directory that looks like this (after running <code>make prod</code> several times):</p>
+<pre><code class="bash">$ cd ~/staticSite/
+$ ls -l output/
+drwxrwxr-x 5 user user 4096  2月 25 18:20 dev
+lrwxrwxrwx 1 user user   19  2月 25 18:02 prod -&gt; prod-20160225180213
+drwxrwxr-x 5 user user 4096  2月 23 08:35 prod-20160223083536
+drwxrwxr-x 5 user user 4096  2月 24 14:22 prod-20160224142200
+drwxrwxr-x 5 user user 4096  2月 25 18:02 prod-20160225180213
+</code></pre>
+
+<p>As you can see, production versions are kept permanently (or until you manually remove them), and the <code>output/prod</code> symlink always points to the latest production version.&nbsp; This structure allows you to easily view previous versions of your project.&nbsp; For example, you can run <code>make server</code> in one terminal and <code>make server WWW_PORT=8001 WWW_DIR=output/prod-20160224142200</code> in another to compare your development site to a previous production version.</p>
+<h2>Uploading the Results</h2>
+<p>After producing a production version of your site, upload it to your webserver using a file transfer tool like <code>rsync</code> (or even FTP if you really must):</p>
+<pre><code class="bash">cd ~/staticSite/
+rsync -Paz output/prod/ user@host.com:path/to/htdocs/
+</code></pre></article>
+
+<hr class=afterPost />
+<h1>Related Blog Posts:</h1>
+
+<ul class=posts>
+    <li class="post ">
+        <a href="/blog/How_to_Install_PyHPy.html">
+            <img class="postImg roundBorder" src="/static/blogImg/download-wide_THUMB_243x150.png?_=1567794971.38" />
+            <div class=postTitle>How to Install PyHPy</div>
+            <div class=postSummary>Learn how to create a new PyHPy project.  Also shows how to install PyHPy's several dependencies.</div>
+            <div class=postMeta><span class=date>2016-02-20</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/PyHPy_Basics_Part_1:_Static_Files.html">
+            <img class="postImg roundBorder" src="/static/blogImg/files-wide_THUMB_243x150.png?_=1567794971.44" />
+            <div class=postTitle>PyHPy Basics Part 1: Static Files</div>
+            <div class=postSummary>Static files are the most basic building blocks of any project.  In this tutorial, we will create a website purely from static files and PyHPy.</div>
+            <div class=postMeta><span class=date>2016-02-19</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/PyHPy_Basics_Part_2:_Mako_Templates.html">
+            <img class="postImg roundBorder" src="/static/blogImg/blueprint-wide_THUMB_243x150.png?_=1567794971.49" />
+            <div class=postTitle>PyHPy Basics Part 2: Mako Templates</div>
+            <div class=postSummary>In this tutorial, we introduce the use of Mako templates in a website project.  Mako templates enable dynamic generation of output, which can help you build sites that would be too much work to make by hand.</div>
+            <div class=postMeta><span class=date>2016-02-18</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/PyHPy_Basics_Part_3:_MarkDown_Content.html">
+            <img class="postImg roundBorder" src="/static/blogImg/content_THUMB_243x150.jpg?_=1567794971.58" />
+            <div class=postTitle>PyHPy Basics Part 3: MarkDown Content</div>
+            <div class=postSummary>In this tutorial, we show you how your project can incorporate MarkDown text files -- the fastest, easiest, most portable way to create website content.</div>
+            <div class=postMeta><span class=date>2016-02-17</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/Mako_Cheat_Sheet.html">
+            <img class="postImg roundBorder" src="/static/blogImg/makoLogo_THUMB_243x150.png?_=1567794971.61" />
+            <div class=postTitle>Mako Cheat Sheet</div>
+            <div class=postSummary>Mako has a lot of really good documentation.  Here's a summary that shows you how to use the most important Mako features, so you can get started quickly.</div>
+            <div class=postMeta><span class=date>2016-01-31</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/MarkDown_Cheat_Sheet.html">
+            <img class="postImg roundBorder" src="/static/blogImg/markdown_THUMB_243x150.gif?_=1567794971.72" />
+            <div class=postTitle>MarkDown Cheat Sheet</div>
+            <div class=postSummary>A quick summary of MarkDown formatting syntax.</div>
+            <div class=postMeta><span class=date>2016-01-30</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+</ul>
+
+
+
+    </section>
+    <section id=footer>
+      <hr>
+      ©2016 你好世界
+    </section>
+  </body>
+</html>
+
+
+
+
+
+
+

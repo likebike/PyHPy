@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>  <html class="no-js ie ie6 ie-lte9 ie-lte8 ie-lte7 ie-lte6" lang=en> <![endif]-->
+<!--[if IE 7]>     <html class="no-js ie ie7 ie-lte9 ie-lte8 ie-lte7" lang=en> <![endif]-->
+<!--[if IE 8]>     <html class="no-js ie ie8 ie-lte9 ie-lte8" lang=en> <![endif]-->
+<!--[if IE 9]>     <html class="no-js ie ie9 ie-lte9" lang=en> <![endif]-->
+<!--[if gt IE 9]>  <html class="no-js ie ie-gt9" lang=en> <![endif]-->
+<!--[if !IE]><!--> <html class="no-js not-ie" lang=en> <!--<![endif]-->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+    <title>PyHPy Demo</title>
+    <link rel="stylesheet" type="text/css" href="/static/lib/yui-3.12.0/reset_base_fonts-min.css">
+    <link rel="stylesheet" type="text/css" href="/static/lib/font-awesome-4.5.0/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/github-markdown.css?_=1567788970.21">
+    <link rel="stylesheet" type="text/css" href="/static/css/base_pretty.css?_=1567788970.21">
+    
+  <link rel="stylesheet" type="text/css" href="/static/css/blog.css?_=1567788970.21">
+
+    <script type="text/javascript" src="/static/lib/jquery-1.10.2/jquery.js"></script>
+    <script type="text/javascript" src="/static/lib/underscore-1.5.2/underscore.js"></script>
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script>
+    <script type="text/javascript" src="/static/js/base_pretty.js?_=1567788970.21"></script>
+    
+  </head>
+  <body>
+    <section id=header>
+      <a id=logo href="/index.html"><div class="asciiLogo vcompressed">
+              .
+          /\ /l
+         ((.Y(!
+          \ |/
+          /  6~6,
+          \ _    +-.
+           \`-=--^-'
+            \ \ 
+           _/  \ 
+          (  .  Y
+         /"\ `--^--v--.
+        / _ `--"T~\/~\/
+       / " ~\.  !
+ _    Y      Y./'
+Y^|   |      |~~7
+| l   |     / ./'
+| `L  | Y .^/~T
+|  l  ! | |/| |
+| .`\/' | Y | !
+ l "~   j l j_L______
+  \,___{ __"~ __ ,\_,\_
+</div> <div class=name>P<span class=y>y</span>HP<span class=y>y</span></div></a>
+      <div id=slogan>makes you sound Austrylian</div>
+      <ul id=headerTabs>
+        
+        <li class=unselected><a href="/index.html"}><i class="fa fa-home"></i> Home</a></li>
+        <li class=unselected><a href="/photos.html"}><i  class="fa fa-photo"></i> Photos</a></li>
+        <li class=selected><a href="/blog.html"}><i class="fa fa-newspaper-o"></i> Blog</a></li>
+        
+      </ul>
+      <div class=vspacer></div>
+      <hr>
+    </section>
+    <section id=content>
+      
+
+
+
+
+<h1 class=postTitle>Mako Cheat Sheet</h1>
+<div class=postMeta>Published <span class=postDate>2016-01-31</span>,&nbsp; by <span class=postAuthor>Christopher Sebastian</span></div>
+<img class="postMainImg roundBorder" src="/static/blogImg/makoLogo.png" />
+<article class="markdown-body"><h1><i class="fa fa-graduation-cap fa-lg"></i> Learning Mako by Example</h1>
+<p><a href="http://www.makotemplates.org/">Mako</a> is a powerful templating language built on top of <a href="https://www.python.org/">Python</a>.&nbsp; Mako is written by <a href="http://techspot.zzzeek.org/">Mike Bayer</a>.&nbsp; <a href="https://github.com/zzzeek/mako">The development repository is on GitHub.</a></p>
+<p>This page teaches Mako's most essential features through a series of examples.&nbsp; If you have questions about anything, or if you want to learn about other cool Mako features that are not covered here, refer to the <a href="http://docs.makotemplates.org/en/latest/">official Mako docs</a>.</p>
+<h3>Why Mako?</h3>
+<p>I need to explain why I chose Mako, rather than Jinja2, Cheetah, Django Templates, or others.</p>
+<ul>
+<li>
+<p>Very powerful, general.&nbsp; Can produce any kind of output.</p>
+</li>
+<li>
+<p>Small feature set.&nbsp; Easy to teach it to my wife.</p>
+</li>
+</ul>
+<h2>Text and Unicode</h2>
+<ul class=exampleCode>
+    <li class=exampleCode><div class=title>text_example.mako</div><div class=text>Everything in this example is just text, so it goes directly to the output.
+
+Unicode is fully supported:  我喜欢看喜羊羊与灰太狼。
+
+&lt;p&gt;HTML is just &lt;b&gt;text&lt;/b&gt;.&lt;/p&gt;
+
+*MarkDown* is also _just_ [text](http://itsjusttext.com/).
+
+def whatAboutCode(a,b,c):
+    return &#39;Guess what -- code is text too!&#39;
+
+(function() {
+    console.log(&#34;It doesn&#39;t matter what programming language.&#34;);
+    alert(&#34;It&#39;s all just text.&#34;);
+})();</div></li>
+    <li class=exampleOutput><div class=title>Output</div><div class=text>Everything in this example is just text, so it goes directly to the output.
+
+Unicode is fully supported:  我喜欢看喜羊羊与灰太狼。
+
+&lt;p&gt;HTML is just &lt;b&gt;text&lt;/b&gt;.&lt;/p&gt;
+
+*MarkDown* is also _just_ [text](http://itsjusttext.com/).
+
+def whatAboutCode(a,b,c):
+    return &#39;Guess what -- code is text too!&#39;
+
+(function() {
+    console.log(&#34;It doesn&#39;t matter what programming language.&#34;);
+    alert(&#34;It&#39;s all just text.&#34;);
+})();</div></li>
+</ul>
+
+<h2>Comments and &lt;%text&gt;</h2>
+<ul class=exampleCode>
+    <li class=exampleCode><div class=title>comment_example.mako</div><div class=text>Mako has two types of comments:
+
+## A line comment starts with two &#39;#&#39; characters.
+
+        ## Line comments can be intented.
+
+But you can&#39;t put comments at the end of lines.  ## See?
+
+Here is a multi-line comment:
+&lt;%doc&gt;
+All these lines
+    will not go
+to the output.
+&lt;/%doc&gt;
+
+&lt;%doc&gt;You can also use &lt;%doc&gt; on a single line.&lt;/%doc&gt;
+
+&lt;%text&gt;
+## The &lt;%text&gt; tag tells Mako to just pass data directly to the output.
+## This is sometimes useful when the data you want to produce
+## conflicts with Mako syntax.
+
+## Comments have no effect.  All Mako syntax is disabled.
+&lt;%doc&gt;Same with multi-line comments.&lt;/%doc&gt;
+${&#34;&#34;&#34;You&#39;ll learn what these other features are supposed to do later.
+     Right now, they do nothing because &lt;%text&gt; disables them.&#34;&#34;&#34;}
+&lt;%def name=&#34;F()&#34;&gt;foo&lt;/%def&gt;
+&lt;% n=5 %&gt;
+%if n&gt;3:
+    ${self.F()}
+%endif
+&lt;/%text&gt;
+
+## Finally, after the &lt;/%text&gt; tag, Mako starts processing again.</div></li>
+    <li class=exampleOutput><div class=title>Output</div><div class=text>Mako has two types of comments:
+
+
+
+But you can&#39;t put comments at the end of lines.  ## See?
+
+Here is a multi-line comment:
+
+
+
+
+
+## The &lt;%text&gt; tag tells Mako to just pass data directly to the output.
+## This is sometimes useful when the data you want to produce
+## conflicts with Mako syntax.
+
+## Comments have no effect.  All Mako syntax is disabled.
+&lt;%doc&gt;Same with multi-line comments.&lt;/%doc&gt;
+${&#34;&#34;&#34;You&#39;ll learn what these other features are supposed to do later.
+     Right now, they do nothing because &lt;%text&gt; disables them.&#34;&#34;&#34;}
+&lt;%def name=&#34;F()&#34;&gt;foo&lt;/%def&gt;
+&lt;% n=5 %&gt;
+%if n&gt;3:
+    ${self.F()}
+%endif</div></li>
+</ul>
+
+<h2>Escapes</h2>
+<ul class=exampleCode>
+    <li class=exampleCode><div class=title>escape_example.mako</div><div class=text>Mako only has two character escapes:
+
+  * backslash+newline  --&gt;  &#34;&#34;  (empty string)
+    (Enables you to prevent newlines from going to the output.)
+
+  * &#39;%%&#39; at the beginning of a line  --&gt;  &#39;%&#39;
+    (A single &#39;%&#39; at the beginning of a line is interpreted as a flow control.)
+
+Examples:
+
+A back-slash at the end \
+of a line will prevent \
+the newline character \
+from appearing in the \
+output.
+
+%if True:      # Flow Control lines start with a single &#39;%&#39;.
+%endif
+
+%% %% %%       The first &#39;%%&#39; becomes &#39;%&#39;.
+
+    %% %% %%   Escape does not happen if the line is indented.
+
+
+The following escapes do NOT work:
+
+\\ $$ \$ \&lt; \&gt; \{ \}  \( \) \! \@ \# \% \^ \&amp; \* \( \) \= \+ \~ \&#39; \&#34; \?
+\&lt;% foo=&#39;BAR&#39; %&gt;    Code still runs.
+\${foo}             Eval still occurs.
+
+
+## If you want to escape anything other than a newline, you need to
+## perform a string operation instead.  You&#39;ll learn about the
+## &lt;% ... %&gt; and ${...} operators later, but for now, pretend that
+## you want to output a literal &#34;${foo}&#34;, and you don&#39;t want Mako
+## to interpret it.  You *could* use the &lt;%text&gt; operator that we
+## already learned about, or you could do something like this:
+
+    ${&#39;$&#39;}{foo}
+    ${&#39;${foo}&#39;}
+    ${&#39;%if True:&#39;}</div></li>
+    <li class=exampleOutput><div class=title>Output</div><div class=text>Mako only has two character escapes:
+
+  * backslash+newline  --&gt;  &#34;&#34;  (empty string)
+    (Enables you to prevent newlines from going to the output.)
+
+  * &#39;%%&#39; at the beginning of a line  --&gt;  &#39;%&#39;
+    (A single &#39;%&#39; at the beginning of a line is interpreted as a flow control.)
+
+Examples:
+
+A back-slash at the end of a line will prevent the newline character from appearing in the output.
+
+
+% %% %%       The first &#39;%%&#39; becomes &#39;%&#39;.
+
+   %% %% %%   Escape does not happen if the line is indented.
+
+
+The following escapes do NOT work:
+
+\\ $$ \$ \&lt; \&gt; \{ \}  \( \) \! \@ \# \% \^ \&amp; \* \( \) \= \+ \~ \&#39; \&#34; \?
+\    Code still runs.
+\BAR             Eval still occurs.
+
+
+
+    ${foo}
+    ${foo}
+    %if True:</div></li>
+</ul>
+
+<h2>${...}</h2>
+<ul class=exampleCode>
+    <li class=exampleCode><div class=title>eval_example.mako</div><div class=text>## ${...} performs an evaluation and puts the result in its place.
+## The &#34;...&#34; can be any Python expression.
+
+&lt;% foo=&#39;BAR&#39; %&gt;
+${}
+${&#39;foo&#39;}
+${foo}
+${2+3}
+The biggest number in the list is: ${max(1,2,3,4,5,4,3,2,1)}.
+${&#39;foo&#39;.upper()}${ foo.lower() }
+${ [1,2,3,4,5] }
+${ {1:2, 3:4} }
+${__import__(&#39;os&#39;).listdir(&#39;/&#39;)}
+
+&lt;%
+class A(object):
+    def __str__(self): return &#39;It uses __str__.&#39;
+    def __repr__(self): return &#39;It uses __repr__.&#39;
+%&gt;
+
+Does ${&#39;${...}&#39;} use __str__ or __repr__?  ${A()}</div></li>
+    <li class=exampleOutput><div class=title>Output</div><div class=text>foo
+BAR
+5
+The biggest number in the list is: 5.
+FOObar
+[1, 2, 3, 4, 5]
+{1: 2, 3: 4}
+[&#39;mnt&#39;, &#39;vmlinuz.old&#39;, &#39;sys&#39;, &#39;dev&#39;, &#39;home&#39;, &#39;initrd.img&#39;, &#39;usr&#39;, &#39;var&#39;, &#39;srv&#39;, &#39;tmp&#39;, &#39;lib&#39;, &#39;lost+found&#39;, &#39;root&#39;, &#39;run&#39;, &#39;initrd.img.old&#39;, &#39;vmlinuz&#39;, &#39;boot&#39;, &#39;sbin&#39;, &#39;media&#39;, &#39;bin&#39;, &#39;opt&#39;, &#39;lib64&#39;, &#39;cdrom&#39;, &#39;proc&#39;, &#39;etc&#39;]
+
+
+
+Does ${...} use __str__ or __repr__?  It uses __str__.</div></li>
+</ul>
+
+<h2>Flow Controls</h2>
+<ul class=exampleCode>
+    <li class=exampleCode><div class=title>flow_example.mako</div><div class=text>## All Python flow controls are supported:
+##     if/elif/else, for, while, try/except, etc.
+## You always need to use &#34;%end...&#34; to mark the end of blocks.
+
+&lt;% n, foo = 5, &#39;BAR&#39; %&gt;
+
+## Indentation doesn&#39;t matter at all.  I just do it out of habit:
+&lt;ul&gt;
+%for i in range(n):
+    &lt;li&gt;
+    %if i == 3:
+        Item Number Three: ${foo}
+        &lt;% break %&gt;
+    %else:
+        Item #${i}: foo
+    %endif
+    &lt;/li&gt;
+%endfor
+&lt;/ul&gt;
+## Look at the output that was produced by the loop.
+## Notice that the &#39;break&#39; command prevents the
+## output of the final &lt;/li&gt; tag, and also causes
+## the &lt;/ul&gt; to appear in a place that you
+## probably didn&#39;t expect.
+
+
+## Here&#39;s an example where I don&#39;t use indentation:
+&lt;p&gt;\
+%try:
+${open(&#39;/proc/version&#39;).read().strip()}\
+%except:
+ERROR READING KERNEL VERSION\
+%endtry
+&lt;/p&gt;</div></li>
+    <li class=exampleOutput><div class=title>Output</div><div class=text>&lt;ul&gt;
+    &lt;li&gt;
+        Item #0: foo
+    &lt;/li&gt;
+    &lt;li&gt;
+        Item #1: foo
+    &lt;/li&gt;
+    &lt;li&gt;
+        Item #2: foo
+    &lt;/li&gt;
+    &lt;li&gt;
+        Item Number Three: BAR
+        &lt;/ul&gt;
+
+
+&lt;p&gt;Linux version 3.19.0-16-generic (buildd@komainu) (gcc version 4.9.2 (Ubuntu 4.9.2-10ubuntu13) ) #16-Ubuntu SMP Thu Apr 30 16:09:58 UTC 2015&lt;/p&gt;</div></li>
+</ul>
+
+<h2>&lt;% ... %&gt;</h2>
+<ul class=exampleCode>
+    <li class=exampleCode><div class=title>inline_exec_example.mako</div><div class=text>## The &lt;% ... %&gt; block performs &#34;inline execution&#34; of Python code.
+&lt;%
+    # This is normal Python code.
+    def factorial(n):
+        if n&lt;=0: return 0
+        if n==1: return 1
+        return n*factorial(n-1)
+    def times1000(n): return n*1000
+
+    items = [(n,factorial(n)) for n in range(10)]
+    total = 0
+%&gt;
+
+%for (n,fact) in items:
+    ## This code executes during each loop iteration:
+    &lt;% total += n %&gt;
+    factorial(${n})=${fact}, times1000(${n})=${times1000(n)}
+%endfor
+
+TOTAL = ${total}</div></li>
+    <li class=exampleOutput><div class=title>Output</div><div class=text>    factorial(0)=0, times1000(0)=0
+
+    factorial(1)=1, times1000(1)=1000
+
+    factorial(2)=2, times1000(2)=2000
+
+    factorial(3)=6, times1000(3)=3000
+
+    factorial(4)=24, times1000(4)=4000
+
+    factorial(5)=120, times1000(5)=5000
+
+    factorial(6)=720, times1000(6)=6000
+
+    factorial(7)=5040, times1000(7)=7000
+
+    factorial(8)=40320, times1000(8)=8000
+
+    factorial(9)=362880, times1000(9)=9000
+
+TOTAL = 45</div></li>
+</ul>
+
+<h2>&lt;%! ... %&gt;</h2>
+<ul class=exampleCode>
+    <li class=exampleCode><div class=title>module_exec_example.mako</div><div class=text>## The &lt;%! ... %&gt; block performs &#34;module execution&#34; of Python code.
+## It executes ONLY ONCE, when the generated Python module is loaded.
+## IT DOES NOT EXECUTE WHERE IT APPEARS IN THE TEMPLATE.
+## &lt;%! ... %&gt; is typically used for two things:
+##     * import of modules
+##     * definition of variables/functions/classes
+
+&lt;%!
+    import os, pyhpy
+    inline, module = [], []
+%&gt;
+
+start
+&lt;%  inline.append(&#39;start&#39;) %&gt;
+&lt;%! module.append(&#39;start&#39;) %&gt;
+
+%if False:
+    if
+    &lt;%  inline.append(&#39;if&#39;) %&gt;
+    &lt;%! module.append(&#39;if&#39;) %&gt;
+%elif True:
+    elif
+    &lt;%  inline.append(&#39;elif&#39;) %&gt;
+    &lt;%! module.append(&#39;elif&#39;) %&gt;
+%else:
+    else
+    &lt;%  inline.append(&#39;else&#39;) %&gt;
+    &lt;%! module.append(&#39;else&#39;) %&gt;
+%endif
+
+%for i in range(3):
+    for
+    &lt;%  inline.append(&#39;for&#39;) %&gt;
+    &lt;%! module.append(&#39;for&#39;) %&gt;
+%else:
+    for-else
+    &lt;%  inline.append(&#39;for-else&#39;) %&gt;
+    &lt;%! module.append(&#39;for-else&#39;) %&gt;
+%endfor
+
+%while True:
+    while
+    &lt;%  inline.append(&#39;while&#39;) %&gt;
+    &lt;%! module.append(&#39;while&#39;) %&gt;
+    &lt;% break %&gt;
+%else:
+    while-else
+    &lt;%  inline.append(&#39;while-else&#39;) %&gt;
+    &lt;%! module.append(&#39;while-else&#39;) %&gt;
+%endwhile
+
+%try:
+    try
+    &lt;%  inline.append(&#39;try&#39;) %&gt;
+    &lt;%! module.append(&#39;try&#39;) %&gt;
+%except:
+    except
+    &lt;%  inline.append(&#39;except&#39;) %&gt;
+    &lt;%! module.append(&#39;except&#39;) %&gt;
+%else:
+    try-else
+    &lt;%  inline.append(&#39;try-else&#39;) %&gt;
+    &lt;%! module.append(&#39;try-else&#39;) %&gt;
+%finally:
+    finally
+    &lt;%  inline.append(&#39;finally&#39;) %&gt;
+    &lt;%! module.append(&#39;finally&#39;) %&gt;
+%endtry
+
+%with open(&#39;/proc/loadavg&#39;) as fobj:
+    with
+    &lt;%  inline.append(&#39;with&#39;) %&gt;
+    &lt;%! module.append(&#39;with&#39;) %&gt;
+${fobj.read()}
+%endwith
+
+end
+&lt;%  inline.append(&#39;end&#39;) %&gt;
+&lt;%! module.append(&#39;end&#39;) %&gt;
+
+inline execution = ${inline}
+module execution = ${module}</div></li>
+    <li class=exampleOutput><div class=title>Output</div><div class=text>start
+
+
+
+    elif
+
+
+
+    for
+
+
+    for
+
+
+    for
+
+
+    for-else
+
+
+
+    while
+
+
+
+    try
+
+
+    try-else
+
+
+    finally
+
+
+
+    with
+
+
+0.24 0.42 0.38 3/1344 15682
+
+
+end
+
+
+
+inline execution = [&#39;start&#39;, &#39;elif&#39;, &#39;for&#39;, &#39;for&#39;, &#39;for&#39;, &#39;for-else&#39;, &#39;while&#39;, &#39;try&#39;, &#39;try-else&#39;, &#39;finally&#39;, &#39;with&#39;, &#39;end&#39;]
+module execution = [&#39;start&#39;, &#39;if&#39;, &#39;elif&#39;, &#39;else&#39;, &#39;for&#39;, &#39;for-else&#39;, &#39;while&#39;, &#39;while-else&#39;, &#39;try&#39;, &#39;except&#39;, &#39;try-else&#39;, &#39;finally&#39;, &#39;with&#39;, &#39;end&#39;]</div></li>
+</ul>
+
+<h2>&lt;%def&gt;</h2>
+<div class=tester>
+
+
+
+start
+
+
+
+    elif
+
+
+
+    for
+
+
+    for
+
+
+    for
+
+
+    for-else
+
+
+
+    while
+
+
+
+    try
+
+
+    try-else
+
+
+    finally
+
+
+
+    with
+
+
+1.16 1.13 1.30 1/1642 3379
+
+
+end
+
+
+
+inline execution = ['start', 'elif', 'for', 'for', 'for', 'for-else', 'while', 'try', 'try-else', 'finally', 'with', 'end']
+module execution = ['start', 'if', 'elif', 'else', 'for', 'for-else', 'while', 'while-else', 'try', 'except', 'try-else', 'finally', 'with', 'end']
+</div>
+
+<ul class=exampleCode>
+    <li class=exampleCode><div class=title></div><div class=text></div></li>
+    <li class=exampleOutput><div class=title>Output</div><div class=text></div></li>
+</ul>
+
+<ul class=exampleCode>
+    <li class=exampleCode><div class=title></div><div class=text></div></li>
+    <li class=exampleOutput><div class=title>Output</div><div class=text></div></li>
+</ul>
+
+<ul>
+<li>Simple text and unicode</li>
+<li>Comments, %text</li>
+<li>Newline escaping</li>
+<li>$ {...}</li>
+<li>if else</li>
+<li>for, while</li>
+<li>inline code</li>
+<li>module-level code<ul>
+<li>accessible/overridable via self.attr&nbsp; (DO NOT MENTION.&nbsp; Encourages behavior that requres deep knowledge.)</li>
+</ul>
+</li>
+<li>%block&nbsp; (REQUIRES TOO MUCH UNDERSTANDING, otherwise you can't see the difference between %def)</li>
+<li>%def</li>
+<li>escaping -- for html/url/markdown escaping/filtering, using the '|' pipe method and filter= method.&nbsp; Introduced here becasue module-level code is a good place for filters or imports of filters.</li>
+<li>inheritance<ul>
+<li>self.body(), next.body()</li>
+<li>overriding defs and blocks</li>
+<li>capture()</li>
+<li>pyhpy fragile syntax!</li>
+</ul>
+</li>
+<li>%include</li>
+<li>Better understanding of 'self', 'local', 'next', 'parent', 'UNDEFINED', and 'context'</li>
+<li>How to debug when things go wrong</li>
+<li>PyHPy features<ul>
+<li>(provided in the _base.mako file of the example project): self.URL(), self.FS_ROOT()</li>
+<li>dependencies&nbsp;  (## DEP)&nbsp; (MIGHT WANT TO CHANGE SYNTAX?)</li>
+<li>meta</li>
+<li>NOT SURE IF THIS IS THE RIGHT PAGE FOR THIS: Sane search paths.</li>
+<li>NOT SURE IF THIS IS THE RIGHT PAGE FOR THIS: error reporting</li>
+<li>IN MARKDOWN CHEAT SHEET:&nbsp; Mention double-space and equalSignHeader extensions</li>
+</ul>
+</li>
+<li>Mention the featues we didn't cover.&nbsp; %block.&nbsp; %page.&nbsp; %namespace...</li>
+</ul></article>
+
+<hr class=afterPost />
+<h1>Related Blog Posts:</h1>
+
+<ul class=posts>
+    <li class="post ">
+        <a href="/blog/How_to_Install_PyHPy.html">
+            <img class="postImg roundBorder" src="/static/blogImg/download-wide_THUMB_243x150.png?_=1567794971.38" />
+            <div class=postTitle>How to Install PyHPy</div>
+            <div class=postSummary>Learn how to create a new PyHPy project.  Also shows how to install PyHPy's several dependencies.</div>
+            <div class=postMeta><span class=date>2016-02-20</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/PyHPy_Basics_Part_1:_Static_Files.html">
+            <img class="postImg roundBorder" src="/static/blogImg/files-wide_THUMB_243x150.png?_=1567794971.44" />
+            <div class=postTitle>PyHPy Basics Part 1: Static Files</div>
+            <div class=postSummary>Static files are the most basic building blocks of any project.  In this tutorial, we will create a website purely from static files and PyHPy.</div>
+            <div class=postMeta><span class=date>2016-02-19</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/PyHPy_Basics_Part_2:_Mako_Templates.html">
+            <img class="postImg roundBorder" src="/static/blogImg/blueprint-wide_THUMB_243x150.png?_=1567794971.49" />
+            <div class=postTitle>PyHPy Basics Part 2: Mako Templates</div>
+            <div class=postSummary>In this tutorial, we introduce the use of Mako templates in a website project.  Mako templates enable dynamic generation of output, which can help you build sites that would be too much work to make by hand.</div>
+            <div class=postMeta><span class=date>2016-02-18</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/PyHPy_Basics_Part_3:_MarkDown_Content.html">
+            <img class="postImg roundBorder" src="/static/blogImg/content_THUMB_243x150.jpg?_=1567794971.58" />
+            <div class=postTitle>PyHPy Basics Part 3: MarkDown Content</div>
+            <div class=postSummary>In this tutorial, we show you how your project can incorporate MarkDown text files -- the fastest, easiest, most portable way to create website content.</div>
+            <div class=postMeta><span class=date>2016-02-17</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/Mako_Cheat_Sheet.html">
+            <img class="postImg roundBorder" src="/static/blogImg/makoLogo_THUMB_243x150.png?_=1567794971.61" />
+            <div class=postTitle>Mako Cheat Sheet</div>
+            <div class=postSummary>Mako has a lot of really good documentation.  Here's a summary that shows you how to use the most important Mako features, so you can get started quickly.</div>
+            <div class=postMeta><span class=date>2016-01-31</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+    <li class="post post-useSep">
+        <a href="/blog/MarkDown_Cheat_Sheet.html">
+            <img class="postImg roundBorder" src="/static/blogImg/markdown_THUMB_243x150.gif?_=1567794971.72" />
+            <div class=postTitle>MarkDown Cheat Sheet</div>
+            <div class=postSummary>A quick summary of MarkDown formatting syntax.</div>
+            <div class=postMeta><span class=date>2016-01-30</span> - by <span class=author>Christopher Sebastian</span></div>
+        </a>
+        <div class=clearFloats></div>
+    </li>
+</ul>
+
+
+
+    </section>
+    <section id=footer>
+      <hr>
+      ©2016 你好世界
+    </section>
+  </body>
+</html>
+
+
+
+
+
+
+

@@ -1,5 +1,0 @@
-{
-  "date"   : "2016-02-18",
-  "summary": "In this tutorial, we introduce the use of Mako templates in a website project.  Mako templates enable dynamic generation of output, which can help you build sites that would be too much work to make by hand.",
-  "image"  : "/static/blogImg/blueprint-wide.png"
-}
