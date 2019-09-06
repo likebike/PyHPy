@@ -8,5 +8,5 @@
     Header unset ETag
     Header unset Last-Modified
     Header unset Pragma
-    Header set Expires "Fri, 04 Nov 2021 21:59:49 GMT"
+    Header set Expires "Fri, 04 Nov 2031 21:59:49 GMT"
 </IfModule>
