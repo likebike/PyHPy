@@ -61,7 +61,7 @@ def MAKO():
     mk_outdir()
     end('python -m pyhpy.cmd --template-dir=%(inRoot)r --module-dir=%(inRoot)r /%(relPath)r >%(noext)r'%values)
 
-def MARKDOWN(): end('../bin/MARKDOWN')
+def MARKDOWN(): end('../PyHPy/bin/MARKDOWN')
 
 def RUN(): end('''
 cat %(inPath)r >/dev/null  # Force 'inPath' to be a Muck dependency, so things get re-called if the file changes.  For some reason, the below 'chmod' and 'exec' do not cause a dependency.
