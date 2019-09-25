@@ -8,21 +8,19 @@
 #     MUCK_OUT_ROOT  -- The output root directory. Example:  /path/to/proj/out
 #     MUCK_REL_PATH  -- The file to process, relative to the MUCK_IN_ROOT.  Ex: a/b.c
 #
-# Muckfiles should be "functional";  For the same set of inputs,
+# Muckfiles should be "functional";  For the same set of inputs (env vars),
 # they should always produce the same set of outputs (shell commands).
 
 import os, sys
 from fnmatch import fnmatch
 
+# Pre-calculate a few things to make our command recipes simpler:
 relPath = os.environ['MUCK_REL_PATH']
 filename = os.path.basename(relPath)
-#  Pre-calculate a few paths to make our command recipes simpler:
-# (We could also calculate these things inside of the command recipes, using bash.)
 inRoot, outRoot = os.environ['MUCK_IN_ROOT'], os.environ['MUCK_OUT_ROOT']
-inPath = os.path.join(inRoot, os.environ['MUCK_REL_PATH'])
-inDir = os.path.dirname(inPath)
+inPath  = os.path.join(inRoot,  os.environ['MUCK_REL_PATH'])
 outPath = os.path.join(outRoot, os.environ['MUCK_REL_PATH'])
-outDir = os.path.dirname(outPath)
+inDir, outDir = os.path.dirname(inPath), os.path.dirname(outPath)
 
 def end(string=None):
     if string: print(string)
@@ -42,7 +40,7 @@ def ENTER_SUBDIR(): end('''
 { set +x; } 2>/dev/null  # Silently disable tracing
 true                     # The command doesn't actually matter, as long as it succeeds.
 echo DIR DONE: $MUCK_REL_PATH/
-find . >/dev/null
+find . >/dev/null        # So we re-visit this dir if any content changes.
 ''')
 
 def COPY():
@@ -75,17 +73,17 @@ if relPath == 'static/lib':           RSYNC() # Copy 3rd-party libs all at once.
 if relPath.startswith('static/lib'):  SKIP()  # Don't recurse into 3rd-party libs.  They can contain crazy things.
 if fnmatch(filename, '_*'):           SKIP()
 if os.path.isdir(relPath):            ENTER_SUBDIR()
-if fnmatch(filename, '.htaccess'):    COPY()  # We want to copy these dot-files.
-if fnmatch(filename, '.htpasswd'):    COPY()
 
 
-# A simple way to enabled building of specific items (for improved development iteration time):
+# A simple way to enable building of specific items (for improved development iteration time):
 for pat in os.environ.get('MUCK_REL_PATH_PREFIXES', '').split('|'):   # If the env var is not set, the resulting 'pat' will be '', which matches everything.
     if relPath.startswith(pat): break
 else: SKIP(True)
 
 
-if fnmatch(filename, '.*'):           SKIP()  # I put this after the isdir() so I don't need to make special exceptions for '.'
+if fnmatch(filename, '.htaccess'):    COPY()  # We want to copy these dot-files.
+if fnmatch(filename, '.htpasswd'):    COPY()
+if fnmatch(filename, '.*'):           SKIP()
 if fnmatch(filename, '*.meta'):       SKIP()
 if fnmatch(filename, '*.pyc'):        SKIP()
 if fnmatch(filename, '*.mako.py'):    SKIP()  # Mako-generated module
