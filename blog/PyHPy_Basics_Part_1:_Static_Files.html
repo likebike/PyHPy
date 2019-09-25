@@ -12,17 +12,17 @@
     <title>PyHPy Demo</title>
     <link rel="stylesheet" type="text/css" href="/static/lib/yui-3.12.0/reset_base_fonts-min.css">
     <link rel="stylesheet" type="text/css" href="/static/lib/font-awesome-4.5.0/css/font-awesome.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/github-markdown.css?_=1567795602.99">
-    <link rel="stylesheet" type="text/css" href="/static/css/base_pretty.css?_=1567795602.99">
+    <link rel="stylesheet" type="text/css" href="/static/css/github-markdown.css?_=1567842210.83">
+    <link rel="stylesheet" type="text/css" href="/static/css/base_pretty.css?_=1567842210.83">
     
-  <link rel="stylesheet" type="text/css" href="/static/css/blog.css?_=1567795602.99">
+  <link rel="stylesheet" type="text/css" href="/static/css/blog.css?_=1567842210.83">
 
     <script type="text/javascript" src="/static/lib/jquery-1.10.2/jquery.js"></script>
     <script type="text/javascript" src="/static/lib/underscore-1.5.2/underscore.js"></script>
     <script type="text/javascript">
       jQuery.noConflict();
     </script>
-    <script type="text/javascript" src="/static/js/base_pretty.js?_=1567795602.99"></script>
+    <script type="text/javascript" src="/static/js/base_pretty.js?_=1567842210.83"></script>
     
   </head>
   <body>
@@ -197,7 +197,7 @@ icon.png  index.html  page2.html
 <p>So, always remember:&nbsp; if you are getting unreasonable outputs, try resetting the build with <code>make clean</code>.&nbsp; This will become more important once we start using dynamically-generated content in the next tutorial.</p>
 <h2>Using the Development Web Server</h2>
 <p>It is possible to view webpages directly from the filesystem, using <code>file://</code> URLs.&nbsp; However, this is far from ideal, since links will usually break and resources (like images, CSS, JS, etc.) usually won't be found.&nbsp; The tiny website we created in this tutorial exhibits this problem:&nbsp; On <code>page2.html</code>, we link back to the home page using a URL of <code>"/"</code>.&nbsp; When the page is viewed from the filesystem, this link will take us to the wrong place:</p>
-<table><tr style="border:none"><td style="border:none"><img src="/static/blogImg/tut_static_page2_file.png?_=1567795602.99" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="/static/blogImg/tut_static_home_file.png?_=1567795602.99" width=300 /></td></tr></table>
+<table><tr style="border:none"><td style="border:none"><img src="/static/blogImg/tut_static_page2_file.png?_=1567842210.83" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="/static/blogImg/tut_static_home_file.png?_=1567842210.83" width=300 /></td></tr></table>
 
 <p>For a website to really work properly, it needs to be served from a web server with the <code>http://</code> protocol.&nbsp; PyHPy provides a basic web server so you can view your project output while doing local development.&nbsp; To run the server, open a new command line terminal and run this:</p>
 <pre><code class="bash">cd ~/staticSite/
@@ -205,7 +205,7 @@ make server
 </code></pre>
 
 <p>After the server is running, our website can be viewed at <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a> .&nbsp; The link on page2 works properly now:</p>
-<table><tr style="border:none"><td style="border:none"><img src="/static/blogImg/tut_static_page2_http.png?_=1567795602.99" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="/static/blogImg/tut_static_home_http.png?_=1567795602.99" width=300 /></td></tr></table>
+<table><tr style="border:none"><td style="border:none"><img src="/static/blogImg/tut_static_page2_http.png?_=1567842210.83" width=300 /></td><td style="border:none"><i class="fa fa-long-arrow-right fa-4x"></i></td><td style="border:none"><img src="/static/blogImg/tut_static_home_http.png?_=1567842210.83" width=300 /></td></tr></table>
 
 <p>By default, the development server binds to port <code>8000</code> and serves files from the <code>output/dev/</code> directory.&nbsp; You can customize these values with the <code>WWW_PORT</code> and <code>WWW_DIR</code> variables.&nbsp; For example:</p>
 <pre><code class="bash">cd ~/staticSite/
@@ -257,7 +257,7 @@ rsync -Paz output/prod/ user@host.com:path/to/htdocs/
 <ul class=posts>
     <li class="post ">
         <a href="/blog/How_to_Install_PyHPy.html">
-            <img class="postImg roundBorder" src="/static/blogImg/download-wide_THUMB_243x150.png?_=1567798115.23" />
+            <img class="postImg roundBorder" src="/static/blogImg/download-wide_THUMB_243x150.png?_=1569421004.73" />
             <div class=postTitle>How to Install PyHPy</div>
             <div class=postSummary>Learn how to create a new PyHPy project.  Also shows how to install PyHPy's several dependencies.</div>
             <div class=postMeta><span class=date>2016-02-20</span> - by <span class=author>Christopher Sebastian</span></div>
@@ -266,7 +266,7 @@ rsync -Paz output/prod/ user@host.com:path/to/htdocs/
     </li>
     <li class="post post-useSep">
         <a href="/blog/PyHPy_Basics_Part_1:_Static_Files.html">
-            <img class="postImg roundBorder" src="/static/blogImg/files-wide_THUMB_243x150.png?_=1567798115.27" />
+            <img class="postImg roundBorder" src="/static/blogImg/files-wide_THUMB_243x150.png?_=1569421004.78" />
             <div class=postTitle>PyHPy Basics Part 1: Static Files</div>
             <div class=postSummary>Static files are the most basic building blocks of any project.  In this tutorial, we will create a website purely from static files and PyHPy.</div>
             <div class=postMeta><span class=date>2016-02-19</span> - by <span class=author>Christopher Sebastian</span></div>
@@ -275,7 +275,7 @@ rsync -Paz output/prod/ user@host.com:path/to/htdocs/
     </li>
     <li class="post post-useSep">
         <a href="/blog/PyHPy_Basics_Part_2:_Mako_Templates.html">
-            <img class="postImg roundBorder" src="/static/blogImg/blueprint-wide_THUMB_243x150.png?_=1567798115.33" />
+            <img class="postImg roundBorder" src="/static/blogImg/blueprint-wide_THUMB_243x150.png?_=1569421004.84" />
             <div class=postTitle>PyHPy Basics Part 2: Mako Templates</div>
             <div class=postSummary>In this tutorial, we introduce the use of Mako templates in a website project.  Mako templates enable dynamic generation of output, which can help you build sites that would be too much work to make by hand.</div>
             <div class=postMeta><span class=date>2016-02-18</span> - by <span class=author>Christopher Sebastian</span></div>
@@ -284,7 +284,7 @@ rsync -Paz output/prod/ user@host.com:path/to/htdocs/
     </li>
     <li class="post post-useSep">
         <a href="/blog/PyHPy_Basics_Part_3:_MarkDown_Content.html">
-            <img class="postImg roundBorder" src="/static/blogImg/content_THUMB_243x150.jpg?_=1567798115.39" />
+            <img class="postImg roundBorder" src="/static/blogImg/content_THUMB_243x150.jpg?_=1569421004.9" />
             <div class=postTitle>PyHPy Basics Part 3: MarkDown Content</div>
             <div class=postSummary>In this tutorial, we show you how your project can incorporate MarkDown text files -- the fastest, easiest, most portable way to create website content.</div>
             <div class=postMeta><span class=date>2016-02-17</span> - by <span class=author>Christopher Sebastian</span></div>
@@ -293,7 +293,7 @@ rsync -Paz output/prod/ user@host.com:path/to/htdocs/
     </li>
     <li class="post post-useSep">
         <a href="/blog/Mako_Cheat_Sheet.html">
-            <img class="postImg roundBorder" src="/static/blogImg/makoLogo_THUMB_243x150.png?_=1567798115.41" />
+            <img class="postImg roundBorder" src="/static/blogImg/makoLogo_THUMB_243x150.png?_=1569421004.94" />
             <div class=postTitle>Mako Cheat Sheet</div>
             <div class=postSummary>Mako has a lot of really good documentation.  Here's a summary that shows you how to use the most important Mako features, so you can get started quickly.</div>
             <div class=postMeta><span class=date>2016-01-31</span> - by <span class=author>Christopher Sebastian</span></div>
@@ -302,7 +302,7 @@ rsync -Paz output/prod/ user@host.com:path/to/htdocs/
     </li>
     <li class="post post-useSep">
         <a href="/blog/MarkDown_Cheat_Sheet.html">
-            <img class="postImg roundBorder" src="/static/blogImg/markdown_THUMB_243x150.gif?_=1567798115.5" />
+            <img class="postImg roundBorder" src="/static/blogImg/markdown_THUMB_243x150.gif?_=1569421005.04" />
             <div class=postTitle>MarkDown Cheat Sheet</div>
             <div class=postSummary>A quick summary of MarkDown formatting syntax.</div>
             <div class=postMeta><span class=date>2016-01-30</span> - by <span class=author>Christopher Sebastian</span></div>
