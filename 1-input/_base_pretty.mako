@@ -38,7 +38,7 @@
 ##     ${context.lookup.get_template('db.json.mako').render_unicode().strip()}
 ##
 ##     ### PyHPy Provides the Following Convenience Features ###
-##     self.URL('/blog.html')   --  Includes a "?timeout=${FS mtime}" in the URL.
+##     self.URL('/blog.html')   --  Includes a "?_=${FS mtime}" in the URL.
 ##     self.URL()               --  Returns the project path of the template being rendered.
 ##                                  If /a/b/buildDir/x/y/z.mako is being rendered,
 ##                                  self.URL() --> /x/y/z.mako
